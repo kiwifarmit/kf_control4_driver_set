@@ -1,0 +1,279 @@
+<devicedata>
+  <copyright>Copyright 2017 Kiwifarm Corporation.  All rights reserved.</copyright>
+  <creator>soft.kiwi</creator>
+  <manufacturer>soft.kiwi by Kiwifarm</manufacturer>
+  <name>KMTronic Radio Relay v 1.0</name>
+  <model>KMT Tronic</model>
+  <created>05/25/2017 2:58 PM</created>
+  <modified>05/25/2017 2:58 PM</modified>
+  <version>10</version>
+  <small>devices_sm\c4modI_16.gif</small>
+  <large>devices_lg\c4modI_32.gif</large>
+  <control>lua_gen</control>
+  <controlmethod>ip</controlmethod>
+  <driver>DriverWorks</driver>
+  <states />
+  <OnlineCategory>others</OnlineCategory>
+  <proxies qty="1">
+    <proxy proxybindingid="1" name="KMT Relay 1">light</proxy>
+    <proxy proxybindingid="2" name="KMT Relay 2">KMTRelayRadio</proxy>
+    <proxy proxybindingid="3" name="KMT Relay 3">KMTRelayRadio</proxy>
+    <proxy proxybindingid="4" name="KMT Relay 4">KMTRelayRadio</proxy>
+    <proxy proxybindingid="5" name="KMT Relay 5">KMTRelayRadio</proxy>
+    <proxy proxybindingid="6" name="KMT Relay 6">KMTRelayRadio</proxy>
+    <proxy proxybindingid="7" name="KMT Relay 7">KMTRelayRadio</proxy>
+    <proxy proxybindingid="8" name="KMT Relay 8">KMTRelayRadio</proxy>
+  </proxies>
+  <config>
+    <power_management_method>AlwaysOn</power_management_method>
+    <power_command_delay>0</power_command_delay>
+    <power_delay>0</power_delay>
+    <power_command_needed>False</power_command_needed>
+    <script file="driver.lua" encryption="2" />
+    <commands></commands>
+    <properties>
+      <property>
+        <name>Debug</name>
+        <type>LIST</type>
+        <readonly>false</readonly>
+        <default>On</default>
+        <items>
+          <item>On</item>
+          <item>Off</item>
+        </items>
+      </property>
+      <property>
+        <name>KMTronic IP</name>
+        <type>STRING</type>
+        <readonly>false</readonly>
+        <default>192.168.1.199</default>
+      </property>
+      <property>
+        <name>KMTronic Port</name>
+        <type>STRING</type>
+        <readonly>false</readonly>
+        <default>12345</default>
+      </property>
+      <property>
+        <name>KMTronic User</name>
+        <type>STRING</type>
+        <readonly>false</readonly>
+        <default>admin</default>
+      </property>
+      <property>
+        <name>KMTronic Password</name>
+        <type>STRING</type>
+        <readonly>false</readonly>
+        <default>admin</default>
+      </property>
+      <property>
+        <name>Polling</name>
+        <type>LIST</type>
+        <readonly>false</readonly>
+        <default>Off</default>
+        <items>
+          <item>On</item>
+          <item>Off</item>
+        </items>
+      </property>
+      <property>
+        <name>Polling seconds</name>
+        <type>LIST</type>
+        <readonly>false</readonly>
+        <default>5</default>
+        <items>
+          <item>2</item>
+          <item>5</item>
+          <item>10</item>
+          <item>60</item>
+          <item>300</item>
+        </items>
+      </property>
+      <!-- Licensing -->
+      <property>
+        <name>License Provider</name>
+        <default></default>
+        <type>LIST</type>
+        <items>
+          <item>Driver Central</item>
+          <item>Houselogix</item>
+        </items>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Cloud Status</name>
+        <default></default>
+        <type>STRING</type>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Automatic Updates</name>
+        <type>LIST</type>
+        <items>
+          <item>Off</item>
+          <item>On</item>
+        </items>
+        <default>Off</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Houselogix License Code</name>
+        <default></default>
+        <type>STRING</type>
+        <readonly>false</readonly>
+        <default>type your license code here</default>
+      </property>
+      <property>
+        <name>Houselogix License Status</name>
+        <type>STRING</type>
+        <readonly>true</readonly>
+        <default />
+      </property>
+      <!-- end Licensing -->
+    </properties>
+    <documentation file="documentation.rtf" />
+    <actions>
+      <action>
+        <name>Display Status</name>
+        <command>DisplayStatus</command>
+      </action>
+      <action>
+        <name>Test All Relays CLOSE</name>
+        <command>TestCLOSE</command>
+      </action>
+      <action>
+        <name>Test All Relays OPEN</name>
+        <command>TestOPEN</command>
+      </action>
+    </actions>
+  </config>
+  <connections>
+    <connection>
+      <connectionname>KMT Relay 1</connectionname>
+      <facing>1</facing>
+      <type>1</type>
+      <id>1</id>
+      <audiosource>false</audiosource>
+      <videosource>false</videosource>
+      <consumer>false</consumer>
+      <linelevel>false</linelevel>
+      <classes>
+        <class>
+          <classname>RELAY</classname>
+        </class>
+      </classes>
+    </connection>
+    <connection>
+      <connectionname>KMT Relay 2</connectionname>
+      <facing>1</facing>
+      <type>1</type>
+      <id>2</id>
+      <audiosource>false</audiosource>
+      <videosource>false</videosource>
+      <consumer>false</consumer>
+      <linelevel>false</linelevel>
+      <classes>
+        <class>
+          <classname>RELAY</classname>
+        </class>
+      </classes>
+    </connection>
+    <connection>
+      <connectionname>KMT Relay 3</connectionname>
+      <facing>1</facing>
+      <type>1</type>
+      <id>3</id>
+      <audiosource>false</audiosource>
+      <videosource>false</videosource>
+      <consumer>false</consumer>
+      <linelevel>false</linelevel>
+      <classes>
+        <class>
+          <classname>RELAY</classname>
+        </class>
+      </classes>
+    </connection>
+    <connection>
+      <connectionname>KMT Relay 4</connectionname>
+      <facing>1</facing>
+      <type>1</type>
+      <id>4</id>
+      <audiosource>false</audiosource>
+      <videosource>false</videosource>
+      <consumer>false</consumer>
+      <linelevel>false</linelevel>
+      <classes>
+        <class>
+          <classname>RELAY</classname>
+        </class>
+      </classes>
+    </connection>
+    <connection>
+      <connectionname>KMT Relay 5</connectionname>
+      <facing>1</facing>
+      <type>1</type>
+      <id>5</id>
+      <audiosource>false</audiosource>
+      <videosource>false</videosource>
+      <consumer>false</consumer>
+      <linelevel>false</linelevel>
+      <classes>
+        <class>
+          <classname>RELAY</classname>
+        </class>
+      </classes>
+    </connection>
+    <connection>
+      <connectionname>KMT Relay 6</connectionname>
+      <facing>1</facing>
+      <type>1</type>
+      <id>6</id>
+      <audiosource>false</audiosource>
+      <videosource>false</videosource>
+      <consumer>false</consumer>
+      <linelevel>false</linelevel>
+      <classes>
+        <class>
+          <classname>RELAY</classname>
+        </class>
+      </classes>
+    </connection>
+    <connection>
+      <connectionname>KMT Relay 7</connectionname>
+      <facing>1</facing>
+      <type>1</type>
+      <id>7</id>
+      <audiosource>false</audiosource>
+      <videosource>false</videosource>
+      <consumer>false</consumer>
+      <linelevel>false</linelevel>
+      <classes>
+        <class>
+          <classname>RELAY</classname>
+        </class>
+      </classes>
+    </connection>
+    <connection>
+      <connectionname>KMT Relay 8</connectionname>
+      <facing>1</facing>
+      <type>1</type>
+      <id>8</id>
+      <audiosource>false</audiosource>
+      <videosource>false</videosource>
+      <consumer>false</consumer>
+      <linelevel>false</linelevel>
+      <classes>
+        <class>
+          <classname>RELAY</classname>
+        </class>
+      </classes>
+    </connection>
+  </connections>
+  <composer_categories>
+    <category>Controllers</category>
+    <category>Lighting</category>
+    <category>HVAC</category>
+    <category>Storage</category>
+    <category>Unknown</category>
+  </composer_categories>
+</devicedata>

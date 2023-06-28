@@ -1,0 +1,438 @@
+<devicedata>
+  <copyright>Copyright 2017 kiwifarm. All Rights Reserved.</copyright>
+  <manufacturer>soft.kiwi(made in Italy drivers)</manufacturer>
+  <creator>Kiwifarm</creator>
+  <name>KiwiButton</name>
+  <model>KiwiButton</model>
+  <created>11/01/2017 10:30</created>
+  <modified>1/14/2020 06:49 PM</modified>
+  <version>000045</version>
+  <small image_source="c4z">icons/device_sm.png</small>
+  <large image_source="c4z">icons/device_lg.png</large>
+  <control>lua_gen</control>
+  <controlmethod>other</controlmethod>
+  <driver>DriverWorks</driver>
+  <proxies>
+    <proxy image_source="c4z" large_image="icons/kiwibutton_lg.png" name="KiwiButton" proxybindingid="5001" small_image="icons/kiwibutton_sm.png">uibutton</proxy>
+  </proxies>
+  <config>
+    <documentation>
+			"refer to User Manual"
+		</documentation>
+    <script encryption="0" file="driver.lua" />
+    <actions />
+    <properties>
+      <property>
+        <name>Driver Version</name>
+        <default />
+        <type>STRING</type>
+        <readonly>true</readonly>
+      </property>
+      
+      <property>
+				<name>License Section</name>
+				<type>LABEL</type>
+				<default>Licensing</default>
+			</property>
+
+      <property>
+        <name>License Provider</name>
+        <default />
+        <type>LIST</type>
+        <items>
+          <item>Driver Central</item>
+          <item>SoftKiwi</item>
+        </items>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Cloud Status</name>
+        <default />
+        <type>STRING</type>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Automatic Updates</name>
+        <type>LIST</type>
+        <items>
+          <item>Off</item>
+          <item>On</item>
+        </items>
+        <default>Off</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Houselogix License Code</name>
+        <default />
+        <type>STRING</type>
+        <readonly>false</readonly>
+        <default>type your license code here</default>
+      </property>
+      <property>
+        <name>Houselogix License Status</name>
+        <type>STRING</type>
+        <readonly>true</readonly>
+        <default />
+      </property>
+      <property>
+        <name>SoftKiwi License Code</name>
+        <default />
+        <type>STRING</type>
+        <readonly>false</readonly>
+        <default>type your license code here</default>
+      </property>
+      <property>
+        <name>SoftKiwi Driver Type</name>
+        <type>STRING</type>
+        <readonly>true</readonly>
+        <default />
+      </property>
+      <property>
+        <name>SoftKiwi License Status</name>
+        <type>STRING</type>
+        <readonly>true</readonly>
+        <default />
+      </property>
+      
+      <property>
+        <name>Action</name>
+        <type>LIST</type>
+        <default>TOGGLE</default>
+        <items>
+          <item>TOGGLE</item>
+          <item>ON-OFF</item>
+          <item>PULSE</item>
+        </items>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Pulse Lenght</name>
+        <default>500</default>
+        <type>LIST</type>
+        <items>
+          <item>500</item>
+          <item>1000</item>
+          <item>1500</item>
+        </items>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Inverted Relay</name>
+        <default>OFF</default>
+        <type>LIST</type>
+        <items>
+          <item>ON</item>
+          <item>OFF</item>
+        </items>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Feedback</name>
+        <type>LIST</type>
+        <default>ON</default>
+        <items>
+          <item>ON</item>
+          <item>OFF</item>
+        </items>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Current State</name>
+        <default />
+        <type>STRING</type>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Driver Information</name>
+        <default />
+        <type>STRING</type>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Debug Mode</name>
+        <type>LIST</type>
+        <items>
+          <item>Off</item>
+          <item>On</item>
+        </items>
+        <default>Off</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Select Color Off</name>
+        <type>LIST</type>
+        <items>
+          <item>kiwi</item>
+          <item>off</item>
+          <item>white</item>
+          <item>red</item>
+          <item>orange</item>
+          <item>yellow</item>
+          <item>chartreuse</item>
+          <item>green</item>
+          <item>spring</item>
+          <item>cyan</item>
+          <item>azure</item>
+          <item>blue</item>
+          <item>violet</item>
+          <item>magenta</item>
+          <item>rose</item>
+        </items>
+        <default>off</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Select Color On</name>
+        <type>LIST</type>
+        <items>
+          <item>kiwi</item>
+          <item>off</item>
+          <item>white</item>
+          <item>red</item>
+          <item>orange</item>
+          <item>yellow</item>
+          <item>chartreuse</item>
+          <item>green</item>
+          <item>spring</item>
+          <item>cyan</item>
+          <item>azure</item>
+          <item>blue</item>
+          <item>violet</item>
+          <item>magenta</item>
+          <item>rose</item>
+        </items>
+        <default>off</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Clickable</name>
+        <type>LIST</type>
+        <items>
+          <item>Yes</item>
+          <item>No</item>
+        </items>
+        <default>Yes</default>
+        <readonly>false</readonly>
+      </property>
+    </properties>
+    <commands>
+      <command>
+        <name>SetColor</name>
+        <description>Set state to PARAM1</description>
+        <params>
+          <param>
+            <name>color</name>
+            <type>LIST</type>
+            <items>
+              <item>kiwi</item>
+              <item>off</item>
+              <item>white</item>
+              <item>red</item>
+              <item>orange</item>
+              <item>yellow</item>
+              <item>chartreuse</item>
+              <item>green</item>
+              <item>spring</item>
+              <item>cyan</item>
+              <item>azure</item>
+              <item>blue</item>
+              <item>violet</item>
+              <item>magenta</item>
+              <item>rose</item>
+            </items>
+          </param>
+        </params>
+      </command>
+    </commands>
+  </config>
+  <capabilities>
+    <navigator_display_option proxybindingid="5001">
+      <display_icons>
+        <Icon height="300" width="300">controller://driver/Kiwi-button/icons/device/kiwibutton_300.png</Icon>
+        <Icon height="70" width="70">controller://driver/Kiwi-button/icons/device/kiwibutton_70.png</Icon>
+        <Icon height="90" width="90">controller://driver/Kiwi-button/icons/device/kiwibutton_90.png</Icon>
+        <state id="kiwi">
+          <Icon height="300" width="300">controller://driver/Kiwi-button/icons/device/kiwibutton_300.png</Icon>
+          <Icon height="70" width="70">controller://driver/Kiwi-button/icons/device/kiwibutton_70.png</Icon>
+          <Icon height="90" width="90">controller://driver/Kiwi-button/icons/device/kiwibutton_90.png</Icon>
+        </state>
+        <state id="off">
+          <Icon height="300" width="300">controller://driver/Kiwi-button/icons/device/off_300.png</Icon>
+          <Icon height="70" width="70">controller://driver/Kiwi-button/icons/device/off_70.png</Icon>
+          <Icon height="90" width="90">controller://driver/Kiwi-button/icons/device/off_90.png</Icon>
+        </state>
+        <state id="white">
+          <Icon height="300" width="300">controller://driver/Kiwi-button/icons/device/white_300.png</Icon>
+          <Icon height="70" width="70">controller://driver/Kiwi-button/icons/device/white_70.png</Icon>
+          <Icon height="90" width="90">controller://driver/Kiwi-button/icons/device/white_90.png</Icon>
+        </state>
+        <state id="red">
+          <Icon height="300" width="300">controller://driver/Kiwi-button/icons/device/red_300.png</Icon>
+          <Icon height="70" width="70">controller://driver/Kiwi-button/icons/device/red_70.png</Icon>
+          <Icon height="90" width="90">controller://driver/Kiwi-button/icons/device/red_90.png</Icon>
+        </state>
+        <state id="orange">
+          <Icon height="300" width="300">controller://driver/Kiwi-button/icons/device/orange_300.png</Icon>
+          <Icon height="70" width="70">controller://driver/Kiwi-button/icons/device/orange_70.png</Icon>
+          <Icon height="90" width="90">controller://driver/Kiwi-button/icons/device/orange_90.png</Icon>
+        </state>
+        <state id="yellow">
+          <Icon height="300" width="300">controller://driver/Kiwi-button/icons/device/yellow_300.png</Icon>
+          <Icon height="70" width="70">controller://driver/Kiwi-button/icons/device/yellow_70.png</Icon>
+          <Icon height="90" width="90">controller://driver/Kiwi-button/icons/device/yellow_90.png</Icon>
+        </state>
+        <state id="chartreuse">
+          <Icon height="300" width="300">controller://driver/Kiwi-button/icons/device/chartreuse_300.png</Icon>
+          <Icon height="70" width="70">controller://driver/Kiwi-button/icons/device/chartreuse_70.png</Icon>
+          <Icon height="90" width="90">controller://driver/Kiwi-button/icons/device/chartreuse_90.png</Icon>
+        </state>
+        <state id="green">
+          <Icon height="300" width="300">controller://driver/Kiwi-button/icons/device/green_300.png</Icon>
+          <Icon height="70" width="70">controller://driver/Kiwi-button/icons/device/green_70.png</Icon>
+          <Icon height="90" width="90">controller://driver/Kiwi-button/icons/device/green_90.png</Icon>
+        </state>
+        <state id="spring">
+          <Icon height="300" width="300">controller://driver/Kiwi-button/icons/device/spring_300.png</Icon>
+          <Icon height="70" width="70">controller://driver/Kiwi-button/icons/device/spring_70.png</Icon>
+          <Icon height="90" width="90">controller://driver/Kiwi-button/icons/device/spring_90.png</Icon>
+        </state>
+        <state id="cyan">
+          <Icon height="300" width="300">controller://driver/Kiwi-button/icons/device/cyan_300.png</Icon>
+          <Icon height="70" width="70">controller://driver/Kiwi-button/icons/device/cyan_70.png</Icon>
+          <Icon height="90" width="90">controller://driver/Kiwi-button/icons/device/cyan_90.png</Icon>
+        </state>
+        <state id="azure">
+          <Icon height="300" width="300">controller://driver/Kiwi-button/icons/device/azure_300.png</Icon>
+          <Icon height="70" width="70">controller://driver/Kiwi-button/icons/device/azure_70.png</Icon>
+          <Icon height="90" width="90">controller://driver/Kiwi-button/icons/device/azure_90.png</Icon>
+        </state>
+        <state id="blue">
+          <Icon height="300" width="300">controller://driver/Kiwi-button/icons/device/blue_300.png</Icon>
+          <Icon height="70" width="70">controller://driver/Kiwi-button/icons/device/blue_70.png</Icon>
+          <Icon height="90" width="90">controller://driver/Kiwi-button/icons/device/blue_90.png</Icon>
+        </state>
+        <state id="violet">
+          <Icon height="300" width="300">controller://driver/Kiwi-button/icons/device/violet_300.png</Icon>
+          <Icon height="70" width="70">controller://driver/Kiwi-button/icons/device/violet_70.png</Icon>
+          <Icon height="90" width="90">controller://driver/Kiwi-button/icons/device/violet_90.png</Icon>
+        </state>
+        <state id="magenta">
+          <Icon height="300" width="300">controller://driver/Kiwi-button/icons/device/magenta_300.png</Icon>
+          <Icon height="70" width="70">controller://driver/Kiwi-button/icons/device/magenta_70.png</Icon>
+          <Icon height="90" width="90">controller://driver/Kiwi-button/icons/device/magenta_90.png</Icon>
+        </state>
+        <state id="rose">
+          <Icon height="300" width="300">controller://driver/Kiwi-button/icons/device/rose_300.png</Icon>
+          <Icon height="70" width="70">controller://driver/Kiwi-button/icons/device/rose_70.png</Icon>
+          <Icon height="90" width="90">controller://driver/Kiwi-button/icons/device/rose_90.png</Icon>
+        </state>
+      </display_icons>
+    </navigator_display_option>
+  </capabilities>
+  <connections>
+    <connection>
+      <id>5001</id>
+      <facing>6</facing>
+      <connectionname>UIBUTTON</connectionname>
+      <type>2</type>
+      <consumer>False</consumer>
+      <audiosource>False</audiosource>
+      <videosource>False</videosource>
+      <linelevel>False</linelevel>
+      <classes>
+        <class>
+          <classname>UIBUTTON</classname>
+        </class>
+      </classes>
+    </connection>
+    <connection>
+      <id>500</id>
+      <facing>6</facing>
+      <connectionname>Select</connectionname>
+      <type>1</type>
+      <consumer>False</consumer>
+      <audiosource>False</audiosource>
+      <videosource>False</videosource>
+      <linelevel>False</linelevel>
+      <classes>
+        <class>
+          <classname>BUTTON_LINK</classname>
+          <autobind>False</autobind>
+        </class>
+      </classes>
+      <hidden>False</hidden>
+    </connection>
+  </connections>
+  <events>
+    <event>
+      <id>1</id>
+      <name>off</name>
+      <description>When off is selected in NAME</description>
+    </event>
+    <event>
+      <id>2</id>
+      <name>white</name>
+      <description>When white is selected in NAME</description>
+    </event>
+    <event>
+      <id>3</id>
+      <name>red</name>
+      <description>When red is selected in NAME</description>
+    </event>
+    <event>
+      <id>4</id>
+      <name>orange</name>
+      <description>When orange is selected in  NAME</description>
+    </event>
+    <event>
+      <id>5</id>
+      <name>yellow</name>
+      <description>When yellow is selected in NAME</description>
+    </event>
+    <event>
+      <id>6</id>
+      <name>chartreuse</name>
+      <description>When chartreuse is selected in NAME</description>
+    </event>
+    <event>
+      <id>7</id>
+      <name>green</name>
+      <description>When green is selected in NAME</description>
+    </event>
+    <event>
+      <id>8</id>
+      <name>spring</name>
+      <description>When spring is selected in NAME</description>
+    </event>
+    <event>
+      <id>9</id>
+      <name>cyan</name>
+      <description>When cyan is selected in NAME</description>
+    </event>
+    <event>
+      <id>10</id>
+      <name>azure</name>
+      <description>When azure is selected in NAME</description>
+    </event>
+    <event>
+      <id>11</id>
+      <name>blue</name>
+      <description>When blue is selected in NAME</description>
+    </event>
+    <event>
+      <id>12</id>
+      <name>violet</name>
+      <description>When violet is selected in NAME</description>
+    </event>
+    <event>
+      <id>13</id>
+      <name>magenta</name>
+      <description>When magenta is selected in NAME</description>
+    </event>
+    <event>
+      <id>14</id>
+      <name>rose</name>
+      <description>When rose is selected in NAME</description>
+    </event>
+  </events>
+</devicedata>

@@ -1,0 +1,9 @@
+﻿<Driver type="c4z" name="Kiwi-button" squishLua="true" manualsquish="true">
+ <Items>
+  <Item type="dir" c4zDir="www" name="www" recurse="true" exclude="false" />
+  <Item type="dir" c4zDir="SKC4" name="SKC4" recurse="true" exclude="false" />
+  <Item type="dir" c4zDir="raw_assets" name="raw_assets" recurse="true" exclude="true" />
+  <Item type="file" name="driver.lua" />
+  <Item type="file" name="driver.xml" />
+ </Items>
+</Driver>

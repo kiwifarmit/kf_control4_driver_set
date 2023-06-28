@@ -1,0 +1,8 @@
+﻿<Driver type="c4z" name="telegram-bot" squishLua="true" manualsquish="true">
+ <Items>
+  <Item type="dir" c4zDir="www" name="www" recurse="true" exclude="false" />
+  <Item type="file" name="driver.lua" />
+  <Item type="file" name="driver.xml" />
+  <Item type="file" name="www/documentation.rtf" />
+ </Items>
+ </Driver>

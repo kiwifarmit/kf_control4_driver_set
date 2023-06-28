@@ -1,0 +1,214 @@
+<devicedata>
+	<copyright>Copyright 2016 kiwifarm Corporation. All Rights Reserved.</copyright>
+	<manufacturer>Kiwifarm</manufacturer>
+	<name>Shelly EM</name>
+	<model>shelly_em</model>
+	<creator>Kiwifarm</creator>
+	<created>10/26/2019 05:57 PM</created>
+	<modified>8/4/2020 03:53 PM</modified>
+	<version>001016</version>
+	<small image_source="c4z">icons/device_sm.png</small>
+  <large image_source="c4z">icons/device_lg.png</large>
+	<control>lua_gen</control>
+	<controlmethod>ip</controlmethod>
+	<driver>DriverWorks</driver>
+	<auto_update>false</auto_update>
+	<minimum_auto_update_version>1</minimum_auto_update_version>
+	<minimum_os_version>2.9.0</minimum_os_version>
+	<config>
+		<script encryption="2" file="driver.lua" jit="1" />
+		<documentation file="www/documentation/documentation.rtf" />
+		<properties>
+			<property>
+				<name>Shelly IP</name>
+				<type>STRING</type>
+				<default>ip address</default>
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Shelly Username (reserved login)</name>
+				<type>STRING</type>
+				<default />
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Shelly Password (reserved login)</name>
+				<type>STRING</type>
+				<default />
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Shelly Relay Status</name>
+				<type>STRING</type>
+				<default>--</default>
+				<readonly>true</readonly>
+			</property>
+			<property>
+				<name>Shelly Power 1 Sensor</name>
+				<type>STRING</type>
+				<default>--</default>
+				<readonly>true</readonly>
+			</property>
+			<property>
+				<name>Shelly Power 2 Sensor</name>
+				<type>STRING</type>
+				<default>--</default>
+				<readonly>true</readonly>
+			</property>
+			<property>
+				<name>Last Update At</name>
+				<type>STRING</type>
+				<default>--</default>
+				<readonly>true</readonly>
+			</property>
+
+			<property>
+				<name>Polling Interval</name>
+				<type>RANGED_INTEGER</type>
+				<minimum>1</minimum>
+				<maximum>3600</maximum>
+				<default>10</default>
+				<readonly>false</readonly>
+				<description>Polling Interval in seconds.</description>
+			</property>
+			
+			      <property>
+				<name>Log Section</name>
+				<type>LABEL</type>
+				<default>Logging</default>
+			</property>
+      <property>
+				<name>Log Level</name>
+				<type>LIST</type>
+				<readonly>false</readonly>
+				<default>Off</default>
+				<items>
+          <item>Off</item>
+          <item>5 - Debug</item>
+          <item>4 - Trace</item>
+          <item>3 - Info</item>
+          <item>2 - Warning</item>
+          <item>1 - Error</item>
+          <item>0 - Alert</item>
+				</items>
+			</property>
+      <property>
+				<name>Log Mode</name>
+				<type>LIST</type>
+				<readonly>false</readonly>
+				<default>Print</default>
+				<items>
+          <item>Print</item>
+          <item>Log</item>
+          <item>Print and Log</item>
+				</items>
+			</property>
+      <property>
+				<name>Disable Log Interval</name>
+        <description>Autmatically disable logging after this interval of time</description>
+				<type>LIST</type>
+				<readonly>false</readonly>
+				<default>1 hour</default>
+				<items>
+          <item>15 minutes</item>
+          <item>30 minutes</item>
+          <item>1 hour</item>
+          <item>6 hours</item>
+          <item>24 hours</item>
+          <item>Never</item>
+				</items>
+			</property>
+      
+			<property>
+				<name>License Section</name>
+				<type>LABEL</type>
+				<default>Licensing</default>
+			</property>
+
+			<property>
+        <name>License Provider</name>
+        <default />
+        <type>LIST</type>
+        <items>
+          <item>Driver Central</item>
+          <item>SoftKiwi</item>
+        </items>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Cloud Status</name>
+        <default />
+        <type>STRING</type>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Automatic Updates</name>
+        <type>LIST</type>
+        <items>
+          <item>Off</item>
+          <item>On</item>
+        </items>
+        <default>Off</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Houselogix License Code</name>
+        <default />
+        <type>STRING</type>
+        <readonly>false</readonly>
+        <default>type your license code here</default>
+      </property>
+      <property>
+        <name>Houselogix License Status</name>
+        <type>STRING</type>
+        <readonly>true</readonly>
+        <default />
+      </property>
+      <property>
+        <name>SoftKiwi License Code</name>
+        <default />
+        <type>STRING</type>
+        <readonly>false</readonly>
+        <default>type your license code here</default>
+      </property>
+			<property>
+        <name>SoftKiwi Driver Type</name>
+        <type>STRING</type>
+        <readonly>true</readonly>
+        <default />
+      </property>
+      <property>
+        <name>SoftKiwi License Status</name>
+        <type>STRING</type>
+        <readonly>true</readonly>
+        <default />
+      </property>
+		</properties>
+		<actions>
+		</actions>
+	</config>
+	<composer_categories>
+		<category>Relay</category>
+	</composer_categories>
+	<proxies qty="1">
+		<proxy name="shelly_em">shelly_em</proxy>
+	</proxies>
+	<combo>True</combo>
+	<connections>
+		 <connection>
+			<connectionname>Shelly Relay 1</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>1</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>false</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+				<classname>RELAY</classname>
+				</class>
+			</classes>
+    </connection>
+	</connections>
+</devicedata>

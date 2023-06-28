@@ -1,0 +1,290 @@
+<devicedata>
+  <copyright>Copyright 2016 Kiwifarm Corporation.  All rights reserved.</copyright>
+  <creator>soft.kiwi</creator>
+  <manufacturer>soft.kiwi by Kiwifarm</manufacturer>
+  <name>KMTronic 1 Temperature Sensor v 1.0</name>
+  <model>KMT Tronic</model>
+  <created>04/02/2016 6:12 PM</created>
+  <modified>11/17/2022 11:55 AM</modified>
+  <version>003000</version>
+  <small>devices_sm\contactsingle_heatdetector_close.gif</small>
+  <large>devices_lg\contactsingle_heatdetector_close.gif</large>
+  <control>lua_gen</control>
+  <controlmethod>ip</controlmethod>
+  <driver>DriverWorks</driver>
+  <states />
+  <combo>True</combo>
+  <OnlineCategory>others</OnlineCategory>
+  <proxies qty="8">
+    <proxy name="KMTronicIpTemp" proxybindingid="1">KMTronic_1_temperature_sensor</proxy>
+    <proxy name="KMTronicIpTemp" proxybindingid="2">KMTronic_1_temperature_sensor</proxy>
+    <proxy name="KMTronicIpTemp" proxybindingid="3">KMTronic_1_temperature_sensor</proxy>
+    <proxy name="KMTronicIpTemp" proxybindingid="4">KMTronic_1_temperature_sensor</proxy>
+    <proxy name="KMTronicIpTemp" proxybindingid="5">KMTronic_1_temperature_sensor</proxy>
+    <proxy name="KMTronicIpTemp" proxybindingid="6">KMTronic_1_temperature_sensor</proxy>
+    <proxy name="KMTronicIpTemp" proxybindingid="7">KMTronic_1_temperature_sensor</proxy>
+    <proxy name="KMTronicIpTemp" proxybindingid="8">KMTronic_1_temperature_sensor</proxy>
+  </proxies>
+  <config>
+    <power_management_method>AlwaysOn</power_management_method>
+    <power_command_delay>0</power_command_delay>
+    <power_delay>0</power_delay>
+    <power_command_needed>False</power_command_needed>
+    <script encryption="2" file="driver.lua" jit="0" />
+    <commands />
+    <properties>
+      <property>
+        <name>Debug</name>
+        <type>LIST</type>
+        <readonly>false</readonly>
+        <default>Off</default>
+        <items>
+          <item>On</item>
+          <item>Off</item>
+        </items>
+      </property>
+      <property>
+        <name>KMTronic IP</name>
+        <type>STRING</type>
+        <readonly>false</readonly>
+        <default>192.168.1.199</default>
+      </property>
+      <property>
+        <name>KMTronic Port</name>
+        <type>STRING</type>
+        <readonly>false</readonly>
+        <default>80</default>
+      </property>
+      <property>
+        <name>KMTronic User</name>
+        <type>STRING</type>
+        <readonly>false</readonly>
+        <default>admin</default>
+      </property>
+      <property>
+        <name>KMTronic Password</name>
+        <type>STRING</type>
+        <readonly>false</readonly>
+        <default>admin</default>
+      </property>
+      <property>
+        <name>Polling minutes</name>
+        <type>LIST</type>
+        <readonly>false</readonly>
+        <default>5</default>
+        <items>
+          <item>1</item>
+          <item>2</item>
+          <item>5</item>
+          <item>10</item>
+          <item>15</item>
+        </items>
+      </property>
+      <property>
+        <name>Calibrate Sensor 1</name>
+        <type>STRING</type>
+        <default>0</default>
+        <readonly>false</readonly>
+        <tooltip>Insert float number e.g. "+1.0" or "-2.0"</tooltip>
+      </property>
+      <property>
+        <name>Calibrate Sensor 2</name>
+        <type>STRING</type>
+        <default>0</default>
+        <readonly>false</readonly>
+        <tooltip>Insert float number e.g. "+1.0" or "-2.0"</tooltip>
+      </property>
+      <property>
+        <name>Calibrate Sensor 3</name>
+        <type>STRING</type>
+        <default>0</default>
+        <readonly>false</readonly>
+        <tooltip>Insert float number e.g. "+1.0" or "-2.0"</tooltip>
+      </property>
+      <property>
+        <name>Calibrate Sensor 4</name>
+        <type>STRING</type>
+        <default>0</default>
+        <readonly>false</readonly>
+        <tooltip>Insert float number e.g. "+1.0" or "-2.0"</tooltip>
+      </property>
+      
+      <property>
+        <name>License Provider</name>
+        <default />
+        <type>LIST</type>
+        <items>
+          <item>Driver Central</item>
+          <item>Houselogix</item>
+        </items>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Cloud Status</name>
+        <default />
+        <type>STRING</type>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Automatic Updates</name>
+        <type>LIST</type>
+        <items>
+          <item>Off</item>
+          <item>On</item>
+        </items>
+        <default>Off</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Houselogix License Code</name>
+        <default />
+        <type>STRING</type>
+        <readonly>false</readonly>
+        <default>type your license code here</default>
+      </property>
+      <property>
+        <name>Houselogix License Status</name>
+        <type>STRING</type>
+        <readonly>true</readonly>
+        <default />
+      </property>
+      
+      <property>
+        <name>Max KMT Temperature Devices</name>
+        <type>STRING</type>
+        <readonly>true</readonly>
+        <default>1</default>
+        <readonly>false</readonly>
+      </property>
+    </properties>
+    <documentation file="www/documentation.rtf" />
+    <actions>
+      <action>
+        <name>Display temperature values</name>
+        <command>DisplayStatus</command>
+      </action>
+    </actions>
+    <composer_categories>
+      <category>HVAC</category>
+    </composer_categories>
+  </config>
+  <connections>
+    <connection>
+      <id>1</id>
+      <type>1</type>
+      <connectionname>Therm_Sensor_1</connectionname>
+      <consumer>false</consumer>
+      <audiosource>false</audiosource>
+      <videosource>false</videosource>
+      <linelevel>false</linelevel>
+      <classes>
+        <class>
+          <classname>THERMOMETER</classname>
+        </class>
+      </classes>
+    </connection>
+    <connection>
+      <id>2</id>
+      <type>1</type>
+      <connectionname>Therm_Sensor_2</connectionname>
+      <consumer>false</consumer>
+      <audiosource>false</audiosource>
+      <videosource>false</videosource>
+      <linelevel>false</linelevel>
+      <classes>
+        <class>
+          <classname>THERMOMETER</classname>
+        </class>
+      </classes>
+    </connection>
+    <connection>
+      <id>3</id>
+      <type>1</type>
+      <connectionname>Therm_Sensor_3</connectionname>
+      <consumer>false</consumer>
+      <audiosource>false</audiosource>
+      <videosource>false</videosource>
+      <linelevel>false</linelevel>
+      <classes>
+        <class>
+          <classname>THERMOMETER</classname>
+        </class>
+      </classes>
+    </connection>
+    <connection>
+      <id>4</id>
+      <type>1</type>
+      <connectionname>Therm_Sensor_4</connectionname>
+     <consumer>false</consumer>
+      <audiosource>false</audiosource>
+      <videosource>false</videosource>
+      <linelevel>false</linelevel>
+      <classes>
+        <class>
+          <classname>THERMOMETER</classname>
+        </class>
+      </classes>
+    </connection>
+
+    <connection>
+      <id>5</id>
+      <type>1</type>
+      <connectionname>Therm_Sensor_5</connectionname>
+     <consumer>false</consumer>
+      <audiosource>false</audiosource>
+      <videosource>false</videosource>
+      <linelevel>false</linelevel>
+      <classes>
+        <class>
+          <classname>TEMPERATURE_VALUE</classname>
+        </class>
+      </classes>
+    </connection>
+
+    <connection>
+      <id>6</id>
+      <type>1</type>
+      <connectionname>Therm_Sensor_6</connectionname>
+     <consumer>false</consumer>
+      <audiosource>false</audiosource>
+      <videosource>false</videosource>
+      <linelevel>false</linelevel>
+      <classes>
+        <class>
+          <classname>TEMPERATURE_VALUE</classname>
+        </class>
+      </classes>
+    </connection>
+
+    <connection>
+      <id>7</id>
+      <type>1</type>
+      <connectionname>Therm_Sensor_7</connectionname>
+     <consumer>false</consumer>
+      <audiosource>false</audiosource>
+      <videosource>false</videosource>
+      <linelevel>false</linelevel>
+      <classes>
+        <class>
+          <classname>TEMPERATURE_VALUE</classname>
+        </class>
+      </classes>
+    </connection>
+
+    <connection>
+      <id>8</id>
+      <type>1</type>
+      <connectionname>Therm_Sensor_8</connectionname>
+     <consumer>false</consumer>
+      <audiosource>false</audiosource>
+      <videosource>false</videosource>
+      <linelevel>false</linelevel>
+      <classes>
+        <class>
+          <classname>TEMPERATURE_VALUE</classname>
+        </class>
+      </classes>
+    </connection>
+
+  </connections>
+</devicedata>

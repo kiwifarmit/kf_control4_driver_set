@@ -1,0 +1,23 @@
+﻿<Driver type="c4z" name="KMTTronic_IPRelays" squishLua="true" manualsquish="true">
+ <Items>
+  <Item type="dir" c4zDir="utils" name="utils" recurse="true" exclude="false" />
+  <Item type="dir" c4zDir="SKC4" name="SKC4" recurse="true" exclude="false" />
+  <Item type="file" name="documentation.rtf" />
+  <Item type="file" name="driver.lua" />
+  <Item type="file" name="driver.xml" />
+ </Items>
+ <Squishy>
+  <File>utils\common.lua</File>
+  <File>utils\sha.lua</File>
+  <File>SKC4\C4.lua</File>
+  <File>SKC4\Connections.lua</File>
+  <File>SKC4\Control4Emu.lua</File>
+  <File>SKC4\Debug.lua</File>
+  <File>SKC4\LicenseManager.lua</File>
+  <File>SKC4\Logger.lua</File>
+  <File>SKC4\SKC4.lua</File>
+  <File>SKC4\TimerManager.lua</File>
+  <File>SKC4\Utility.lua</File>
+  <File>SKC4\licence\cloud_client_v1007.lua</File>
+ </Squishy>
+</Driver>

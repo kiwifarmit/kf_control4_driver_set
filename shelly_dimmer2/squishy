@@ -1,0 +1,13 @@
+Main "driver.lua"
+
+
+    Module "SKC4.licence.cloud_client_v1007" "SKC4/licence/cloud_client_v1007.lua"
+    Module "SKC4.Utility" "SKC4/Utility.lua"
+    Module "SKC4.Logger" "SKC4/Logger.lua"
+    Module "SKC4.TimerManager" "SKC4/TimerManager.lua"
+    Module "SKC4.LicenseManager" "SKC4/LicenseManager.lua"
+    Module "SKC4.Queue" "SKC4/Queue.lua"
+    Module "SKC4.ApiRestManager" "SKC4/ApiRestManager.lua"
+    Module "SKC4.DriverCore" "SKC4/DriverCore.lua"
+    
+Output "driver.lua.squished"

@@ -1,0 +1,40 @@
+{\rtf1\fbidis\ansi\ansicpg1252\deff0\deflang1040\deflangfe1040{\fonttbl{\f0\fswiss\fprq2\fcharset0 Arial;}{\f1\froman\fprq2\fcharset2 Symbol;}}
+\viewkind4\uc1\pard\ltrpar\nowidctlpar\lang1033\b\f0\fs22 Device setting (from the KMTronic Howto)\par
+\b0\par
+The default IP address of the device is 192.168.1.199. If your LAN IP mask is different, you need one time access to network 192.168.1.x to change default setting of KMTronic.\par
+\par
+Open a browser and type 192.168.1.199.\par
+\par
+The default user is admin with password admin.\par
+\par
+In \ldblquote Configuration\rdblquote  menu you can change default IP Address, Gateway and HTTP Port.\par
+\par
+For the integration with Control4, the device must have a fixed IP address. Please, set it on the device or in your DHCP server setting.\par
+\par
+In \ldblquote Authorization Configuration\rdblquote  you can change username name and password for device authentication. They will be required during the Driver configuration, so write them down.\par
+\par
+Verify on web page of Temperature Monitor if your sensors work.\par
+\par
+\b Driver installation\par
+\b0\par
+Install the driver in your Control4 project using the composer (as any other driver) and set the folllowing properties:\par
+\par
+\pard\ltrpar\nowidctlpar\fi-360\li720\f1\'b7\tab\f0 Debug: in normal operating conditions is better to set it to \ldblquote Off\rdblquote\par
+\f1\'b7\tab\f0 KMTronic IP: device IP you set in the previous step.\par
+\f1\'b7\tab\f0 KMTronic Port: device HTTP Port if you changed it.\par
+\f1\'b7\tab\f0 KMTronic User & KMTronic Password: the one you use to access to the device from a browser (web interface).\par
+\f1\'b7\tab\f0 Polling minutess: select the frequency you want to update Control4 about the change of sensors status.\par
+\f1\'b7\tab\f0 Calibrate sensor: you can calibrate your sensor here.\par
+\f1\'b7\tab\f0 License code: copy & paste here the license code obtained during the license buying process.\par
+\pard\ltrpar\nowidctlpar  \par
+\par
+\b Connection\par
+\b0\par
+For each temperature sensor, you will find a Temp_Sensor connection that allows to connect it to the Yatun Software Thermostat (Free) - www.yatundev.eu/drivers/software-thermostat-free\par
+\par
+You simply have to create new connections with Temperature Input.\par
+\par
+Have fun with our Made in Italy, Homemade Organic Drivers!\par
+\par
+\lang1040 c4.soft.kiwi\par
+}

@@ -1,0 +1,871 @@
+<devicedata>
+  <copyright>Copyright 2020 Kiwifarm. All Rights Reserved.</copyright>
+  <manufacturer>Kiwifarm</manufacturer>
+  <name>Smart electrical load manager</name>
+  <model>smart_electrical_load_manager</model>
+  <creator>Kiwifarm</creator>
+  <created>7/17/2017 10:30</created>
+  <modified>12/16/2020 04:41 PM</modified>
+  <version>001023</version>
+  <control>lua_gen</control>
+  <driver>DriverWorks</driver>
+  <auto_update>false</auto_update>
+  <minimum_auto_update_version>1</minimum_auto_update_version>
+  <minimum_os_version>2.9.0</minimum_os_version>
+  <small image_source="c4z">icons/device_sm.png</small>
+  <large image_source="c4z">icons/device_lg.png</large>
+  <config>
+    <script encryption="0" file="driver.lua" jit="1" />
+    <documentation file="www/documentation/documentation.rtf" />
+    <properties>
+
+      
+      <property>
+        <name>Current State</name>
+        <type>STRING</type>
+        <default>---</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Current Power</name>
+        <type>STRING</type>
+        <default>0</default>
+        <readonly>true</readonly>
+      </property>
+      
+      <property>
+        <name>Total Power Threshold</name>
+        <type>RANGED_INTEGER</type>
+        <default>-3000</default>
+        <minimum>-100000</minimum>
+        <maximum>100000</maximum>
+        <readonly>false</readonly>
+      </property>
+      
+
+      <property>
+        <name>Priority Channels</name>
+        <type>LABEL</type>
+        <default>Priority Channels</default>
+        <description>Channel 1 has the highest priority. Lower channel number means higher priority.</description>
+      </property>
+     
+      <property>
+        <name>Priority Channel State 1</name>
+        <type>STRING</type>
+        <default>CLOSED</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Priority Channel Load 1</name>
+        <type>RANGED_INTEGER</type>
+        <default>-1000</default>
+        <minimum>-100000</minimum>
+        <maximum>100000</maximum>
+        <readonly>false</readonly>
+      </property>
+      
+      <property>
+        <name>Priority Channel State 2</name>
+        <type>STRING</type>
+        <default>CLOSED</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Priority Channel Load 2</name>
+        <type>RANGED_INTEGER</type>
+        <default>-1000</default>
+        <minimum>-100000</minimum>
+        <maximum>100000</maximum>
+        <readonly>false</readonly>
+      </property>
+      
+      <property>
+        <name>Priority Channel State 3</name>
+        <type>STRING</type>
+        <default>CLOSED</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Priority Channel Load 3</name>
+        <type>RANGED_INTEGER</type>
+        <default>-1000</default>
+        <minimum>-100000</minimum>
+        <maximum>100000</maximum>
+        <readonly>false</readonly>
+      </property>
+
+      <property>
+        <name>Priority Channel State 4</name>
+        <type>STRING</type>
+        <default>CLOSED</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Priority Channel Load 4</name>
+        <type>RANGED_INTEGER</type>
+        <default>-1000</default>
+        <minimum>-100000</minimum>
+        <maximum>100000</maximum>
+        <readonly>false</readonly>
+      </property>
+      
+      <property>
+        <name>Priority Channel State 5</name>
+        <type>STRING</type>
+        <default>CLOSED</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Priority Channel Load 5</name>
+        <type>RANGED_INTEGER</type>
+        <default>-1000</default>
+        <minimum>-100000</minimum>
+        <maximum>100000</maximum>
+        <readonly>false</readonly>
+      </property>
+      
+      <property>
+        <name>Priority Channel State 6</name>
+        <type>STRING</type>
+        <default>CLOSED</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Priority Channel Load 6</name>
+        <type>RANGED_INTEGER</type>
+        <default>-1000</default>
+        <minimum>-100000</minimum>
+        <maximum>100000</maximum>
+        <readonly>false</readonly>
+      </property>
+      
+      <property>
+        <name>Priority Channel State 7</name>
+        <type>STRING</type>
+        <default>CLOSED</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Priority Channel Load 7</name>
+        <type>RANGED_INTEGER</type>
+        <default>-1000</default>
+        <minimum>-100000</minimum>
+        <maximum>100000</maximum>
+        <readonly>false</readonly>
+      </property>
+      
+      <property>
+        <name>Priority Channel State 8</name>
+        <type>STRING</type>
+        <default>CLOSED</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Priority Channel Load 8</name>
+        <type>RANGED_INTEGER</type>
+        <default>-1000</default>
+        <minimum>-100000</minimum>
+        <maximum>100000</maximum>
+        <readonly>false</readonly>
+      </property>
+      
+      <property>
+        <name>Priority Channel State 9</name>
+        <type>STRING</type>
+        <default>CLOSED</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Priority Channel Load 9</name>
+        <type>RANGED_INTEGER</type>
+        <default>-1000</default>
+        <minimum>-100000</minimum>
+        <maximum>100000</maximum>
+        <readonly>false</readonly>
+      </property>
+      
+      <property>
+        <name>Priority Channel State 10</name>
+        <type>STRING</type>
+        <default>CLOSED</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Priority Channel Load 10</name>
+        <type>RANGED_INTEGER</type>
+        <default>-1000</default>
+        <minimum>-100000</minimum>
+        <maximum>100000</maximum>
+        <readonly>false</readonly>
+      </property>
+      
+      
+      <property>
+        <name>Priority Channel State 11</name>
+        <type>STRING</type>
+        <default>CLOSED</default>
+        <readonly>true</readonly>
+        <hidden>true</hidden>
+      </property>
+      <property>
+        <name>Priority Channel Load 11</name>
+        <type>RANGED_INTEGER</type>
+        <default>-1000</default>
+        <minimum>-100000</minimum>
+        <maximum>100000</maximum>
+        <readonly>false</readonly>
+        <hidden>true</hidden>
+      </property>
+
+      
+      <property>
+        <name>Priority Channel State 12</name>
+        <type>STRING</type>
+        <default>CLOSED</default>
+        <readonly>true</readonly>
+        <hidden>true</hidden>
+      </property>
+      <property>
+        <name>Priority Channel Load 12</name>
+        <type>RANGED_INTEGER</type>
+        <default>-1000</default>
+        <minimum>-100000</minimum>
+        <maximum>100000</maximum>
+        <readonly>false</readonly>
+        <hidden>true</hidden>
+      </property>
+      
+      <property>
+        <name>Priority Channel State 13</name>
+        <type>STRING</type>
+        <default>CLOSED</default>
+        <readonly>true</readonly>
+        <hidden>true</hidden>
+      </property>
+      
+      <property>
+        <name>Priority Channel Load 13</name>
+        <type>RANGED_INTEGER</type>
+        <default>-1000</default>
+        <minimum>-100000</minimum>
+        <maximum>100000</maximum>
+        <readonly>false</readonly>
+        <hidden>true</hidden>
+      </property>
+
+      
+      <property>
+        <name>Priority Channel State 14</name>
+        <type>STRING</type>
+        <default>CLOSED</default>
+        <readonly>true</readonly>
+        <hidden>true</hidden>
+      </property>
+      <property>
+        <name>Priority Channel Load 14</name>
+        <type>RANGED_INTEGER</type>
+        <default>-1000</default>
+        <minimum>-100000</minimum>
+        <maximum>100000</maximum>
+        <readonly>false</readonly>
+        <hidden>true</hidden>
+      </property>
+
+      
+      <property>
+        <name>Priority Channel State 15</name>
+        <type>STRING</type>
+        <default>CLOSED</default>
+        <readonly>true</readonly>
+        <hidden>true</hidden>
+      </property>
+      <property>
+        <name>Priority Channel Load 15</name>
+        <type>RANGED_INTEGER</type>
+        <default>-1000</default>
+        <minimum>-100000</minimum>
+        <maximum>100000</maximum>
+        <readonly>false</readonly>
+        <hidden>true</hidden>
+      </property>
+
+      
+      <property>
+        <name>Priority Channel State 16</name>
+        <type>STRING</type>
+        <default>CLOSED</default>
+        <readonly>true</readonly>
+        <hidden>true</hidden>
+      </property>
+      <property>
+        <name>Priority Channel Load 16</name>
+        <type>RANGED_INTEGER</type>
+        <default>-1000</default>
+        <minimum>-100000</minimum>
+        <maximum>100000</maximum>
+        <readonly>false</readonly>
+        <hidden>true</hidden>
+      </property>
+
+      
+      <property>
+        <name>Priority Channel State 17</name>
+        <type>STRING</type>
+        <default>CLOSED</default>
+        <readonly>true</readonly>
+        <hidden>true</hidden>
+      </property>
+      <property>
+        <name>Priority Channel Load 17</name>
+        <type>RANGED_INTEGER</type>
+        <default>-1000</default>
+        <minimum>-100000</minimum>
+        <maximum>100000</maximum>
+        <readonly>false</readonly>
+        <hidden>true</hidden>
+      </property>
+      
+      <property>
+        <name>Priority Channel State 18</name>
+        <type>STRING</type>
+        <default>CLOSED</default>
+        <readonly>true</readonly>
+        <hidden>true</hidden>
+      </property>
+      <property>
+        <name>Priority Channel Load 18</name>
+        <type>RANGED_INTEGER</type>
+        <default>-1000</default>
+        <minimum>-100000</minimum>
+        <maximum>100000</maximum>
+        <readonly>false</readonly>
+        <hidden>true</hidden>
+      </property>
+      
+      <property>
+        <name>Priority Channel State 19</name>
+        <type>STRING</type>
+        <default>CLOSED</default>
+        <readonly>true</readonly>
+        <hidden>true</hidden>
+      </property>
+      <property>
+        <name>Priority Channel Load 19</name>
+        <type>RANGED_INTEGER</type>
+        <default>-1000</default>
+        <minimum>-100000</minimum>
+        <maximum>100000</maximum>
+        <readonly>false</readonly>
+        <hidden>true</hidden>
+      </property>
+      
+      <property>
+        <name>Priority Channel State 20</name>
+        <type>STRING</type>
+        <default>CLOSED</default>
+        <readonly>true</readonly>
+        <hidden>true</hidden>
+      </property>
+      <property>
+        <name>Priority Channel Load 20</name>
+        <type>RANGED_INTEGER</type>
+        <default>-1000</default>
+        <minimum>-100000</minimum>
+        <maximum>100000</maximum>
+        <readonly>false</readonly>
+        <hidden>true</hidden>
+      </property>
+
+      <property>
+        <name>More options</name>
+        <type>LABEL</type>
+        <default>More options</default>
+      </property>
+
+       <property>
+        <name>Number Of Channels</name>
+        <type>RANGED_INTEGER</type>
+        <minimum>1</minimum>
+        <maximum>20</maximum>
+        <default>10</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Power Delta On Close</name>
+        <type>RANGED_INTEGER</type>
+        <default>-100</default>
+        <minimum>-100000</minimum>
+        <maximum>100000</maximum>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Delay Before Close Relay</name>
+        <type>RANGED_INTEGER</type>
+        <default>10</default>
+        <minimum>1</minimum>
+        <maximum>3600</maximum>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Delay Before Open Relay</name>
+        <type>RANGED_INTEGER</type>
+        <default>10</default>
+        <minimum>1</minimum>
+        <maximum>3600</maximum>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Delay After Close Relay</name>
+        <type>RANGED_INTEGER</type>
+        <default>5</default>
+        <minimum>1</minimum>
+        <maximum>3600</maximum>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Delay After Open Relay</name>
+        <type>RANGED_INTEGER</type>
+        <default>5</default>
+        <minimum>1</minimum>
+        <maximum>3600</maximum>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Power Consumption Is...</name>
+        <type>LIST</type>
+        <default>Negative</default>
+        <items>
+              <item>Negative</item>
+              <item>Positive</item>
+        </items>
+        <readonly>false</readonly>
+      </property>
+      
+      <property>
+        <name>Smart Manager is</name>
+        <type>LIST</type>
+        <readonly>false</readonly>
+        <default>On</default>
+        <items>
+          <item>On</item>
+          <item>Off for 15 minutes</item>
+          <item>Off for 30 minutes</item>
+          <item>Off for 1 hour</item>
+          <item>Off</item>
+        </items>
+      </property>
+      
+      <property>
+				<name>License Section</name>
+				<type>LABEL</type>
+				<default>Licensing</default>
+			</property>
+
+      <property>
+        <name>License Provider</name>
+        <default />
+        <type>LIST</type>
+        <items>
+          <item>Driver Central</item>
+          <item>SoftKiwi</item>
+        </items>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Cloud Status</name>
+        <default />
+        <type>STRING</type>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Automatic Updates</name>
+        <type>LIST</type>
+        <items>
+          <item>Off</item>
+          <item>On</item>
+        </items>
+        <default>Off</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>SoftKiwi License Code</name>
+        <default />
+        <type>STRING</type>
+        <readonly>false</readonly>
+        <default>type your license code here</default>
+      </property>
+      <property>
+        <name>SoftKiwi Driver Type</name>
+        <type>STRING</type>
+        <readonly>true</readonly>
+        <default />
+      </property>
+      <property>
+        <name>SoftKiwi License Status</name>
+        <type>STRING</type>
+        <readonly>true</readonly>
+        <default />
+      </property>
+
+      <property>
+        <name>Log Section</name>
+        <type>LABEL</type>
+        <default>Logging</default>
+      </property>
+      <property>
+        <name>Log Level</name>
+        <type>LIST</type>
+        <readonly>false</readonly>
+        <default>Off</default>
+        <items>
+          <item>Off</item>
+          <item>5 - Debug</item>
+          <item>4 - Trace</item>
+          <item>3 - Info</item>
+          <item>2 - Warning</item>
+          <item>1 - Error</item>
+          <item>0 - Alert</item>
+        </items>
+      </property>
+      <property>
+        <name>Log Mode</name>
+        <type>LIST</type>
+        <readonly>false</readonly>
+        <default>Print</default>
+        <items>
+          <item>Print</item>
+          <item>Log</item>
+          <item>Print and Log</item>
+        </items>
+      </property>
+      <property>
+        <name>Disable Log Interval</name>
+        <description>Autmatically disable logging after this interval of time</description>
+        <type>LIST</type>
+        <readonly>false</readonly>
+        <default>1 hour</default>
+        <items>
+          <item>15 minutes</item>
+          <item>30 minutes</item>
+          <item>1 hour</item>
+          <item>6 hours</item>
+          <item>24 hours</item>
+          <item>Never</item>
+        </items>
+      </property>
+
+      <property>
+        <name>Driver Info</name>
+        <type>LABEL</type>
+        <default>Driver Info</default>
+      </property>
+      <property>
+        <name>Driver Version</name>
+        <type>STRING</type>
+        <default>---</default>
+        <readonly>true</readonly>
+      </property>
+    </properties>
+    <actions>
+      <action>
+        <name>Reset</name>
+        <command>Reset</command>
+      </action>
+    </actions>
+  </config>
+
+
+
+
+  <combo>true</combo>
+  <proxies qty="1">
+    <proxy image_source="c4z" large_image="icons/device_lg.png" name="smart_electrical_load_manager">smart_electrical_load_manager</proxy>
+  </proxies>
+
+  <connections>
+    <connection>
+			<connectionname>Priority Channel 1</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>51</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>true</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+				<classname>RELAY</classname>
+				</class>
+			</classes>
+    </connection>
+    <connection>
+			<connectionname>Priority Channel 2</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>52</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>true</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+				<classname>RELAY</classname>
+				</class>
+			</classes>
+    </connection><connection>
+			<connectionname>Priority Channel 3</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>53</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>true</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+				<classname>RELAY</classname>
+				</class>
+			</classes>
+    </connection><connection>
+			<connectionname>Priority Channel 4</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>54</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>true</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+				<classname>RELAY</classname>
+				</class>
+			</classes>
+    </connection><connection>
+			<connectionname>Priority Channel 5</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>55</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>true</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+				<classname>RELAY</classname>
+				</class>
+			</classes>
+    </connection><connection>
+			<connectionname>Priority Channel 6</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>56</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>true</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+				<classname>RELAY</classname>
+				</class>
+			</classes>
+    </connection><connection>
+			<connectionname>Priority Channel 7</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>57</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>true</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+				<classname>RELAY</classname>
+				</class>
+			</classes>
+    </connection><connection>
+			<connectionname>Priority Channel 8</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>58</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>true</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+				<classname>RELAY</classname>
+				</class>
+			</classes>
+    </connection><connection>
+			<connectionname>Priority Channel 9</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>59</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>true</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+				<classname>RELAY</classname>
+				</class>
+			</classes>
+    </connection><connection>
+			<connectionname>Priority Channel 10</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>60</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>true</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+				<classname>RELAY</classname>
+				</class>
+			</classes>
+    </connection><connection>
+			<connectionname>Priority Channel 11</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>61</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>true</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+				<classname>RELAY</classname>
+				</class>
+			</classes>
+    </connection><connection>
+			<connectionname>Priority Channel 12</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>62</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>true</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+				<classname>RELAY</classname>
+				</class>
+			</classes>
+    </connection><connection>
+			<connectionname>Priority Channel 13</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>63</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>true</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+				<classname>RELAY</classname>
+				</class>
+			</classes>
+    </connection><connection>
+			<connectionname>Priority Channel 14</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>64</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>true</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+				<classname>RELAY</classname>
+				</class>
+			</classes>
+    </connection><connection>
+			<connectionname>Priority Channel 15</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>65</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>true</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+				<classname>RELAY</classname>
+				</class>
+			</classes>
+    </connection><connection>
+			<connectionname>Priority Channel 16</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>66</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>true</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+				<classname>RELAY</classname>
+				</class>
+			</classes>
+    </connection><connection>
+			<connectionname>Priority Channel 17</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>67</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>true</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+				<classname>RELAY</classname>
+				</class>
+			</classes>
+    </connection><connection>
+			<connectionname>Priority Channel 18</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>68</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>true</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+				<classname>RELAY</classname>
+				</class>
+			</classes>
+    </connection><connection>
+			<connectionname>Priority Channel 19</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>69</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>true</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+				<classname>RELAY</classname>
+				</class>
+			</classes>
+    </connection><connection>
+			<connectionname>Priority Channel 20</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>70</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>true</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+				<classname>RELAY</classname>
+				</class>
+			</classes>
+    </connection>
+      
+  </connections>
+</devicedata>

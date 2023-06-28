@@ -1,0 +1,215 @@
+<devicedata>
+  <copyright>Copyright 2020 kiwifarm. All Rights Reserved.</copyright>
+  <manufacturer>Kiwifarm</manufacturer>
+  <name>Shelly Dimmer2</name>
+  <model>shelly_dimmer2</model>
+  <creator>kiwifarm</creator>
+  <created>11/17/2021 10:30</created>
+  <modified>11/24/2021 02:55 PM</modified>
+  <version>000021</version>
+  <control>lua_gen</control>
+  <driver>DriverWorks</driver>
+  <auto_update>true</auto_update>
+  <minimum_auto_update_version>1</minimum_auto_update_version>
+  <minimum_os_version>2.9.0</minimum_os_version>
+  <proxies qty="1">
+    <proxy name="Shelly Dimmer2" proxybindingid="5001">light_v2</proxy>
+  </proxies>
+  <config>
+    <script encryption="0" file="driver.lua" jit="1" />
+    <documentation file="www/documentation/documentation.rtf" />
+    <properties>
+     
+			<property>
+				<name>Shelly IP</name>
+				<type>STRING</type>
+				<default />
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Shelly Username (reserved login)</name>
+				<type>STRING</type>
+				<default />
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Shelly Password (reserved login)</name>
+				<type>STRING</type>
+				<default />
+				<readonly>false</readonly>
+			</property>
+      
+			<property>
+				<name>Last Update At</name>
+				<type>STRING</type>
+				<default>--</default>
+				<readonly>true</readonly>
+			</property>
+
+			<property>
+				<name>Polling Interval</name>
+				<type>RANGED_INTEGER</type>
+				<minimum>3</minimum>
+				<maximum>60</maximum>
+				<default>5</default>
+				<readonly>false</readonly>
+				<description>Polling Interval in seconds.</description>
+			</property>
+			
+			
+
+			<property>
+				<name>License Section</name>
+				<type>LABEL</type>
+				<default>Licensing</default>
+			</property>
+
+      <property>
+        <name>License Provider</name>
+        <default />
+        <type>LIST</type>
+        <items>
+          <item>Driver Central</item>
+          <item>SoftKiwi</item>
+        </items>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Cloud Status</name>
+        <default />
+        <type>STRING</type>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Automatic Updates</name>
+        <type>LIST</type>
+        <items>
+          <item>Off</item>
+          <item>On</item>
+        </items>
+        <default>Off</default>
+        <readonly>false</readonly>
+      </property>
+      
+      <property>
+        <name>SoftKiwi License Code</name>
+        <default />
+        <type>STRING</type>
+        <readonly>false</readonly>
+        <default>type your license code here</default>
+      </property>
+      <property>
+        <name>SoftKiwi Driver Type</name>
+        <type>STRING</type>
+        <readonly>true</readonly>
+        <default />
+      </property>
+      <property>
+        <name>SoftKiwi License Status</name>
+        <type>STRING</type>
+        <readonly>true</readonly>
+        <default />
+      </property>
+
+
+  <property>
+				<name>Log Section</name>
+				<type>LABEL</type>
+				<default>Logging</default>
+			</property>
+      <property>
+				<name>Log Level</name>
+				<type>LIST</type>
+				<readonly>false</readonly>
+				<default>Off</default>
+				<items>
+          <item>Off</item>
+          <item>5 - Debug</item>
+          <item>4 - Trace</item>
+          <item>3 - Info</item>
+          <item>2 - Warning</item>
+          <item>1 - Error</item>
+          <item>0 - Alert</item>
+				</items>
+			</property>
+      <property>
+				<name>Log Mode</name>
+				<type>LIST</type>
+				<readonly>false</readonly>
+				<default>Print</default>
+				<items>
+          <item>Print</item>
+          <item>Log</item>
+          <item>Print and Log</item>
+				</items>
+			</property>
+      <property>
+				<name>Disable Log Interval</name>
+        <description>Autmatically disable logging after this interval of time</description>
+				<type>LIST</type>
+				<readonly>false</readonly>
+				<default>1 hour</default>
+				<items>
+          <item>15 minutes</item>
+          <item>30 minutes</item>
+          <item>1 hour</item>
+          <item>6 hours</item>
+          <item>24 hours</item>
+          <item>Never</item>
+				</items>
+			</property>
+      
+      <property>
+				<name>Driver Info</name>
+				<type>LABEL</type>
+				<default>Driver Info</default>
+			</property>
+      <property>
+				<name>Driver Version</name>
+				<type>STRING</type>
+				<default>---</default>
+        <readonly>true</readonly>
+			</property>
+    </properties>
+  </config>
+  <composer_categories>
+    <category>Lighting</category>
+  </composer_categories>
+  <capabilities>
+    <dimmer>True</dimmer>
+    <set_level>True</set_level>
+    <ramp_level>True</ramp_level>
+    <click_rates>True</click_rates>
+    <hold_rates>True</hold_rates>
+    <cold_start>False</cold_start>
+    <has_preset>True</has_preset>
+    <min_max>False</min_max>
+    <on_off>True</on_off>
+    <has_leds>True</has_leds>
+    <hide_proxy_events>False</hide_proxy_events>
+    <hide_proxy_properties>False</hide_proxy_properties>
+    <has_button_events>False</has_button_events>
+    <num_buttons>0</num_buttons>
+    <load_group_support>True</load_group_support>
+    <advanced_scene_support>True</advanced_scene_support>
+    <reduced_als_support>False</reduced_als_support>
+    <buttons_are_virtual>True</buttons_are_virtual>
+  </capabilities>
+  <connections>
+    <connection>
+      <id>5001</id> 
+      <facing>6</facing>
+      <connectionname>Light</connectionname>
+      <type>2</type>
+      <consumer>False</consumer>
+      <audiosource>False</audiosource>
+      <videosource>False</videosource>
+      <linelevel>False</linelevel>
+      <classes>
+        <class>
+          <classname>LIGHT_V2</classname>
+        </class>
+      </classes>
+    </connection>
+  </connections>
+</devicedata>

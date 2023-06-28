@@ -1,0 +1,152 @@
+<devicedata>
+  <copyright>Copyright 2017 Kiwifarm Srl</copyright>
+  <creator>soft.kiwi (made in Italy drivers)</creator>
+  <manufacturer>soft.kiwi by Kiwifarm</manufacturer>
+  <name>telegram-bot</name>
+  <model>telegram-bot</model>
+  <created>04/11/2017 2:53 PM</created>
+  <modified>6/23/2022 06:14 PM</modified>
+  <version>002000</version>
+  <control>lua_gen</control>
+  <driver>DriverWorks</driver>
+  <OnlineCategory>others</OnlineCategory>
+  <proxies qty="1">
+    <proxy name="telegram-bot">telegram-bot</proxy>
+  </proxies>
+  <controlmethod>other</controlmethod>
+  <combo>True</combo>
+  <connections>
+  </connections>
+  <config>
+    <power_management_method>AlwaysOn</power_management_method>
+    <power_command_delay>0</power_command_delay>
+    <power_delay>0</power_delay>
+    <power_command_needed>False</power_command_needed>
+
+    <script encryption="2" file="driver.lua" jit="0" />
+    <properties>
+      <property>
+        <name>Username</name>
+        <type>STRING</type>
+        <readonly>false</readonly>
+        <default>put username here</default>
+      </property>
+      <property>
+        <name>Username Associated</name>
+        <type>STRING</type>
+        <readonly>true</readonly>
+        <default />
+      </property>
+      <property>
+        <name>User Code</name>
+        <type>STRING</type>
+        <readonly>false</readonly>
+        <default>type user code here</default>
+      </property>
+      
+      <property>
+        <name>Telegram Bot Type</name>
+        <type>LIST</type>
+        <readonly>false</readonly>
+        <default>USER</default>
+        <items>
+          <item>USER</item>
+          <item>TECH</item>
+          <item>TEST</item>
+        </items>
+      </property>
+
+      <property>
+				<name>License Section</name>
+				<type>LABEL</type>
+				<default>Licensing</default>
+			</property>
+
+      <property>
+        <name>License Provider</name>
+        <default />
+        <type>LIST</type>
+        <items>
+          <item>Driver Central</item>
+          <item>Houselogix</item>
+          <item>SoftKiwi</item>
+        </items>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Cloud Status</name>
+        <default />
+        <type>STRING</type>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Automatic Updates</name>
+        <type>LIST</type>
+        <items>
+          <item>Off</item>
+          <item>On</item>
+        </items>
+        <default>Off</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Houselogix License Code</name>
+        <default />
+        <type>STRING</type>
+        <readonly>false</readonly>
+        <default>type your license code here</default>
+      </property>
+      <property>
+        <name>Houselogix License Status</name>
+        <type>STRING</type>
+        <readonly>true</readonly>
+        <default />
+      </property>
+      <property>
+        <name>SoftKiwi License Code</name>
+        <default />
+        <type>STRING</type>
+        <readonly>false</readonly>
+        <default>type your license code here</default>
+      </property>
+      <property>
+        <name>SoftKiwi Driver Type</name>
+        <type>STRING</type>
+        <readonly>true</readonly>
+        <default />
+      </property>
+      <property>
+        <name>SoftKiwi License Status</name>
+        <type>STRING</type>
+        <readonly>true</readonly>
+        <default />
+      </property>
+
+      <property>
+        <name>Debug Mode</name>
+        <type>LIST</type>
+        <items>
+          <item>Off</item>
+          <item>On</item>
+        </items>
+        <default>Off</default>
+        <readonly>false</readonly>
+      </property>
+    </properties>
+    <documentation file="www/documentation.rtf" />
+    <actions>
+      <action>
+        <name>test username</name>
+        <command>test_username</command>
+      </action>
+      <action>
+        <name>act bot</name>
+        <command>act_bot</command>
+      </action>
+      <action>
+        <name>clear users</name>
+        <command>clear_user</command>
+      </action>
+    </actions>
+  </config>
+</devicedata>

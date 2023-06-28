@@ -1,0 +1,1397 @@
+<devicedata>
+	<copyright>Copyright 2016 kiwifarm Corporation. All Rights Reserved.</copyright>
+	<manufacturer>Kiwifarm</manufacturer>
+	<name>Or Mixer</name>
+	<model>or-mixer</model>
+	<creator>Kiwifarm</creator>
+	<created>12/14/2019 03:00 PM</created>
+	<modified>7/22/2021 08:00 PM</modified>
+	<version>000031</version>
+	<small image_source="c4z">icons/device_sm.png</small>
+	<large image_source="c4z">icons/device_lg.png</large>
+	<control>lua_gen</control>
+	<controlmethod>other</controlmethod>
+	<driver>DriverWorks</driver>
+	<auto_update>false</auto_update>
+	<minimum_auto_update_version>1</minimum_auto_update_version>
+	<minimum_os_version>2.9.0</minimum_os_version>
+	<config>
+		<script encryption="0" file="driver.lua" />
+		<documentation file="www/documentation/documentation.rtf" />
+		<properties>
+			<property>
+				<name>Connection 1 Mapping</name>
+				<type>STRING</type>
+				<default />
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Connection 2 Mapping</name>
+				<type>STRING</type>
+				<default />
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Connection 3 Mapping</name>
+				<type>STRING</type>
+				<default />
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Connection 4 Mapping</name>
+				<type>STRING</type>
+				<default />
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Connection 5 Mapping</name>
+				<type>STRING</type>
+				<default />
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Connection 6 Mapping</name>
+				<type>STRING</type>
+				<default />
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Connection 7 Mapping</name>
+				<type>STRING</type>
+				<default />
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Connection 8 Mapping</name>
+				<type>STRING</type>
+				<default />
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Connection 9 Mapping</name>
+				<type>STRING</type>
+				<default />
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Connection 10 Mapping</name>
+				<type>STRING</type>
+				<default />
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Connection 11 Mapping</name>
+				<type>STRING</type>
+				<default />
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Connection 12 Mapping</name>
+				<type>STRING</type>
+				<default />
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Connection 13 Mapping</name>
+				<type>STRING</type>
+				<default />
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Connection 14 Mapping</name>
+				<type>STRING</type>
+				<default />
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Connection 15 Mapping</name>
+				<type>STRING</type>
+				<default />
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Connection 16 Mapping</name>
+				<type>STRING</type>
+				<default />
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Connection 17 Mapping</name>
+				<type>STRING</type>
+				<default />
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Connection 18 Mapping</name>
+				<type>STRING</type>
+				<default />
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Connection 19 Mapping</name>
+				<type>STRING</type>
+				<default />
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Connection 20 Mapping</name>
+				<type>STRING</type>
+				<default />
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Connection 21 Mapping</name>
+				<type>STRING</type>
+				<default />
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Connection 22 Mapping</name>
+				<type>STRING</type>
+				<default />
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Connection 23 Mapping</name>
+				<type>STRING</type>
+				<default />
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Connection 24 Mapping</name>
+				<type>STRING</type>
+				<default />
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Connection 25 Mapping</name>
+				<type>STRING</type>
+				<default />
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Connection 26 Mapping</name>
+				<type>STRING</type>
+				<default />
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Connection 27 Mapping</name>
+				<type>STRING</type>
+				<default />
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Connection 28 Mapping</name>
+				<type>STRING</type>
+				<default />
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Connection 29 Mapping</name>
+				<type>STRING</type>
+				<default />
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Connection 30 Mapping</name>
+				<type>STRING</type>
+				<default />
+				<readonly>false</readonly>
+			</property>
+
+
+			<property>
+				<name>Last Update At</name>
+				<type>STRING</type>
+				<default>--</default>
+				<readonly>true</readonly>
+			</property>
+
+
+
+			<property>
+				<name>Log Section</name>
+				<type>LABEL</type>
+				<default>Logging</default>
+			</property>
+			<property>
+				<name>Log Level</name>
+				<type>LIST</type>
+				<readonly>false</readonly>
+				<default>Off</default>
+				<items>
+					<item>Off</item>
+					<item>5 - Debug</item>
+					<item>4 - Trace</item>
+					<item>3 - Info</item>
+					<item>2 - Warning</item>
+					<item>1 - Error</item>
+					<item>0 - Alert</item>
+				</items>
+			</property>
+			<property>
+				<name>Log Mode</name>
+				<type>LIST</type>
+				<readonly>false</readonly>
+				<default>Print</default>
+				<items>
+					<item>Print</item>
+					<item>Log</item>
+					<item>Print and Log</item>
+				</items>
+			</property>
+			<property>
+				<name>Disable Log Interval</name>
+				<description>Autmatically disable logging after this interval of time</description>
+				<type>LIST</type>
+				<readonly>false</readonly>
+				<default>1 hour</default>
+				<items>
+					<item>15 minutes</item>
+					<item>30 minutes</item>
+					<item>1 hour</item>
+					<item>6 hours</item>
+					<item>24 hours</item>
+					<item>Never</item>
+				</items>
+			</property>
+
+			<property>
+				<name>License Section</name>
+				<type>LABEL</type>
+				<default>Licensing</default>
+			</property>
+
+			<property>
+				<name>License Provider</name>
+				<default />
+				<type>LIST</type>
+				<items>
+					<item>Driver Central</item>
+					<item>SoftKiwi</item>
+				</items>
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Cloud Status</name>
+				<default />
+				<type>STRING</type>
+				<readonly>true</readonly>
+			</property>
+			<property>
+				<name>Automatic Updates</name>
+				<type>LIST</type>
+				<items>
+					<item>Off</item>
+					<item>On</item>
+				</items>
+				<default>Off</default>
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Houselogix License Code</name>
+				<default />
+				<type>STRING</type>
+				<readonly>false</readonly>
+				<default>type your license code here</default>
+			</property>
+			<property>
+				<name>Houselogix License Status</name>
+				<type>STRING</type>
+				<readonly>true</readonly>
+				<default />
+			</property>
+			<property>
+				<name>SoftKiwi License Code</name>
+				<default />
+				<type>STRING</type>
+				<readonly>false</readonly>
+				<default>type your license code here</default>
+			</property>
+			<property>
+				<name>SoftKiwi Driver Type</name>
+				<type>STRING</type>
+				<readonly>true</readonly>
+				<default />
+			</property>
+			<property>
+				<name>SoftKiwi License Status</name>
+				<type>STRING</type>
+				<readonly>true</readonly>
+				<default />
+			</property>
+
+		</properties>
+		<actions>
+			<action>
+				<name>Print Mapping and Status</name>
+				<command>PrintMatrix</command>
+			</action>
+			<action>
+				<name>Force all Output</name>
+				<command>ReSetOutputs</command>
+			</action>
+		</actions>
+	</config>
+	<composer_categories>
+		<category>Relay</category>
+	</composer_categories>
+	<proxies qty="1">
+		<proxy name="or-mixer">or-mixer</proxy>
+	</proxies>
+	<combo>True</combo>
+	<connections>
+		<connection>
+			<connectionname>Or Mixer Input Connection 1</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>1</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>false</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<connectionname>Or Mixer Input Connection 2</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>2</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>false</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<connectionname>Or Mixer Input Connection 3</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>3</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>false</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<connectionname>Or Mixer Input Connection 4</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>4</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>false</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<connectionname>Or Mixer Input Connection 5</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>5</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>false</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<connectionname>Or Mixer Input Connection 6</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>6</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>false</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<connectionname>Or Mixer Input Connection 7</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>7</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>false</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<connectionname>Or Mixer Input Connection 8</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>8</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>false</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<connectionname>Or Mixer Input Connection 9</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>9</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>false</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<connectionname>Or Mixer Input Connection 10</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>10</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>false</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<connectionname>Or Mixer Input Connection 11</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>11</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>false</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<connectionname>Or Mixer Input Connection 12</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>12</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>false</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<connectionname>Or Mixer Input Connection 13</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>13</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>false</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<connectionname>Or Mixer Input Connection 14</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>14</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>false</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<connectionname>Or Mixer Input Connection 15</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>15</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>false</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<connectionname>Or Mixer Input Connection 16</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>16</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>false</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<connectionname>Or Mixer Input Connection 17</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>17</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>false</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<connectionname>Or Mixer Input Connection 18</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>18</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>false</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<connectionname>Or Mixer Input Connection 19</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>19</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>false</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<connectionname>Or Mixer Input Connection 20</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>20</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>false</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<connectionname>Or Mixer Input Connection 21</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>21</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>false</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<connectionname>Or Mixer Input Connection 22</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>22</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>false</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<connectionname>Or Mixer Input Connection 23</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>23</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>false</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<connectionname>Or Mixer Input Connection 24</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>24</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>false</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<connectionname>Or Mixer Input Connection 25</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>25</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>false</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<connectionname>Or Mixer Input Connection 26</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>26</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>false</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<connectionname>Or Mixer Input Connection 27</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>27</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>false</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<connectionname>Or Mixer Input Connection 28</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>28</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>false</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<connectionname>Or Mixer Input Connection 29</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>29</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>false</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<connectionname>Or Mixer Input Connection 30</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>30</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>false</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+
+		<connection>
+			<id>51</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 1</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>52</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 2</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>53</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 3</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>54</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 4</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>55</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 5</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>56</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 6</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>57</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 7</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>58</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 8</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>59</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 9</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>60</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 10</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>61</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 11</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>62</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 12</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>63</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 13</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>64</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 14</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>65</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 15</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>66</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 16</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>67</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 17</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>68</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 18</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>69</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 19</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>70</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 20</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>71</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 21</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>72</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 22</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>73</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 23</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>74</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 24</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>75</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 25</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>76</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 26</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>77</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 27</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>78</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 28</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>79</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 29</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>80</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 30</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>81</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 31</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>82</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 32</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>83</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 33</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>84</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 34</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>85</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 35</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>86</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 36</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>87</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 37</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>88</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 38</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>89</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 39</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+		<connection>
+			<id>90</id>
+			<facing>6</facing>
+			<connectionname>Or Mixer Output Connection 40</connectionname>
+			<type>1</type>
+			<consumer>True</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>RELAY</classname>
+				</class>
+			</classes>
+		</connection>
+	</connections>
+</devicedata>

@@ -1,0 +1,11 @@
+Main "driver.lua"
+
+    Module "SKC4.licence.cloud-client-byte" "SKC4/licence/cloud-client-byte.lua"
+    Module "SKC4.Utility" "SKC4/Utility.lua"
+    Module "SKC4.LightingUtility" "SKC4/LightingUtility.lua"
+    Module "SKC4.Logger" "SKC4/Logger.lua"
+    Module "SKC4.DriverCore" "SKC4/DriverCore.lua"
+    Module "SKC4.TimerManager" "SKC4/TimerManager.lua"
+    Module "SKC4.LicenseManagerDriverCentral" "SKC4/LicenseManagerDriverCentral.lua"
+
+Output "driver.lua.squished"

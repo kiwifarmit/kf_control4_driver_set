@@ -1,0 +1,204 @@
+<devicedata>
+  <copyright>Copyright 2020 Kiwifarm. All Rights Reserved.</copyright>
+  <manufacturer>soft.kiwi/wedevelopdrivers.com</manufacturer>
+  <name>service_checker</name>
+  <model>service_checker</model>
+  <creator>kiwifarm</creator>
+  <created>12/17/2017 10:30</created>
+  <modified>7/13/2020 10:46 PM</modified>
+  <version>000069</version>
+  <control>lua_gen</control>
+  <driver>DriverWorks</driver>
+  <auto_update>false</auto_update>
+  <minimum_auto_update_version>1</minimum_auto_update_version>
+  <minimum_os_version>2.9.0</minimum_os_version>
+  <small image_source="c4z">icons/device_sm.png</small>
+  <large image_source="c4z">icons/device_lg.png</large>
+
+  <config>
+    <script encryption="0" file="driver.lua" />
+    <documentation file="www/documentation/documentation.rtf" />
+    <properties>
+      <property>
+        <name>URL To Check</name>
+        <type>STRING</type>
+        <default>http://</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Username</name>
+        <description>Leave empty if you don't need authentication</description>
+        <type>STRING</type>
+        <default />
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Password</name>
+        <type>STRING</type>
+        <default />
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Current Service Status</name>
+        <description>OK if service online, KO if service offline. UNKNOWN otherwise</description>
+        <type>STRING</type>
+        <default>---</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Last Update</name>
+        <type>STRING</type>
+        <default>---</default>
+        <readonly>true</readonly>
+      </property>
+      
+      <property>
+        <name>Options section</name>
+        <type>LABEL</type>
+        <default>Options</default>
+      </property>
+
+      <property>
+        <name>Expected Response Code</name>
+        <type>RANGED_INTEGER</type>
+        <minimum>0</minimum>
+        <maximum>599</maximum>
+        <default>200</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Last Received Response Code</name>
+        <type>STRING</type>
+        <default>0</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Last Received Data</name>
+        <type>STRING</type>
+        <default>---</default>
+        <readonly>true</readonly>
+      </property>
+
+      <property>
+        <name>Polling Interval</name>
+        <description>Interval in minutes between two verification of the service status</description>
+        <type>RANGED_INTEGER</type>
+        <minimum>1</minimum>
+        <maximum>60</maximum>
+        <default>5</default>
+        <readonly>false</readonly>
+      </property>
+
+      <property>
+        <name>Response Timeout</name>
+        <description>Timeout in seconds</description>
+        <type>RANGED_INTEGER</type>
+        <minimum>0</minimum>
+        <maximum>600</maximum>
+        <default>30</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Connect Timeout</name>
+        <description>Connection timeout in seconds</description>
+        <type>RANGED_INTEGER</type>
+        <minimum>0</minimum>
+        <maximum>60</maximum>
+        <default>5</default>
+        <readonly>false</readonly>
+      </property>  
+      
+      
+
+
+
+      <property>
+        <name>Log Section</name>
+        <type>LABEL</type>
+        <default>Logging</default>
+      </property>
+      <property>
+        <name>Log Level</name>
+        <type>LIST</type>
+        <readonly>false</readonly>
+        <default>Off</default>
+        <items>
+          <item>Off</item>
+          <item>5 - Debug</item>
+          <item>4 - Trace</item>
+          <item>3 - Info</item>
+          <item>2 - Warning</item>
+          <item>1 - Error</item>
+          <item>0 - Alert</item>
+        </items>
+      </property>
+      <property>
+        <name>Log Mode</name>
+        <type>LIST</type>
+        <readonly>false</readonly>
+        <default>Print</default>
+        <items>
+          <item>Print</item>
+          <item>Log</item>
+          <item>Print and Log</item>
+        </items>
+      </property>
+      <property>
+        <name>Disable Log Interval</name>
+        <description>Autmatically disable logging after this interval of time</description>
+        <type>LIST</type>
+        <readonly>false</readonly>
+        <default>1 hour</default>
+        <items>
+          <item>15 minutes</item>
+          <item>30 minutes</item>
+          <item>1 hour</item>
+          <item>6 hours</item>
+          <item>24 hours</item>
+          <item>Never</item>
+        </items>
+      </property>
+
+      <property>
+        <name>Driver Info</name>
+        <type>LABEL</type>
+        <default>Driver Info</default>
+      </property>
+      <property>
+        <name>Driver Version</name>
+        <type>STRING</type>
+        <default>---</default>
+        <readonly>true</readonly>
+      </property>
+    </properties>
+    <actions>
+      <action>
+        <name>Check service status now</name>
+        <command>CheckServiceStatusNow</command>
+      </action>
+    </actions>
+  </config>
+<conditionals>
+    <conditional>
+      <id>1</id>
+      <name>SERVICE_STATUS</name>
+      <type>LIST</type>
+      <condition_statement>Current service status</condition_statement>
+      <description>NAME is LOGIC STRING</description>
+      <items>
+        <item>UNKNOWN</item>
+        <item>OK</item>
+        <item>KO</item>
+      </items>
+    </conditional>
+</conditionals>
+
+
+  <combo>true</combo>
+  <proxies qty="1">
+    <proxy image_source="c4z" large_image="icons/device_lg.png" name="service_checker" small_image="icons/device_sm.png">service_checker</proxy>
+  </proxies>
+
+  <connections>
+  </connections>
+</devicedata>

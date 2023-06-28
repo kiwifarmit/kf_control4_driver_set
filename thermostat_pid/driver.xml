@@ -1,0 +1,609 @@
+<devicedata>
+  <copyright>Copyright 2020 Kiwifarm. All Rights Reserved.</copyright>
+  <manufacturer>Kiwifarm</manufacturer>
+  <name>Thermostat PID</name>
+  <model>thermostat_pid</model>
+  <creator>kiwifarm</creator>
+  <created>12/17/2017 10:30</created>
+  <modified>8/3/2021 12:03 PM</modified>
+  <version>001169</version>
+  <control>lua_gen</control>
+  <driver>DriverWorks</driver>
+  <auto_update>true</auto_update>
+  <minimum_auto_update_version>1</minimum_auto_update_version>
+  <minimum_os_version>2.10.0</minimum_os_version>
+  <small image_source="c4z">icons/device_sm.png</small>
+  <large image_source="c4z">icons/device_lg.png</large>
+  <composer_categories>
+    <category>others</category>
+  </composer_categories>
+  <config>
+    <script encryption="0" file="driver.lua" jit="1" />
+    <documentation file="www/documentation/documentation.rtf" />
+    <properties>
+      <property>
+        <name>DRIVER STATUS</name>
+        <type>LABEL</type>
+        <default>Debug</default>
+      </property>
+
+      <property>
+        <name>INPUT TEMPERATURES</name>
+        <default>---</default>
+        <type>STRING</type>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>INPUT RELAYS</name>
+        <default>---</default>
+        <type>STRING</type>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>OUTPUT COMPUTED RELAYS</name>
+        <default>---</default>
+        <type>STRING</type>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>OUTPUT FAN</name>
+        <default>---</default>
+        <type>STRING</type>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>LAST COMPUTED PID</name>
+        <default>---</default>
+        <type>STRING</type>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>WATER TEMPERATURE</name>
+        <default>---</default>
+        <type>STRING</type>
+        <readonly>true</readonly>
+      </property>
+
+      <property>
+        <name>WATER SUPPLY</name>
+        <type>LABEL</type>
+        <default>WATER SUPPLY</default>
+      </property>
+      <property>
+        <name>Water Supply Control</name>
+        <default>OFF</default>
+        <type>LIST</type>
+        <items>
+          <item>ON</item>
+          <item>OFF</item>
+        </items>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Heating Water Threshold</name>
+        <default>0</default>
+        <type>STRING</type>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Cooling Water Threshold</name>
+        <default>99</default>
+        <type>STRING</type>
+        <readonly>false</readonly>
+      </property>
+
+      <property>
+        <name>HEATING PID SECTION</name>
+        <type>LABEL</type>
+        <default>Heating</default>
+      </property>
+
+      <property>
+        <name>Heating Ki</name>
+        <default>0</default>
+        <type>STRING</type>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Heating Kp</name>
+        <default>30</default>
+        <type>STRING</type>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Heating Kd</name>
+        <default>0</default>
+        <type>STRING</type>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Heating Off Threshold</name>
+        <default>10</default>
+        <type>STRING</type>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Heating Min</name>
+        <default>00</default>
+        <type>STRING</type>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Heating Max</name>
+        <default>100</default>
+        <type>STRING</type>
+        <readonly>false</readonly>
+      </property>
+
+      <property>
+        <name>COOLING PID SECTION</name>
+        <type>LABEL</type>
+        <default>Cooling</default>
+      </property>
+
+      <property>
+        <name>Cooling Ki</name>
+        <default>0</default>
+        <type>STRING</type>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Cooling Kp</name>
+        <default>30</default>
+        <type>STRING</type>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Cooling Kd</name>
+        <default>0</default>
+        <type>STRING</type>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Cooling Off Threshold</name>
+        <default>10</default>
+        <type>STRING</type>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Cooling Min</name>
+        <default>00</default>
+        <type>STRING</type>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Cooling Max</name>
+        <default>100</default>
+        <type>STRING</type>
+        <readonly>false</readonly>
+      </property>
+
+      <property>
+        <name>Computing Interval</name>
+        <default>12</default>
+        <type>STRING</type>
+        <readonly>false</readonly>
+      </property>
+
+
+      <property>
+        <name>License Section</name>
+        <type>LABEL</type>
+        <default>Licensing</default>
+      </property>
+
+      <property>
+        <name>License Provider</name>
+        <default />
+        <type>LIST</type>
+        <items>
+          <item>Driver Central</item>
+          <item>Houselogix</item>
+          <item>SoftKiwi</item>
+        </items>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Cloud Status</name>
+        <default />
+        <type>STRING</type>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Automatic Updates</name>
+        <type>LIST</type>
+        <items>
+          <item>Off</item>
+          <item>On</item>
+        </items>
+        <default>Off</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>SoftKiwi License Code</name>
+        <default />
+        <type>STRING</type>
+        <readonly>false</readonly>
+        <default>type your license code here</default>
+      </property>
+      <property>
+        <name>SoftKiwi Driver Type</name>
+        <type>STRING</type>
+        <readonly>true</readonly>
+        <default />
+      </property>
+      <property>
+        <name>SoftKiwi License Status</name>
+        <type>STRING</type>
+        <readonly>true</readonly>
+        <default />
+      </property>
+
+      <property>
+        <name>Log Section</name>
+        <type>LABEL</type>
+        <default>Logging</default>
+      </property>
+      <property>
+        <name>Log Level</name>
+        <type>LIST</type>
+        <readonly>false</readonly>
+        <default>Off</default>
+        <items>
+          <item>Off</item>
+          <item>5 - Debug</item>
+          <item>4 - Trace</item>
+          <item>3 - Info</item>
+          <item>2 - Warning</item>
+          <item>1 - Error</item>
+          <item>0 - Alert</item>
+        </items>
+      </property>
+      <property>
+        <name>Log Mode</name>
+        <type>LIST</type>
+        <readonly>false</readonly>
+        <default>Print</default>
+        <items>
+          <item>Print</item>
+          <item>Log</item>
+          <item>Print and Log</item>
+        </items>
+      </property>
+      <property>
+        <name>Disable Log Interval</name>
+        <description>Autmatically disable logging after this interval of time</description>
+        <type>LIST</type>
+        <readonly>false</readonly>
+        <default>1 hour</default>
+        <items>
+          <item>15 minutes</item>
+          <item>30 minutes</item>
+          <item>1 hour</item>
+          <item>6 hours</item>
+          <item>24 hours</item>
+          <item>Never</item>
+        </items>
+      </property>
+
+      <property>
+        <name>Driver Info</name>
+        <type>LABEL</type>
+        <default>Driver Info</default>
+      </property>
+      <property>
+        <name>Driver Version</name>
+        <type>STRING</type>
+        <default>---</default>
+        <readonly>true</readonly>
+      </property>
+    </properties>
+
+    <actions>
+      <action>
+        <name>Print Variables</name>
+        <command>PrintVariables</command>
+      </action>
+      <action>
+        <name>Print PID Status</name>
+        <command>PrintPID</command>
+      </action>
+      <action>
+        <name>SET PID to HEAT</name>
+        <command>setPidToHeat</command>
+      </action>
+      <action>
+        <name>SET PID to COOL</name>
+        <command>setPidToCool</command>
+      </action>
+    </actions>
+
+  </config>
+
+  <proxies qty="1">
+    <proxy name="Thermostat Pid">thermostat_pid</proxy>
+  </proxies>
+
+
+  <connections>
+    <connection>
+      <id>7000</id>
+      <facing>6</facing>
+      <connectionname>Room Selection</connectionname>
+      <type>7</type>
+      <consumer>false</consumer>
+      <audiosource>false</audiosource>
+      <videosource>false</videosource>
+      <linelevel>false</linelevel>
+      <classes>
+        <class>
+          <autobind>true</autobind>
+          <classname>TEMPERATURE</classname>
+        </class>
+        <class>
+          <autobind>true</autobind>
+          <classname>TEMPERATURE_CONTROL</classname>
+        </class>
+      </classes>
+    </connection>
+
+    <connection>
+      <connectionname>Heating Input</connectionname>
+      <facing>1</facing>
+      <type>1</type>
+      <id>1001</id>
+      <audiosource>false</audiosource>
+      <videosource>false</videosource>
+      <consumer>false</consumer>
+      <linelevel>false</linelevel>
+      <classes>
+        <class>
+          <classname>RELAY</classname>
+        </class>
+      </classes>
+    </connection>
+    <connection>
+      <connectionname>Cooling Input</connectionname>
+      <facing>1</facing>
+      <type>1</type>
+      <id>1002</id>
+      <audiosource>false</audiosource>
+      <videosource>false</videosource>
+      <consumer>false</consumer>
+      <linelevel>false</linelevel>
+      <classes>
+        <class>
+          <classname>RELAY</classname>
+        </class>
+      </classes>
+    </connection>
+    <connection>
+      <connectionname>Fan Input</connectionname>
+      <facing>1</facing>
+      <type>1</type>
+      <id>1003</id>
+      <audiosource>false</audiosource>
+      <videosource>false</videosource>
+      <consumer>false</consumer>
+      <linelevel>false</linelevel>
+      <classes>
+        <class>
+          <classname>RELAY</classname>
+        </class>
+      </classes>
+    </connection>
+    <connection>
+      <connectionname>Heating Setpoint Input</connectionname>
+      <facing>1</facing>
+      <type>1</type>
+      <id>1005</id>
+      <audiosource>false</audiosource>
+      <videosource>false</videosource>
+      <consumer>false</consumer>
+      <linelevel>false</linelevel>
+      <classes>
+        <class>
+          <classname>SETPOINT</classname>
+        </class>
+      </classes>
+    </connection>
+    <connection>
+      <connectionname>Cooling Setpoint Input</connectionname>
+      <facing>1</facing>
+      <type>1</type>
+      <id>1006</id>
+      <audiosource>false</audiosource>
+      <videosource>false</videosource>
+      <consumer>false</consumer>
+      <linelevel>false</linelevel>
+      <classes>
+        <class>
+          <classname>SETPOINT</classname>
+        </class>
+      </classes>
+    </connection>
+
+    <connection>
+      <connectionname>Outdoor Temperature Input</connectionname>
+      <type>1</type>
+      <id>4</id>
+      <audiosource>false</audiosource>
+      <videosource>false</videosource>
+      <consumer>true</consumer>
+      <linelevel>false</linelevel>
+      <classes>
+        <class>
+          <classname>TEMPERATURE_VALUE</classname>
+        </class>
+      </classes>
+    </connection>
+    <connection>
+      <connectionname>Humidity Input</connectionname>
+      <facing>1</facing>
+      <type>1</type>
+      <id>1008</id>
+      <audiosource>false</audiosource>
+      <videosource>false</videosource>
+      <consumer>false</consumer>
+      <linelevel>false</linelevel>
+      <classes>
+        <class>
+          <classname>HUMIDITY_VALUE</classname>
+        </class>
+      </classes>
+    </connection>
+    <connection>
+      <connectionname>Theshold Condition On</connectionname>
+      <facing>1</facing>
+      <type>1</type>
+      <id>1009</id>
+      <audiosource>false</audiosource>
+      <videosource>false</videosource>
+      <consumer>false</consumer>
+      <linelevel>false</linelevel>
+      <classes>
+        <class>
+          <classname>RELAY</classname>
+        </class>
+      </classes>
+    </connection>
+    <connection>
+      <connectionname>HVAC Mode</connectionname>
+      <facing>1</facing>
+      <type>1</type>
+      <id>916</id>
+      <audiosource>false</audiosource>
+      <videosource>false</videosource>
+      <consumer>false</consumer>
+      <linelevel>false</linelevel>
+      <classes>
+        <class>
+          <classname>STRING_VARIABLE</classname>
+        </class>
+      </classes>
+    </connection>
+
+    <connection>
+      <id>2</id>
+      <connectionname>Temperature Input</connectionname>
+      <type>1</type>
+      <consumer>true</consumer>
+      <audiosource>false</audiosource>
+      <videosource>false</videosource>
+      <linelevel>false</linelevel>
+      <classes>
+        <class>
+          <classname>TEMPERATURE_VALUE</classname>
+        </class>
+      </classes>
+    </connection>
+    <connection>
+      <id>3</id>
+      <connectionname>Temperature Water Input</connectionname>
+      <type>1</type>
+      <consumer>true</consumer>
+      <audiosource>false</audiosource>
+      <videosource>false</videosource>
+      <linelevel>false</linelevel>
+      <classes>
+        <class>
+          <classname>TEMPERATURE_VALUE</classname>
+        </class>
+      </classes>
+    </connection>
+
+
+    <connection>
+      <id>1010</id>
+      <facing>6</facing>
+      <connectionname>Heating Direct Output</connectionname>
+      <type>1</type>
+      <consumer>true</consumer>
+      <audiosource>false</audiosource>
+      <videosource>false</videosource>
+      <linelevel>false</linelevel>
+      <classes>
+        <class>
+          <classname>RELAY</classname>
+        </class>
+      </classes>
+    </connection>
+    <connection>
+      <id>1011</id>
+      <facing>6</facing>
+      <connectionname>Cooling Direct Output</connectionname>
+      <type>1</type>
+      <consumer>true</consumer>
+      <audiosource>false</audiosource>
+      <videosource>false</videosource>
+      <linelevel>false</linelevel>
+      <classes>
+        <class>
+          <classname>RELAY</classname>
+        </class>
+      </classes>
+    </connection>
+    <connection>
+      <id>1012</id>
+      <facing>6</facing>
+      <connectionname>Fan Direct Output</connectionname>
+      <type>1</type>
+      <consumer>true</consumer>
+      <audiosource>false</audiosource>
+      <videosource>false</videosource>
+      <linelevel>false</linelevel>
+      <classes>
+        <class>
+          <classname>RELAY</classname>
+        </class>
+      </classes>
+    </connection>
+    <connection>
+      <id>1013</id>
+      <facing>6</facing>
+      <connectionname>Heating PID Output</connectionname>
+      <type>1</type>
+      <consumer>true</consumer>
+      <audiosource>false</audiosource>
+      <videosource>false</videosource>
+      <linelevel>false</linelevel>
+      <classes>
+        <class>
+          <classname>RELAY</classname>
+        </class>
+      </classes>
+    </connection>
+    <connection>
+      <id>1014</id>
+      <facing>6</facing>
+      <connectionname>Cooling PID Output</connectionname>
+      <type>1</type>
+      <consumer>true</consumer>
+      <audiosource>false</audiosource>
+      <videosource>false</videosource>
+      <linelevel>false</linelevel>
+      <classes>
+        <class>
+          <classname>RELAY</classname>
+        </class>
+      </classes>
+    </connection>
+    <connection>
+      <id>1015</id>
+      <facing>6</facing>
+      <connectionname>Fan PID Output</connectionname>
+      <type>1</type>
+      <consumer>true</consumer>
+      <audiosource>false</audiosource>
+      <videosource>false</videosource>
+      <linelevel>false</linelevel>
+      <classes>
+        <class>
+          <classname>RELAY</classname>
+        </class>
+      </classes>
+    </connection>
+
+
+  </connections>
+</devicedata>

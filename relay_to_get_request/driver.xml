@@ -1,0 +1,240 @@
+<devicedata>
+  <copyright>Copyright 2020 Kiwifarm. All Rights Reserved.</copyright>
+  <manufacturer>Kiwifarm</manufacturer>
+  <name>Relay to GET request adapter</name>
+  <model>relay_to_get_request</model>
+  <creator>Kiwifarm</creator>
+	<composer_categories>
+		<category>Relay</category>
+	</composer_categories>
+  <created>7/21/2017 10:30 AM</created>
+  <modified>7/25/2020 03:05 PM</modified>
+  <version>000045</version>
+  <control>lua_gen</control>
+  <driver>DriverWorks</driver>
+  <auto_update>false</auto_update>
+  <minimum_auto_update_version>1</minimum_auto_update_version>
+  <minimum_os_version>2.9.0</minimum_os_version>
+  <small image_source="c4z">icons/device_sm.png</small>
+  <large image_source="c4z">icons/device_lg.png</large>
+
+  <config>
+    <script encryption="0" file="driver.lua" jit="1" />
+    <documentation file="www/documentation/documentation.rtf" />
+    <properties>
+      <property>
+        <name>GET Request URL on Close</name>
+        <type>STRING</type>
+        <default>http://</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>GET Request URL on Open</name>
+        <type>STRING</type>
+        <default>http://</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Current Relay Status</name>
+        <type>STRING</type>
+        <default>---</default>
+        <readonly>true</readonly>
+      </property>			
+			
+      <property>
+        <name>Username</name>
+        <description>Leave empty if you don't need authentication</description>
+        <type>STRING</type>
+        <default />
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Password</name>
+        <type>STRING</type>
+        <default />
+        <readonly>false</readonly>
+      </property>
+      
+      <property>
+        <name>Last Received Response Code</name>
+        <type>STRING</type>
+        <default>---</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Last Received Data</name>
+        <type>STRING</type>
+        <default>---</default>
+        <readonly>true</readonly>
+      </property>
+			<property>
+        <name>Last Update</name>
+        <type>STRING</type>
+        <default>0</default>
+        <readonly>true</readonly>
+      </property>
+      
+      
+
+			<property>
+				<name>License Section</name>
+				<type>LABEL</type>
+				<default>Licensing</default>
+			</property>
+
+      <property>
+        <name>License Provider</name>
+        <default />
+        <type>LIST</type>
+        <items>
+          <item>Driver Central</item>
+          <item>SoftKiwi</item>
+        </items>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Cloud Status</name>
+        <default />
+        <type>STRING</type>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Automatic Updates</name>
+        <type>LIST</type>
+        <items>
+          <item>Off</item>
+          <item>On</item>
+        </items>
+        <default>Off</default>
+        <readonly>false</readonly>
+      </property>
+      
+      <property>
+        <name>SoftKiwi License Code</name>
+        <default />
+        <type>STRING</type>
+        <readonly>false</readonly>
+        <default>type your license code here</default>
+      </property>
+      <property>
+        <name>SoftKiwi Driver Type</name>
+        <type>STRING</type>
+        <readonly>true</readonly>
+        <default />
+      </property>
+      <property>
+        <name>SoftKiwi License Status</name>
+        <type>STRING</type>
+        <readonly>true</readonly>
+        <default />
+      </property>
+
+      <property>
+        <name>Log Section</name>
+        <type>LABEL</type>
+        <default>Logging</default>
+      </property>
+      <property>
+        <name>Log Level</name>
+        <type>LIST</type>
+        <readonly>false</readonly>
+        <default>Off</default>
+        <items>
+          <item>Off</item>
+          <item>5 - Debug</item>
+          <item>4 - Trace</item>
+          <item>3 - Info</item>
+          <item>2 - Warning</item>
+          <item>1 - Error</item>
+          <item>0 - Alert</item>
+        </items>
+      </property>
+      <property>
+        <name>Log Mode</name>
+        <type>LIST</type>
+        <readonly>false</readonly>
+        <default>Print</default>
+        <items>
+          <item>Print</item>
+          <item>Log</item>
+          <item>Print and Log</item>
+        </items>
+      </property>
+      <property>
+        <name>Disable Log Interval</name>
+        <description>Autmatically disable logging after this interval of time</description>
+        <type>LIST</type>
+        <readonly>false</readonly>
+        <default>1 hour</default>
+        <items>
+          <item>15 minutes</item>
+          <item>30 minutes</item>
+          <item>1 hour</item>
+          <item>6 hours</item>
+          <item>24 hours</item>
+          <item>Never</item>
+        </items>
+      </property>
+
+      <property>
+        <name>Driver Info</name>
+        <type>LABEL</type>
+        <default>Driver Info</default>
+      </property>
+      <property>
+        <name>Driver Version</name>
+        <type>STRING</type>
+        <default>---</default>
+        <readonly>true</readonly>
+      </property>
+    </properties>
+    <actions>
+      <action>
+        <name>Send On Open GET Request</name>
+        <command>SendOnOpenGetRequest</command>
+      </action>
+			<action>
+        <name>Send On Close GET Request</name>
+        <command>SendOnCloseGetRequest</command>
+      </action>
+    </actions>
+  </config>
+<conditionals>
+    <conditional>
+      <id>1</id>
+      <name>SERVICE_STATUS</name>
+      <type>LIST</type>
+      <condition_statement>Current service status</condition_statement>
+      <description>NAME is LOGIC STRING</description>
+      <items>
+        <item>UNKNOWN</item>
+        <item>OK</item>
+        <item>KO</item>
+      </items>
+    </conditional>
+</conditionals>
+
+
+  <combo>true</combo>
+  <proxies qty="1">
+    <proxy image_source="c4z" large_image="icons/device_lg.png" name="relay_to_get_request" small_image="icons/device_sm.png">relay_to_get_request</proxy>
+  </proxies>
+	<combo>True</combo>
+	<connections>
+		<connection>
+			<connectionname>Relay</connectionname>
+			<facing>1</facing>
+			<type>1</type>
+			<id>1</id>
+			<audiosource>false</audiosource>
+			<videosource>false</videosource>
+			<consumer>false</consumer>
+			<linelevel>false</linelevel>
+			<classes>
+				<class>
+				<classname>RELAY</classname>
+				</class>
+			</classes>
+    	</connection>
+	</connections>
+</devicedata>

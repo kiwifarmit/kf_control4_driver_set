@@ -1,0 +1,168 @@
+<devicedata>
+  <copyright>Copyright 2020 kiwifarm.  All rights reserved.</copyright>
+  <manufacturer>kiwifarm</manufacturer>
+  <model>shelly_flood</model>
+  <creator>kiwifarm</creator>
+  <created>3/13/2020 11:00 AM</created>
+  <modified>4/20/2020 03:26 PM</modified>
+  <name>Shelly Flood</name>
+  <small image_source="c4z">icons/device_sm.png</small>
+  <large image_source="c4z">icons/device_lg.png</large>
+  <control>lua_gen</control>
+  <driver>DriverWorks</driver>
+  <controlmethod>ip</controlmethod>
+  <proxies qty="1">
+		  <proxy name="shelly_flood">shelly_flood</proxy>
+	</proxies>
+  <combo>true</combo>
+  <events>
+    <event>
+      <id>1</id>
+      <name>Command Received</name>
+      <description>Received a command over web connection</description>
+    </event>
+  </events>
+  <config>
+    <properties>
+      <property>
+				<name>Server Port</name>
+				<type>STRING</type>
+				<default>--</default>
+				<readonly>false</readonly>
+			</property>
+
+      <property>
+				<name>Shelly REPORT url (read only)</name>
+				<type>STRING</type>
+				<default>Set the server port to display the url</default>
+				<readonly>false</readonly>
+			</property>
+
+      <property>
+				<name>Last Update At</name>
+				<type>STRING</type>
+				<default>--</default>
+				<readonly>true</readonly>
+			</property>
+
+      <property>
+				<name>Log Section</name>
+				<type>LABEL</type>
+				<default>Logging</default>
+			</property>
+      <property>
+				<name>Log Level</name>
+				<type>LIST</type>
+				<readonly>false</readonly>
+				<default>Off</default>
+				<items>
+          <item>Off</item>
+          <item>5 - Debug</item>
+          <item>4 - Trace</item>
+          <item>3 - Info</item>
+          <item>2 - Warning</item>
+          <item>1 - Error</item>
+          <item>0 - Alert</item>
+				</items>
+			</property>
+      <property>
+				<name>Log Mode</name>
+				<type>LIST</type>
+				<readonly>false</readonly>
+				<default>Print</default>
+				<items>
+          <item>Print</item>
+          <item>Log</item>
+          <item>Print and Log</item>
+				</items>
+			</property>
+      <property>
+				<name>Disable Log Interval</name>
+        <description>Autmatically disable logging after this interval of time</description>
+				<type>LIST</type>
+				<readonly>false</readonly>
+				<default>1 hour</default>
+				<items>
+          <item>15 minutes</item>
+          <item>30 minutes</item>
+          <item>1 hour</item>
+          <item>6 hours</item>
+          <item>24 hours</item>
+          <item>Never</item>
+				</items>
+			</property>
+
+			<property>
+				<name>License Section</name>
+				<type>LABEL</type>
+				<default>Licensing</default>
+			</property>
+
+			<property>
+        <name>License Provider</name>
+        <default />
+        <type>LIST</type>
+        <items>
+          <item>Driver Central</item>
+          <item>SoftKiwi</item>
+        </items>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Cloud Status</name>
+        <default />
+        <type>STRING</type>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Automatic Updates</name>
+        <type>LIST</type>
+        <items>
+          <item>Off</item>
+          <item>On</item>
+        </items>
+        <default>Off</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Houselogix License Code</name>
+        <default />
+        <type>STRING</type>
+        <readonly>false</readonly>
+        <default>type your license code here</default>
+      </property>
+      <property>
+        <name>Houselogix License Status</name>
+        <type>STRING</type>
+        <readonly>true</readonly>
+        <default />
+      </property>
+      <property>
+        <name>SoftKiwi License Code</name>
+        <default />
+        <type>STRING</type>
+        <readonly>false</readonly>
+        <default>type your license code here</default>
+      </property>
+      <property>
+        <name>SoftKiwi License Status</name>
+        <type>STRING</type>
+        <readonly>true</readonly>
+        <default />
+      </property>
+
+    </properties>
+    <actions>
+      
+    </actions>
+    <commands />
+    <script encryption="2" file="driver.lua" />
+    <documentation file="www/documentation/documentation.rtf" />
+  </config>
+  <connections>
+		 <connection>
+    </connection>
+	</connections>
+  <capabilities />
+  <version>001000</version>
+</devicedata>
