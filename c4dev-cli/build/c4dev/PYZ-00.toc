@@ -1,0 +1,2 @@
+('C:\\Users\\matte\\OneDrive\\Documents\\GitHub\\control4\\c4dev-cli\\build\\c4dev\\PYZ-00.pyz',
+ [])
