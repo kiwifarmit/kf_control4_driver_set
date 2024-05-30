@@ -1,0 +1,1941 @@
+package.preload['utils.common'] = (function (...)
+-- Comandi LUA Actions
+--Execute Command
+function ExecuteCommand(sCommand, tParams)
+
+    --Dbg("ExecuteCommand")
+	-- Remove any spaces (trim the command)
+	local trimmedCommand = string.gsub(sCommand, " ", "")
+	-- if function exists then execute (non-stripped)
+	if (EX_CMD[sCommand] ~= nil and type(EX_CMD[sCommand]) == "function") then
+		EX_CMD[sCommand](tParams)
+	-- elseif trimmed function exists then execute
+	elseif (EX_CMD[trimmedCommand] ~= nil and type(EX_CMD[trimmedCommand]) == "function") then
+		EX_CMD[trimmedCommand](tParams)
+	-- handle the command
+	elseif (EX_CMD[sCommand] ~= nil) then
+		QueueCommand(EX_CMD[sCommand])
+	else
+		--Dbg:Alert("ExecuteCommand: Unhandled command = " .. sCommand)
+	end
+end
+
+-- decode table tParams
+function EX_CMD.LUA_ACTION(tParams)
+	 --  print("dddd")
+	if tParams ~= nil then
+		for cmd,cmdv in pairs(tParams) do
+			if cmd == "ACTION" then
+				if (LUA_ACTION[cmdv] ~= nil) then
+					LUA_ACTION[cmdv]()
+				else
+					Dbg("Undefined Action")
+					Dbg("Key: " .. cmd .. " Value: " .. cmdv)
+				end
+			else
+				Dbg("Undefined Command")
+				Dbg("Key: " .. cmd .. " Value: " .. cmdv)
+			end
+		end
+	end
+end
+
+--stampa messaggi se la properties Debug è su On
+function Dbg (msg)
+    if Properties[Debug] == "On" then
+	   local data = os.date("%d/%m/%Y %X")
+	   print (data.." - "..msg)
+    end
+end
+
+function ReceivedFromProxy(idBinding, sCommand, tParams)
+    -- avvio timer per 
+    if PollInit == true then
+	   poll_timer = StartPollTimer()
+	   Dbg("PollInit Started by CMD")
+	   PollInit = false
+    end
+	if (sCommand ~= nil) then
+		if(tParams == nil)		-- initial table variable if nil
+			then tParams = {}
+		end
+		--Dbg("ReceivedFromProxy(): " .. sCommand .. " on binding " .. idBinding .. "; Call Function " .. sCommand .. "()")
+		--Dbg("ReceivedFromProxy(): " .. sCommand .. " on binding " .. idBinding .. "; Call Function " .. sCommand .. "()")
+		--Dbg:Trace(tParams)
+		if (PRX_CMD[sCommand]) ~= nil then
+			PRX_CMD[sCommand](idBinding, tParams)
+		else
+			-- FIXME --Dbg:Alert("ReceivedFromProxy: Unhandled command = " .. sCommand)
+		end
+	end
+end
+
+ end)
+package.preload['utils.sha'] = (function (...)
+local BLOCK_SIZE = 64 -- 512 bits
+
+-- local storing of global functions (minor speedup)
+local floor,modf = math.floor,math.modf
+local char,format,rep = string.char,string.format,string.rep
+
+-- merge 4 bytes to an 32 bit word
+local function bytes_to_w32(a,b,c,d) return a*0x1000000+b*0x10000+c*0x100+d end
+-- split a 32 bit word into four 8 bit numbers
+local function w32_to_bytes(i)
+  return floor(i/0x1000000)%0x100,floor(i/0x10000)%0x100,floor(i/0x100)%0x100,i%0x100
+end
+
+-- shift the bits of a 32 bit word. Don't use negative values for "bits"
+local function w32_rot(bits,a)
+  local b2 = 2^(32-bits)
+  local a,b = modf(a/b2)
+  return a+b*b2*(2^(bits))
+end
+
+-- caching function for functions that accept 2 arguments, both of values between
+-- 0 and 255. The function to be cached is passed, all values are calculated
+-- during loading and a function is returned that returns the cached values (only)
+local function cache2arg(fn)
+  if not PRELOAD_CACHE then return fn end
+  local lut = {}
+  for i=0,0xffff do
+    local a,b = floor(i/0x100),i%0x100
+    lut[i] = fn(a,b)
+  end
+  return function(a,b)
+    return lut[a*0x100+b]
+  end
+end
+
+-- splits an 8-bit number into 8 bits, returning all 8 bits as booleans
+local function byte_to_bits(b)
+  local b = function(n)
+    local b = floor(b/n)
+    return b%2==1
+  end
+  return b(1),b(2),b(4),b(8),b(16),b(32),b(64),b(128)
+end
+
+-- builds an 8bit number from 8 booleans
+local function bits_to_byte(a,b,c,d,e,f,g,h)
+  local function n(b,x) return b and x or 0 end
+  return n(a,1)+n(b,2)+n(c,4)+n(d,8)+n(e,16)+n(f,32)+n(g,64)+n(h,128)
+end
+
+-- bitwise "and" function for 2 8bit number
+local band = cache2arg (function(a,b)
+  local A,B,C,D,E,F,G,H = byte_to_bits(b)
+  local a,b,c,d,e,f,g,h = byte_to_bits(a)
+  return bits_to_byte(
+    A and a, B and b, C and c, D and d,
+    E and e, F and f, G and g, H and h)
+end)
+
+-- bitwise "or" function for 2 8bit numbers
+local bor = cache2arg(function(a,b)
+  local A,B,C,D,E,F,G,H = byte_to_bits(b)
+  local a,b,c,d,e,f,g,h = byte_to_bits(a)
+  return bits_to_byte(
+    A or a, B or b, C or c, D or d,
+    E or e, F or f, G or g, H or h)
+end)
+
+-- bitwise "xor" function for 2 8bit numbers
+local bxor = cache2arg(function(a,b)
+  local A,B,C,D,E,F,G,H = byte_to_bits(b)
+  local a,b,c,d,e,f,g,h = byte_to_bits(a)
+  return bits_to_byte(
+    A ~= a, B ~= b, C ~= c, D ~= d,
+    E ~= e, F ~= f, G ~= g, H ~= h)
+end)
+
+-- bitwise complement for one 8bit number
+local function bnot(x)
+  return 255-(x % 256)
+end
+
+-- creates a function to combine to 32bit numbers using an 8bit combination function
+local function w32_comb(fn)
+  return function(a,b)
+    local aa,ab,ac,ad = w32_to_bytes(a)
+    local ba,bb,bc,bd = w32_to_bytes(b)
+    return bytes_to_w32(fn(aa,ba),fn(ab,bb),fn(ac,bc),fn(ad,bd))
+  end
+end
+
+-- create functions for and, xor and or, all for 2 32bit numbers
+local w32_and = w32_comb(band)
+local w32_xor = w32_comb(bxor)
+local w32_or = w32_comb(bor)
+
+-- xor function that may receive a variable number of arguments
+local function w32_xor_n(a,...)
+  local aa,ab,ac,ad = w32_to_bytes(a)
+  for i=1,select('#',...) do
+    local ba,bb,bc,bd = w32_to_bytes(select(i,...))
+    aa,ab,ac,ad = bxor(aa,ba),bxor(ab,bb),bxor(ac,bc),bxor(ad,bd)
+  end
+  return bytes_to_w32(aa,ab,ac,ad)
+end
+
+-- combining 3 32bit numbers through binary "or" operation
+local function w32_or3(a,b,c)
+  local aa,ab,ac,ad = w32_to_bytes(a)
+  local ba,bb,bc,bd = w32_to_bytes(b)
+  local ca,cb,cc,cd = w32_to_bytes(c)
+  return bytes_to_w32(
+    bor(aa,bor(ba,ca)), bor(ab,bor(bb,cb)), bor(ac,bor(bc,cc)), bor(ad,bor(bd,cd))
+  )
+end
+
+-- binary complement for 32bit numbers
+local function w32_not(a)
+  return 4294967295-(a % 4294967296)
+end
+
+-- adding 2 32bit numbers, cutting off the remainder on 33th bit
+local function w32_add(a,b) return (a+b) % 4294967296 end
+
+-- adding n 32bit numbers, cutting off the remainder (again)
+local function w32_add_n(a,...)
+  for i=1,select('#',...) do
+    a = (a+select(i,...)) % 4294967296
+  end
+  return a
+end
+-- converting the number to a hexadecimal string
+local function w32_to_hexstring(w) return format("%08x",w) end
+
+local function hex_to_binary(hex)
+  return hex:gsub('..', function(hexval)
+    return string.char(tonumber(hexval, 16))
+  end)
+end
+
+-- building the lookuptables ahead of time (instead of littering the source code
+-- with precalculated values)
+local xor_with_0x5c = {}
+local xor_with_0x36 = {}
+for i=0,0xff do
+  xor_with_0x5c[char(i)] = char(bxor(i,0x5c))
+  xor_with_0x36[char(i)] = char(bxor(i,0x36))
+end
+
+-----------------------------------------------------------------------------
+
+-- calculating the SHA1 for some text
+function sha1(msg)
+  local H0,H1,H2,H3,H4 = 0x67452301,0xEFCDAB89,0x98BADCFE,0x10325476,0xC3D2E1F0
+  local msg_len_in_bits = #msg * 8
+
+  local first_append = char(0x80) -- append a '1' bit plus seven '0' bits
+
+  local non_zero_message_bytes = #msg +1 +8 -- the +1 is the appended bit 1, the +8 are for the final appended length
+  local current_mod = non_zero_message_bytes % 64
+  local second_append = current_mod>0 and rep(char(0), 64 - current_mod) or ""
+
+  -- now to append the length as a 64-bit number.
+  local B1, R1 = modf(msg_len_in_bits  / 0x01000000)
+  local B2, R2 = modf( 0x01000000 * R1 / 0x00010000)
+  local B3, R3 = modf( 0x00010000 * R2 / 0x00000100)
+  local B4    = 0x00000100 * R3
+
+  local L64 = char( 0) .. char( 0) .. char( 0) .. char( 0) -- high 32 bits
+        .. char(B1) .. char(B2) .. char(B3) .. char(B4) --  low 32 bits
+
+  msg = msg .. first_append .. second_append .. L64
+
+  assert(#msg % 64 == 0)
+
+  local chunks = #msg / 64
+
+  local W = { }
+  local start, A, B, C, D, E, f, K, TEMP
+  local chunk = 0
+
+  while chunk < chunks do
+    --
+    -- break chunk up into W[0] through W[15]
+    --
+    start,chunk = chunk * 64 + 1,chunk + 1
+
+    for t = 0, 15 do
+      W[t] = bytes_to_w32(msg:byte(start, start + 3))
+      start = start + 4
+    end
+
+    --
+    -- build W[16] through W[79]
+    --
+    for t = 16, 79 do
+      -- For t = 16 to 79 let Wt = S1(Wt-3 XOR Wt-8 XOR Wt-14 XOR Wt-16).
+      W[t] = w32_rot(1, w32_xor_n(W[t-3], W[t-8], W[t-14], W[t-16]))
+    end
+
+    A,B,C,D,E = H0,H1,H2,H3,H4
+
+    for t = 0, 79 do
+      if t <= 19 then
+        -- (B AND C) OR ((NOT B) AND D)
+        f = w32_or(w32_and(B, C), w32_and(w32_not(B), D))
+        K = 0x5A827999
+      elseif t <= 39 then
+        -- B XOR C XOR D
+        f = w32_xor_n(B, C, D)
+        K = 0x6ED9EBA1
+      elseif t <= 59 then
+        -- (B AND C) OR (B AND D) OR (C AND D
+        f = w32_or3(w32_and(B, C), w32_and(B, D), w32_and(C, D))
+        K = 0x8F1BBCDC
+      else
+        -- B XOR C XOR D
+        f = w32_xor_n(B, C, D)
+        K = 0xCA62C1D6
+      end
+
+      -- TEMP = S5(A) + ft(B,C,D) + E + Wt + Kt;
+      A,B,C,D,E = w32_add_n(w32_rot(5, A), f, E, W[t], K),
+        A, w32_rot(30, B), C, D
+    end
+    -- Let H0 = H0 + A, H1 = H1 + B, H2 = H2 + C, H3 = H3 + D, H4 = H4 + E.
+    H0,H1,H2,H3,H4 = w32_add(H0, A),w32_add(H1, B),w32_add(H2, C),w32_add(H3, D),w32_add(H4, E)
+  end
+  local f = w32_to_hexstring
+  return f(H0) .. f(H1) .. f(H2) .. f(H3) .. f(H4)
+end
+
+ end)
+package.preload['SKC4.C4'] = (function (...)
+-- Modulo che simula il modulo nativo di Control 4
+-- in modo da poter testare codice destinato a Control4
+-- su computer
+
+if (C4) then
+  return C4
+else
+  local C4 = {}
+  
+  C4.currentDir = ""
+  
+  function C4:FileSetDir(path)
+     self.currentDir = path
+  end
+  
+  function C4:FileExists(path)
+     local fullPath = self._JoinPaths(self.currentDir, path)
+     return (io.open(fullPath, "r") ~= nil)
+  end
+  
+  function C4:FileGetSize(filePointer)
+    local current = filePointer:seek()      -- get current position
+    local size = filePointer:seek("end")    -- get file size
+    filePointer:seek("set", current)        -- restore position
+    return size
+  end
+  
+  function C4:FileWrite(filePointer, len, stringData)
+   return len, filePointer:write(stringData)
+  end
+  
+  function C4:FileGetDir()
+     return self.currentDir
+  end
+  
+  function C4:FileOpen(path)
+     local fullPath = self._JoinPaths(self.currentDir, path)
+     local fs = io.open(fullPath, "a+")
+     return fs or -1
+  end
+  
+  function C4:FileSetPos(filePointer, filePosition)
+    filePointer:seek('set',0)
+    return filePointer:seek('set',filePosition)
+  end
+  
+	function C4:FileClose(filePointer)
+		io.close(filePointer)
+  end
+    
+  function C4:FileDelete(path, joinFlag)
+    local fullPath=path
+
+    if (joinFlag ~= nil and joinFlag ~= false  ) then
+      fullPath = self._JoinPaths(self.currentDir, path)
+    end
+
+    return (os.remove(fullPath) ~= nil)
+  end
+    
+  function C4:_JoinPaths(first, second)
+    local ret = nil
+    
+    if first and second then
+        ret = string.format("%s/%s", first, second)
+    else
+        ret = first or second
+    end
+    
+    return ret
+  end
+    
+    return C4
+end
+ end)
+package.preload['SKC4.Connections'] = (function (...)
+local Connections = {}
+
+
+
+function Connections.test () 
+    return 2;
+end
+
+
+return Connections; end)
+package.preload['SKC4.Control4Emu'] = (function (...)
+require "SKC4"
+ end)
+package.preload['SKC4.Debug'] = (function (...)
+local Debug = {}
+
+Debug.DEBUGPRINT = true
+
+function Debug.debug(message)
+    if (Debug.DEBUGPRINT) then
+        print(message);
+	else
+        message = ""
+    end 
+end
+
+function Debug.tprint (tbl, indent)  --print table
+	if type(tbl) == "table" then
+		if not indent then indent = 0 end
+		for k, v in pairs(tbl) do
+			formatting = string.rep("   ", indent) .. k .. ": "
+			if type(v) == "table" then
+				print(formatting)
+				Debug.tprint(v, indent+1)
+			else
+
+				print(formatting .. tostring(v, indent))
+			end
+		end
+	else
+
+		print (tbl)
+	end
+end
+
+function Debug.tstring (tbl, indent) -- transform table in string, nested
+	--ritorna una stringa contenente i valori della table
+    --if indent is -1 return a table in one line string
+	local  mytable = ""
+	if not indent then indent = 0 end
+	if (type(tbl) == "table") then
+		if (indent == -1) then 
+			for k,v in pairs(tbl) do
+				mytable = mytable.." "..v
+			end
+		else
+
+			for k, v in pairs(tbl) do
+				formatting = string.rep("   ", indent) .. k .. ": "
+				if type(v) == "table" then
+					mytable = mytable .. formatting
+					mytable = mytable ..Debug.tstring(v, indent+1)
+				else
+
+					mytable = mytable .. formatting .. tostring(v) .." \n"
+				end
+			end
+		end
+	else
+
+		mytable = tbl
+	end
+	return mytable
+end
+
+return Debug; end)
+package.preload['SKC4.LicenseManager'] = (function (...)
+local TimerManager = require "SKC4.TimerManager"
+--local Logger = require "SKC4.Logger"
+--Logger:setLogLevel(LOG_LEVELS.DEBUG..LOG_LEVELS.ERROR)
+
+local LicenseManager = {}
+
+-- global var required by DriverCentral
+DC_PID = 0 -- Product ID
+DC_FD = false -- DriverCentral (Driver is not a free driver)
+DC_FILENAME = "" -- "my_driver.c4z"
+
+LicenseManager.TRIAL_NOT_STARTED = -1
+LicenseManager.TRIAL_STARTED = 1
+LicenseManager.TRIAL_EXPIRED = 0
+
+function LicenseManager:new(o)
+    o = o or {}
+    setmetatable(o, self)
+    self.__index = self
+    self.currentVendorId = "DRIVERCENTRAL"
+    self.statusMessage = ""
+    self.vendorData = {
+        DRIVERCENTRAL 	= { 
+            ProductId 	= 000, -- Product ID
+            FreeDriver 	= false, -- (Driver is not a free driver)
+            FileName    = ""
+        },
+        HOUSELOGIX		= { 
+            LicenseCode = "",
+            ProductId 	= 000,
+            ValidityCheckInterval = 60,
+            --TrialExpiredLapse = 72,
+            TrialExpiredLapse = 10,
+            Licensed = false,
+            Trial = LicenseManager.TRIAL_NOT_STARTED,  -- -1 not started, 1 started , 0 expired  -- only one possibility to stard it
+            Version = ""
+        }
+    }
+
+    self.houselogixTimerCheck = {}
+    self.houselogixTimerTrial = {}
+    return o
+end
+
+--
+-- Setter and Getter
+--
+
+function LicenseManager:ON_PROPERTY_CHANGED_LicenseProvider(value)
+	print("ON_PROPERTY_CHANGED.LicenseProvider.",value, type(value))
+	--LicenseProvider = value
+	LICENSE_MGR:setCurrentVendorIdByName(value)
+end
+function LicenseManager:ON_PROPERTY_CHANGED_HouselogixLicenseCode (value)
+	--dbg("ON_PROPERTY_CHANGED.HouselogixLicenseCode."..value)
+	HouselogixLicenseCode = value
+    LICENSE_MGR:setParamValue("LicenseCode", HouselogixLicenseCode, "HOUSELOGIX") -- Filename -- DD394AB4A8CA48BB
+    LICENSE_MGR:setParamValue("Licensed", false, "HOUSELOGIX")
+    LICENSE_MGR:Houselogix_Activate()	
+end
+
+
+
+function LicenseManager:setStatusMessage( message )
+    self.statusMessage = message
+    C4:UpdateProperty ('Houselogix License Status', message)
+end
+function LicenseManager:getStatusMessage()
+    return self.statusMessage
+end
+
+function LicenseManager:setCurrentVendorId(vendor_id)
+    self.currentVendorId = vendor_id
+
+    if vendor_id == "DRIVERCENTRAL" then
+        print ("DRIVERCENTRAL vendor setted")
+        C4:SetPropertyAttribs("Cloud Status", 0)
+        C4:SetPropertyAttribs("Automatic Updates", 1)
+        C4:SetPropertyAttribs("Houselogix License Code", 1)
+        C4:SetPropertyAttribs("Houselogix License Status", 1)
+    elseif vendor_id == "HOUSELOGIX" then
+        print ("HOUSELOGIX vendor setted")
+        C4:SetPropertyAttribs("Cloud Status", 1)
+        C4:SetPropertyAttribs("Automatic Updates", 1)
+        C4:SetPropertyAttribs("Houselogix License Code", 0)
+        C4:SetPropertyAttribs("Houselogix License Status", 0)
+    else
+        print ("UNKNOW vendor setted")
+        C4:SetPropertyAttribs("Cloud Status", 1)
+        C4:SetPropertyAttribs("Automatic Updates", 1)
+        C4:SetPropertyAttribs("Houselogix License Code", 1)
+        C4:SetPropertyAttribs("Houselogix License Status", 1)
+    end
+    
+end
+function LicenseManager:getCurrentVendorId()
+    return self.currentVendorId
+end
+
+function LicenseManager:setCurrentVendorIdByName(value)
+    if (value == "Driver Central") then
+        self:setCurrentVendorId("DRIVERCENTRAL")
+    elseif (value == "Houselogix") then
+        self:setCurrentVendorId("HOUSELOGIX")
+        self:trialTimerHandlerHouselogix()
+    end
+end
+function LicenseManager:trialTimerHandlerHouselogix()
+    local trialExpiredLapse = self:getParamValue("TrialExpiredLapse", "HOUSELOGIX") 
+    if self:getParamValue("Trial", "HOUSELOGIX") == LicenseManager.TRIAL_NOT_STARTED then
+        self:setParamValue("Trial", LicenseManager.TRIAL_STARTED, "HOUSELOGIX") 
+        self.houselogixTimerTrial = TimerManager:new(trialExpiredLapse, "HOURS", self.onHouselogixTimerTrialExpire, false)
+        self:setStatusMessage('Trial mode')
+        self.houselogixTimerTrial:start()
+    elseif self:getParamValue("Trial", "HOUSELOGIX") == LicenseManager.TRIAL_STARTED then
+    elseif self:getParamValue("Trial", "HOUSELOGIX") == LicenseManager.TRIAL_EXPIRED then 
+        self:Houselogix_Activate()
+    else
+        print ("Houeselogix Trial unknow state: "..(tostring(self:getParamValue("Trial", "HOUSELOGIX")) or "nil"))
+    end
+end
+
+function LicenseManager:setParamValue(param_key, param_value, vendor_id)
+
+    if (vendor_id) then
+        --print("setParamValue with vendor_id")
+        self.vendorData[vendor_id][param_key] = param_value
+    else
+        --print("setParamValue with automagic vendor_id")
+        local autoVendorId = self:getCurrentVendorId()
+        --print (autoVendorId)
+        self.vendorData[autoVendorId][param_key] = param_value
+    end
+end
+function LicenseManager:getParamValue(param_key, vendor_id)
+    if (vendor_id) then
+        return self.vendorData[vendor_id][param_key]
+    else
+        return self.vendorData[self:getCurrentVendorId()][param_key]
+    end
+end
+
+--
+-- Functions to test licence validity
+--
+function LicenseManager:isLicenseActive()
+    if self:getCurrentVendorId() == "DRIVERCENTRAL" then
+        return (DC.X == 1)
+    elseif self:getCurrentVendorId() == "HOUSELOGIX" then
+        return self:getParamValue("Licensed", "HOUSELOGIX")
+    else
+        return false
+    end
+end
+function LicenseManager:isLicenseTrial()
+    if self:getCurrentVendorId() == "DRIVERCENTRAL" then
+        return (DC.X < 0)
+    elseif self:getCurrentVendorId() == "HOUSELOGIX" then
+        return self:getParamValue("Trial", "HOUSELOGIX")
+    else
+        return false
+    end
+end
+
+function LicenseManager:isLicenseActiveOrTrial()
+    return self:isLicenseActive() or self:isLicenseTrial()
+end
+
+function LicenseManager:isAbleToWork()
+	if self:getCurrentVendorId() == "DRIVERCENTRAL" then
+		local lic = self:isLicenseActive()
+		local trial = self:isLicenseTrial()
+		return lic or trial
+	elseif self:getCurrentVendorId() == "HOUSELOGIX" then
+		local lic = self:isLicenseActive()
+		local trial = self:isLicenseTrial() == 1
+		return lic or trial
+	end
+end
+
+--
+-- C4 Enviroment hooks
+--
+function LicenseManager:OnDriverInit()
+    C4:SetPropertyAttribs("Cloud Status", 1)
+    C4:SetPropertyAttribs("Automatic Updates", 1)
+    C4:SetPropertyAttribs("Houselogix License Code", 1)
+    C4:SetPropertyAttribs("Houselogix License Status", 1)
+    
+    self:OnDriverInit_HouseLogix()
+    self:OnDriverInit_DriverCentral()    
+end
+
+function LicenseManager:OnDriverLateInit()
+
+    self:OnDriverLateInit_HouseLogix()    
+    self:OnDriverLateInit_DriverCentral()  
+
+    self.vendorData = PersistData.vendorData or self.vendorData
+    PersistData.vendorData = self.vendorData	
+end
+
+--
+-- Vendor specific functions
+--
+function LicenseManager:OnDriverInit_DriverCentral()
+    require "json"
+	JSON=(loadstring(json.JSON_LIBRARY_CHUNK))()
+    -- set global vars required by DriverCentral.io
+    DC_PID = self:getParamValue("ProductId", "DRIVERCENTRAL") 
+	DC_FD = self:getParamValue("FreeDriver", "DRIVERCENTRAL") 
+    DC_FILENAME = self:getParamValue("FileName", "DRIVERCENTRAL") 
+    
+    require "SKC4.licence.cloud_client_v1007"
+end
+function LicenseManager:OnDriverLateInit_DriverCentral()
+    -- do something...
+end
+
+---------------
+-- HouseLogix
+---------------
+function LicenseManager:OnDriverInit_HouseLogix()
+    -- do something...
+end
+function LicenseManager:OnDriverLateInit_HouseLogix()   
+    if self:getParamValue("Trial", "HOUSELOGIX") == LicenseManager.TRIAL_STARTED then
+        local trialExpiredLapse = self:getParamValue("TrialExpiredLapse", "HOUSELOGIX") 
+        self.houselogixTimerTrial = TimerManager:new(trialExpiredLapse, "HOURS", self.onHouselogixTimerTrialExpire, false)
+        self.houselogixTimerTrial:start()
+    end
+end
+
+function LicenseManager:onHouselogixTimerExpire(ticketId, sData, responseCode, tHeaders)
+    
+    if (LICENSE_MGR:getCurrentVendorId() == "HOUSELOGIX") then
+        LICENSE_MGR:Houselogix_Activate()	
+    end
+end
+
+function LicenseManager:onHouselogixTimerTrialExpire(ticketId, sData, responseCode, tHeaders)
+    print ("Houselogix Trial timer Expired!")
+    LICENSE_MGR:setParamValue("Trial", LicenseManager.TRIAL_EXPIRED, "HOUSELOGIX") 
+    if (LICENSE_MGR:getCurrentVendorId() == "HOUSELOGIX") then
+        LICENSE_MGR:setParamValue("Licensed", false, "HOUSELOGIX")
+        LICENSE_MGR:Houselogix_Activate()	
+    end
+end
+
+
+
+--- -----------------------------------------------------------------
+--- HOUSELOGIX LICENSE_MGR MANAGER
+--- -----------------------------------------------------------------
+
+
+function LicenseManager:Houselogix_Activate()
+  self:setStatusMessage('Activating driver license...')
+  mac = C4:GetUniqueMAC ()
+
+  local license_code = self:getParamValue("LicenseCode", "HOUSELOGIX")
+  local Houselogix_product_number = self:getParamValue("ProductId", "HOUSELOGIX")
+  local sw_version = self:getParamValue("Version", "HOUSELOGIX")
+  local postData = string.format('lic=%s&mac=%s&p=%s&ver=%s', license_code, mac, Houselogix_product_number, sw_version)
+  --dbg (postData)
+  ticketId = C4:urlPost('https://www.houselogix.com/license-manager/activatelicense.asp', postData, {}, false, self.Houselogix_Response)
+  --methodType[ticketId] = "HLicense_Activate" -- QUESTA SERVE ANCORA? TOFIX
+end
+
+function LicenseManager.Houselogix_Response(ticketId, data, responseCode, tHeaders, strError )
+  print('OnLicenseActivationResponseReceived')
+  --dbg(ticketId)
+  --dbg(data)
+  local i = string.find(data, 'Valid')
+  if (i) then
+    LICENSE_MGR:setParamValue("Licensed", true, "HOUSELOGIX")
+    LICENSE_MGR:setStatusMessage('Activated (last checked on: '..os.date("%m/%d/%Y %X")..')')
+  elseif (string.find(data, 'Unauthorized')) then
+    LICENSE_MGR:setParamValue("Licensed", false, "HOUSELOGIX")
+    LICENSE_MGR:setStatusMessage('Invalid license key')
+    --LICENSE_MGR.houselogixTimerCheck = TimerManager:new(60, "MINUTES", LICENSE_MGR.onHouselogixTimerExpire, false)
+    --LICENSE_MGR.houselogixTimerCheck:start()
+    print("License is NOT ok")
+  elseif (string.find(data, 'Failed')) then
+    if LICENSE_MGR:getParamValue("Licensed", "HOUSELOGIX") then 
+        LICENSE_MGR:setParamValue("Licensed", true, "HOUSELOGIX")
+    else
+        LICENSE_MGR:setParamValue("Licensed", false, "HOUSELOGIX")
+    end
+    LICENSE_MGR:setStatusMessage('Failed to verify')
+    --LICENSE_MGR.houselogixTimerCheck = TimerManager:new(60, "MINUTES", LICENSE_MGR.onHouselogixTimerExpire, false)
+    --LICENSE_MGR.houselogixTimerCheck:start()
+  else
+   -- LICENSE_MGR:setParamValue("Licensed", false, "HOUSELOGIX")
+    LICENSE_MGR:setStatusMessage(strError)
+    
+  end
+  local checkInterval =  LICENSE_MGR:getParamValue("ValidityCheckInterval", "HOUSELOGIX") 
+  LICENSE_MGR.houselogixTimerCheck = TimerManager:new(checkInterval, "MINUTES", LICENSE_MGR.onHouselogixTimerExpire, false)
+  LICENSE_MGR.houselogixTimerCheck:start()
+  --return HLicense
+end
+
+
+-- return LicenseManager
+
+LICENSE_MGR = LICENSE_MGR or LicenseManager:new()
+
+ end)
+package.preload['SKC4.Logger'] = (function (...)
+-- Modulo per gestire i file di log
+
+local Logger = {}
+
+ut = require "SKC4/Utility"
+--local C4 = require("SKC4/C4")
+
+function Logger:new (o)
+    o = o or {}
+    setmetatable(o, self)
+    self.__index = self
+    self.logLevels = {
+      ["INFO"] = "I",
+      ["WARN"] = "W",
+      ["ERROR"] = "E",
+      ["FATAL"] = "F",
+      ["DEBUG"] = "D",
+      ["NONE"] = "-",
+      ["ALL"]  = "IWEFD",
+      }
+    self._DEFAULT_OUTPUT_FORMAT     = "%s %s:%s -- %s\n"
+    self._DEFAULT_FILE_NAME_FORMAT  = "%s_%s.log"    
+    self._DEFAULT_DATE_FORMAT       = "%Y%m%d%H%M%S"
+
+    self._DEFAULT_FILE_POINTER      = io.stdio
+    self._DEFAULT_FILE_NAME         = nil
+    self._DEFAULT_FILE_PATH         = nil 
+    self._DEFAULT_MAX_FILES         = 0
+    
+    self._currentMaxNumberOfFIles        = self._DEFAULT_MAX_FILES
+    self._currentFilePointer        = self._DEFAULT_FILE_POINTER
+    self._currentFilePath           = self._DEFAULT_FILE_PATH
+    self._currentFileName           = self._DEFAULT_FILE_NAME
+    self._currentLogLevel           = self.logLevels.INFO
+    self._currentOutputFormat       = self._DEFAULT_OUTPUT_FORMAT
+    self._currentFileNameFormat     = self._DEFAULT_FILE_NAME_FORMAT
+    self._currentLogMaxSize         = 2097152 -- 2MB
+    return o
+end
+
+function Logger:findLevelKey(level)
+  for k,v in pairs(self.logLevels) do
+    if (v == level) then
+      return k
+    end
+  end
+  return nil
+end
+
+function Logger:write(message)
+    self:rotate()    
+    if (self._currentFilePointer ~= nil and self._currentFilePointer ~= self._DEFAULT_FILE_POINTER) then
+        C4:FileWrite(self._currentFilePointer,message:len(), message)
+    else
+        print(message)    --because C4 do not open by default the io.stdio like file_pointer 
+	end    
+    return message
+end
+
+--function Logger:formattedWrite(level, source, message)
+function Logger:formattedWrite(...)
+    --local fullLevel = self:findLevelKey(level)
+    --local outString = string.format(self._currentOutputFormat,
+    --    fullLevel,
+    --    os.date("%m/%d/%Y %H:%M:%S"),
+    --    source,
+    --    message)
+    local level,source,message
+    if ... then
+		level = select(1, ...)
+		source = select(2, ...)
+		message = select(3, ...)
+    end
+    local fullLevel = self:findLevelKey(level)
+    local info = debug.getinfo(3,'lS');
+
+    local message = ""
+
+    -- convert all params into strings
+    for key,val in ipairs(...) do
+        if (message.length == 0) then
+            message = self:convertToString(val)
+        else
+            message = message .." "..self:convertToString(val)
+        end
+    end
+    
+    local outString = string.format(self.currentOutputFormat,
+        fullLevel,
+        info.source,
+        info.currentline,
+        message)
+    return self:write(outString)
+end
+
+function Logger:convertToString(obj)
+    local encoded = json.encode( obj, { indent=true } )
+
+    if (type(obj) == "table") then
+    if not encoded then
+        -- LOGGER:debug( "Table encoding failed")
+        return tostring(obj)
+    else
+        -- LOGGER:debug( "Table successfully encoded!" )
+        return encoded
+    end
+    else
+        return tostring(obj)
+    end
+end
+
+function Logger:setLogLevel(level)
+  local flag = true
+  
+  for x in level:gfind(".") do
+    key = self:findLevelKey(x)
+    self._currentLogLevel = self.logLevels.NONE;
+    if (self.logLevels[key] == nil) then flag = false; break; end
+  end
+  if ( flag == true ) then
+      self._currentLogLevel = level
+  end
+
+end
+
+function Logger:getLogLevel(level)
+    return self._currentLogLevel;
+end
+
+function Logger:isLogLevelEnabled(level)
+  return (self._currentLogLevel:find(level) ~= nil) 
+end
+
+
+function Logger:open(filePath, fileName)
+  self._currentFilePath = filePath
+  self._currentFileName = fileName 
+  
+  C4:FileSetDir(self._currentFilePath)  --move in file path folder
+
+  logFileName = string.format(self._currentFileNameFormat, fileName, os.date(self._DEFAULT_DATE_FORMAT));
+  -- Open the file
+  self._currentFilePointer = C4:FileOpen(logFileName)
+  local pos = C4:FileGetSize(self._currentFilePointer)
+  C4:FileSetPos(self._currentFilePointer, pos)
+
+  C4:FileSetDir('/')
+  return self._currentFilePointer, logFileName
+end
+
+function Logger:close()
+    -- only if a file is open
+  if (self._currentFilePointer ~= self._DEFAULT_FILE_POINTER) then
+    
+    -- Close the file
+    if (self._currentFilePointer ~= nil) then
+        C4:FileClose(self._currentFilePointer)
+        --self._currentFilePointer:close()
+        self._currentFilePointer = self._DEFAULT_FILE_POINTER
+        self._currentFilePath = nil
+        self._currentFileName = nil
+    end
+  end
+end
+
+function Logger:info(source, message)
+    if (self:isLogLevelEnabled(self.logLevels.INFO)) then
+        return self:formattedWrite(self.logLevels.INFO, source, message);
+    end 
+end
+
+function Logger:warn(source, message)
+    if (self:isLogLevelEnabled(self.logLevels.WARN)) then
+        return self:formattedWrite(self.logLevels.WARN, source, message);
+    end 
+end
+
+function Logger:error(source, message)
+    if (self:isLogLevelEnabled(self.logLevels.ERROR)) then
+        return self:formattedWrite(self.logLevels.ERROR, source, message);
+    end 
+end
+
+function Logger:fatal(source, message)
+    if (self:isLogLevelEnabled(self.logLevels.FATAL)) then
+        return self:formattedWrite(self.logLevels.FATAL, source, message);
+    end 
+end
+
+function Logger:debug(source, message)
+    if (self:isLogLevelEnabled(self.logLevels.DEBUG)) then
+        return self:formattedWrite(self.logLevels.DEBUG, source, message);
+    end 
+end
+
+function Logger:setMaxLogSize( size )
+  self._currentLogMaxSize = size
+end
+
+function Logger:setMaxLoggersNumber( number )
+    self._currentMaxNumberOfFIles = number
+  end
+
+function Logger:getMaxLogSize()
+  return self._currentLogMaxSize
+end
+
+function Logger:getFilePointer()
+    return self._currentFilePointer
+end
+
+function Logger:getFilePath()
+    return self._currentFilePath
+end
+
+function Logger:getFileName()
+    return self._currentFileName
+end
+
+function Logger:rotate(force)
+    if (self._currentFilePointer ~= self._DEFAULT_FILE_POINTER) then
+        local fileSize = C4:FileGetSize(self._currentFilePointer)
+        
+        if (self._currentMaxNumberOfFIles ~= self._DEFAULT_MAX_FILES) then 
+            local loggersNumber = self:getLoggersNumber()
+            print ("loggersNumber", loggersNumber)
+            while (loggersNumber >= self._currentMaxNumberOfFIles) do
+                print ("loggersNumber >= self._currentMaxNumberOfFIles",loggersNumber >= self._currentMaxNumberOfFIles)
+                self:removeFirst()
+                loggersNumber = self:getLoggersNumber()
+            end
+        end
+        if (force ~= nil or tonumber(fileSize) > self._currentLogMaxSize) then
+            local oldPath = self._currentFilePath -- store old value 'cause close() clear _currentFilePath
+            local oldName = self._currentFileName -- store old value 'cause close() clear _currentFileName
+            self:close() 
+            return self:open(oldPath,oldName)
+        else
+            return self._currentFilePointer, self._currentFilePath, self._currentFileName
+        end
+    end
+end
+
+--private
+function Logger:getLoggersNumber()    
+    C4:FileSetDir(self._currentFilePath)
+    local loggerList = C4:FileList()
+    local count = 0
+    for k,v in pairs(loggerList) do
+        ----print (k,v) 
+        if (string.match(v, self._currentFileName)) then 
+            ----print (string.match(v, self._currentFileName))
+            count = count + 1 
+        end
+    end
+    C4:FileSetDir("/")
+    return count 
+end
+
+function Logger:removeFirst()    
+    C4:FileSetDir(self._currentFilePath)
+    local loggerList = C4:FileList()
+    local count = 0
+    ----------------20171204114408
+    local minimum = 30000000000000
+    local fileToRemove = ""
+    for k,v in pairs(loggerList) do 
+        if (string.match(v, self._currentFileName)) then 
+            ----print (string.match(v, self._currentFileName))
+            local n = tonumber(string.match (v, "(%d+)"))
+            ----print ("n:  ", n)
+            ----print ("file:  ", v)
+            if ( n < minimum ) then 
+                minimum = n
+                fileToRemove = v 
+            end
+        end
+    end
+
+    ----print (fileToRemove, minimum)
+    if (fileToRemove ~= "") then  
+        print("deleting logger :",fileToRemove)
+        C4:FileDelete(fileToRemove) 
+    end
+    C4:FileSetDir("/")
+    return count 
+end
+
+
+return Logger;
+
+ end)
+package.preload['SKC4.SKC4'] = (function (...)
+local SKC4 = {}
+
+SKC4.version = "0.0.1"
+-- SKC4.Connections = require("SKC4.Connections");
+SKC4.Logger = require("SKC4.Logger");
+-- SKC4.Debug = require("SKC4.Debug"); -- Alias per un logger che scrive su stdout
+SKC4.Utility = require("SKC4.Utility"); -- Alias per un logger che scrive su stdout
+SKC4.TimerManager = require("SKC4.TimerManager")
+SKC4.LicenceManager = require("SKC4.LicenseManager")
+return SKC4;
+ end)
+package.preload['SKC4.TimerManager'] = (function (...)
+--C4 = require 'SKC4.C4' -- if we are not in C4 env, I'll emulate it
+local TimerManager = {}
+
+
+function TimerManager:new (interval_delay, time_unit, on_expire_callback, will_repeat, o)
+    o = o or {}
+    setmetatable(o, self)
+    self.__index = self
+
+    self.interval_delay = interval_delay
+    self.callback = on_expire_callback
+    self.will_repeat = will_repeat
+    self.timerId = 0 
+    -- , SECONDS, MINUTES and HOURS
+    if (time_unit == "SECONDS") then
+        self.time_unit = 1000
+    elseif (time_unit == "MINUTES") then
+        self.time_unit = 60*1000
+    elseif (time_unit == "HOURS") then
+        self.time_unit = 60*60*1000
+    else
+        self.time_unit = 1
+    end 
+    return o
+end
+
+function TimerManager:start()
+    if (self.timerId) then
+        self:stop()
+    end
+    self.timerId = C4:SetTimer(self.interval_delay * self.time_unit, self.callback, self.will_repeat)
+end
+
+function TimerManager:stop()
+    self.timerId = C4:KillTimer(self.timerId)
+end
+
+--
+-- Setter and Getter
+--
+
+
+--
+-- Private functions
+--
+
+
+return TimerManager
+ end)
+package.preload['SKC4.Utility'] = (function (...)
+local Utility = {}
+
+
+--remove the first element of a list
+function Utility.remove(tbl, index)
+	if (index == nil ) then index = 1 end
+	local a = {}
+	--local b = {}
+	--local c
+	for n,v in pairs(tbl) do 
+		table.insert(a, n) 
+	end
+	table.sort(a)
+	local f = nil
+	local o = {}
+	for i, t in pairs(a) do
+		if (f == nil) then 
+			f = tbl[t]
+		else
+			table.insert(o, tbl[t])
+		end
+	end
+	 --Utility.tprint(b)
+	return o, f
+end
+
+function Utility.tprint (tbl, indent)  --print table
+	if type(tbl) == "table" then
+		if not indent then indent = 0 end
+		for k, v in pairs(tbl) do
+			formatting = string.rep("   ", indent) .. k .. ": "
+			if type(v) == "table" then
+				print(formatting)
+				Utility.tprint(v, indent+1)
+			else
+				print(formatting .. tostring(v, indent))
+			end
+		end
+	else
+		print (tbl)
+	end
+end
+
+function Utility.tstring (tbl, indent) -- transform table in string, nested
+	--ritorna una stringa contenente i valori della table
+    --if indent is -1 return a table in one line string
+	local  mytable = ""
+	if indent == nil then indent = 0 end
+	if (type(tbl) == "table") then
+		if (indent == -1) then 
+			for k,v in pairs(tbl) do
+				if type(v) == "table" then
+					mytable = mytable .. " "..Utility.tstring(v, -1)
+				else
+					mytable = mytable ..k.. " " .. tostring(v) 
+				end
+			end
+		elseif(type(indent) == "number") then
+			for k, v in pairs(tbl) do
+				formatting = string.rep("   ", indent) .. k .. " : "
+				if type(v) == "table" then
+					mytable = mytable .. "\n"..formatting
+					mytable = mytable .."\n"..Utility.tstring(v, indent+1)
+				else
+					mytable = mytable .. formatting .. tostring(v) .." \n"
+				end
+			end
+		elseif(type(indent) == "string") then
+			for k, v in pairs(tbl) do
+				--formatting = string.rep("   ", indent) .. k .. " : "
+				if type(v) == "table" then
+					formatting = indent .. k
+					mytable = mytable .. formatting
+					mytable = mytable .. Utility.tstring(v, indent)
+				else
+					mytable = mytable ..indent .. tostring(v)
+				end
+				
+			end
+			mytable = mytable .."\n"
+		end
+	else 
+		mytable = tbl
+	end
+	return mytable
+end
+
+
+
+--get the "very" first element of a Table... let's lua, not only if is key is a number like getn
+function Utility.getFirstId(T)
+	if (T == nil) then
+		return {}
+	else  
+		local n  = 1
+		local f
+		for k, v in pairs(T) do
+			if n == 1 then f = k end
+		end
+		return f
+	end
+end
+
+function Utility.tableLength(T)
+	local count = 0
+	for _ in pairs(T) do count = count + 1 end
+	return count
+  end
+
+--take "str" (string) and slpit it by "inSplitPattern" returning a table of the substring splitted in "outResults"(optional)
+function Utility.split(str, inSplitPattern, outResults ) 
+    if not outResults then
+		outResults = {}
+	end
+	local theStart = 1
+	local theSplitStart, theSplitEnd = string.find( str, inSplitPattern, theStart )
+	while theSplitStart do
+		table.insert( outResults, string.sub( str, theStart, theSplitStart-1 ) )
+		theStart = theSplitEnd + 1
+		theSplitStart, theSplitEnd = string.find( str, inSplitPattern, theStart )
+	end
+	table.insert( outResults, string.sub( str, theStart ) )
+	return outResults
+end
+
+
+function Utility.Avg_DevStd(value, stddev, avg, n)
+    local delta = value - avg
+    n = n+1
+    avg = avg + delta / n 
+    stddev = math.sqrt(((stddev*stddev * (n-1)) + delta*(value - avg))/n)
+    return stddev, avg, n 
+end
+
+-- Private members
+function pairsByKeys (t, f)
+	local a = {}
+	for n in pairs(t) do table.insert(a, n) end
+	table.sort(a, f)
+	local i = 0      -- iterator variable
+	local iter = function ()   -- iterator function
+	  i = i + 1
+	  if a[i] == nil then return nil
+	  else return a[i], t[a[i]]
+	  end
+	end
+	return iter
+end
+
+
+
+return Utility
+
+
+
+ end)
+package.preload['SKC4.licence.cloud_client_v1007'] = (function (...)
+-- Please put here the cloud client code as provided by DriverCentral.
+return {} end)
+socket = require("socket")
+udp = assert(socket.udp())
+
+-- variabili da settare
+max_license_val = 200 --molto alto è difficile che possa essere fregata la licenca com'è adesso
+unique_device_id = "Max KMT Relay Devices"
+--- Build License Manager object
+require 'SKC4.LicenseManager'
+--- Config License Manager
+LICENSE_MGR:setParamValue("ProductId", XXX, "DRIVERCENTRAL") -- Product ID
+LICENSE_MGR:setParamValue("FreeDriver", false, "DRIVERCENTRAL") -- (Driver is not a free driver)
+LICENSE_MGR:setParamValue("FileName", "KMTRelayRadio.c4z", "DRIVERCENTRAL") -- Filename
+LICENSE_MGR:setParamValue("ProductId", XXX , "HOUSELOGIX") -- Filename
+LICENSE_MGR:setParamValue("LicenseCode", "Put here your licence", "HOUSELOGIX") -- Filename -- DD394AB4A8CA48BB
+LICENSE_MGR:setParamValue("Version", C4:GetDriverConfigInfo ("version"), "HOUSELOGIX") -- Filename -- DD394AB4A8CA48BB
+LICENSE_MGR:setParamValue("Trial", LICENSE_MGR.TRIAL_NOT_STARTED, "HOUSELOGIX") -- Filename -- DD394AB4A8CA48BB
+--------------------------------------------
+-- REMOVE THIS TO ENABLE LICENCE MANAGEMENT 
+LICENSE_MGR:isLicenseActive = function ()
+    return true
+end
+LICENSE_MGR:isLicenseTrial = function ()
+    return 1
+end
+--------------------------------------------
+
+
+-- tables and variables
+
+EX_CMD = {}
+PRX_CMD = {}
+NOTIFY = {}
+do	
+	Common = {}	
+	Timer = {}		--timers
+end
+------------------------------------------------DEV_MSG = {}
+LUA_ACTION = {}
+
+-- Relay Status Table
+RelayStatus = {}
+    -- all relay initial status is 0
+    for x = 1,8 do 
+	   RelayStatus[x] = 0
+    end
+
+
+KMT_IP = "KMTronic IP"
+KMT_Port = "KMTronic Port"
+--KMT_User = "KMTronic User"
+--KMT_Pwd = "KMTronic Password"
+Debug = "Debug"
+Polling = "Polling"
+Polling_sec = "Polling seconds"
+dealer_email = "Dealer e-mail"
+License_code = "License code"
+License_status = "License Status"
+
+License_Provider = "License Provider"
+HL_Licence_code = "Houselogix License Code"
+
+
+
+Variable_name = "CommandMask"
+-- variabile per messaggio verso il bot
+C4:AddVariable(Variable_name,"","STRING",false)
+
+C4:urlSetTimeout(5)
+
+--load moduli esterni e funzione reload come da forum
+local req = {"utils.common","utils.sha"} 
+    for x = 1, #req do 
+	   if(package.loaded[req[x]] ~= nil)then 
+	   print("Package "..req[x].." is already loaded, unload") 
+	   package.loaded[req[x]] = nil 
+    end 
+end 
+
+require("utils.common") 
+require("utils.sha")
+
+---------------------------------------------------------------------
+-- Table of function from common
+---------------------------------------------------------------------
+ON_DRIVER_INIT = {}
+ON_DRIVER_EARLY_INIT = {}
+ON_DRIVER_LATEINIT = {}
+ON_DRIVER_UPDATE = {}
+ON_DRIVER_DESTROYED = {}
+ON_PROPERTY_CHANGED = {}
+
+---------------------------------------------------------------------
+-- Initialization/Destructor Code
+---------------------------------------------------------------------
+function checkDeviceInstalled()
+    -- restituisce il numero dei driver presenti nel progetto
+    --print(C4:GetProjectItems())
+	string_find = unique_device_id
+	x, driver_installed = string.gsub(C4:GetProjectItems(), string_find, string_find)
+	--driver_installed = driver_installed/2 -- la funzione precedente restituisce 2 per ogni driver
+	print("Number of driver installed: ".. driver_installed)
+    return driver_installed
+end
+
+--[[function HLicense_Activate()
+  C4:UpdateProperty(License_status, 'Activating driver license...')
+  mac = C4:GetUniqueMAC ()
+  print("Sending PstData")
+  local postData = string.format('lic=%s&mac=%s&p=%s&ver=%s', Properties[License_code], mac, product_number, sw_version)
+  urlPost('https://www.houselogix.com/license-manager/activatelicense.asp', postData, {}, function(strData) HLicense_Response(strData) end)
+end
+license_count = 0
+
+function HLicense_Response(data)
+  Dbg('OnLicenseActivationResponseReceived'..data)
+  --data = 'Valid' --fixme togliere la stringa per far funzionare la parte di licenze
+  local i = string.find(data, 'Valid')
+  if (i) then
+		C4:UpdateProperty(License_status, 'Activated (last checked on: '..os.date("%m/%d/%Y %X")..')')
+		Licenziato = true
+		license_count = 0
+		PersistData.Licensed = os.date("%m/%d/%Y %X")
+  elseif (string.find(data, 'Unauthorized')) then
+		 Licenziato = false
+		 PersistData.Licensed = nil
+		 C4:UpdateProperty('License Status', 'Invalid license key')
+		 license_count = 0
+		 print("License is NOT ok")
+  elseif (string.find(data, 'Failed')) then
+		 if PersistData.Licensed ~= nil then 
+			Licenziato = true
+		 else
+			Licenziato = false
+			license_count = 0
+			print("Licensing Failed")
+		 end
+  end
+  --return HLicense
+  Timer.license = Common.AddTimer (Timer.license, licenseTime, licenseUnit, false)
+end
+
+
+function checkLicense()
+	--print(Licenziato)
+    if (Licenziato == true)  then
+	   --Properties[License_status] = "Licensed"
+	   Licenziato = true
+	   license_count = license_count + 1
+    else
+		  HLicense_Activate()
+	end
+	if (license_count > max_license_val) then
+		HLicense_Activate() --ricontrollo licenza ogni max_license_val
+	end
+
+    --print(tostring(Licenziato)..license_count)
+    return Licenziato
+end
+]]
+
+function OnDriverInit()
+    print('Driver KMT Init')
+    --g_cnt = 0
+    DelayPolling = 0
+    PollInit = true
+    NoPoll = false
+    poll_timer = 0
+	--Timer.license = Common.AddTimer (Timer.license, licenseTime, "MINUTES", false)
+	--Timer.license = Common.AddTimer (Timer.license, licenseTime, licenseUnit, false) 
+
+	--local t = C4:SetTimer(5000, function(timer) HLicense_Activate() print("License testing...") end) 
+    --PollInit = true
+    --poll_timer = StartPollTimer()
+    --Licenziato = checkLicense()
+	if socket == nil then
+		--print ("socket == nil")
+		socket = require("socket")
+		udp = socket.udp()
+	end
+	udp:settimeout(1)
+	IP = Properties[KMT_IP]
+    Port = Properties[KMT_Port]
+    User = Properties[KMT_User]
+    Pwd = Properties[KMT_Pwd]
+	if (IP ~= nil and Port ~= nil) then
+		setupServer()
+	end
+	LICENSE_MGR:OnDriverInit()  		
+end
+function OnDriverLateInit ()
+	print("OnDriverLateInit")
+	C4:SetPropertyAttribs("Automatic Updates", 1)
+	LICENSE_MGR:OnDriverLateInit() 
+end
+
+
+function OnDriverUpdate()
+	--Timer.license = Common.AddTimer (Timer.license, licenseTime, "MINUTES", false)
+	--Timer.license = Common.AddTimer (Timer.license, licenseTime, licenseUnit, false)
+	IP = Properties[KMT_IP]
+    Port = Properties[KMT_Port]
+    User = Properties[KMT_User]
+    Pwd = Properties[KMT_Pwd]
+	setupServer()	
+end
+
+function OnDriverDestroyed()
+    -- distruggo il timer
+    TimerKill(poll_timer)
+end
+
+-- apertura relay
+function PRX_CMD.OPEN(idBinding, tParams)
+    --spengo il timer
+    NoPoll = true
+    -- controllo licenza
+    if LICENSE_MGR:isAbleToWork() then
+	   Dbg("Open KMT Relay "..idBinding)
+	   RelayStatus[idBinding] = 0
+	   RelayCMD(idBinding,0)
+	   C4:SendToProxy(idBinding, "OPENED",  "", "NOTIFY")
+    end
+    --ri-avvio il timer
+    TimerNoPoll()
+end
+
+-- chiusura relay
+function PRX_CMD.CLOSE(idBinding, tParams)
+    --spengo il timer
+    NoPoll = true
+    -- controllo licenza
+    if LICENSE_MGR:isAbleToWork() then
+	   Dbg("Close KMT Relay "..idBinding)
+	   RelayStatus[idBinding] = 1
+	   RelayCMD(idBinding,1)
+	   C4:SendToProxy(idBinding, "CLOSED",  "", "NOTIFY")
+    end
+    --ri-avvio il timer
+    TimerNoPoll()
+end
+
+-- toogle
+function PRX_CMD.TOGGLE(idBinding, tParams)
+    if RelayStatus[idBinding] == 0 then
+	   PRX_CMD.CLOSE(idBinding, tParams)
+    else
+	   PRX_CMD.OPEN(idBinding, tParams)
+    end
+
+end
+
+-- trigger
+function PRX_CMD.TRIGGER(idBinding, tParams)
+    -- trigger
+    Ttime = tonumber(tParams['TIME'])
+    PRX_CMD.CLOSE(idBinding, tParams)
+        C4:SetTimer(Ttime, function(timer)
+	   PRX_CMD.OPEN(idBinding, tParams)
+	   end)
+end
+
+function PRX_CMD.GET_STATE(idBinding, tParams)
+    -- controllo licenza
+    if LICENSE_MGR:isAbleToWork() then
+	   if RelayStatus[idBinding] == 0 then
+		  C4:SendToProxy(idBinding, "OPENED",  "", "NOTIFY")
+	   else
+		  C4:SendToProxy(idBinding, "CLOSED",  "", "NOTIFY")
+	   end
+    end
+end
+
+----------------------------------------- 
+--Connections Functions 
+-----------------------------------------
+
+function OnBindingChanged(idBinding, class, bIsBound)
+    Dbg("OnBindingChanged")
+end
+
+-- cambio di una variabile
+function OnVariableChanged(strName)
+    Dbg("OnVariableChanged")
+end
+
+function OnPropertyChanged(sProperty)
+    --Dbg("OnPropertyChanged")
+    -- Polling
+    if Properties[Polling] == "On" then
+	   -- spengo e ri-attivo per sicurezza
+	   poll_timer = C4:KillTimer(poll_timer)
+	   poll_timer = StartPollTimer()
+    else
+	   poll_timer = C4:KillTimer(poll_timer)
+    end
+	if (sProperty == KMT_IP) then 
+		IP = Properties[sProperty]
+	end
+
+	if (sProperty == KMT_Port) then 
+		Port = Properties[sProperty]
+	end
+	if (IP ~= nil and Port ~= nil) then
+    	setupServer()
+	end
+	--licensing
+	local value = Properties[sProperty]
+	if (sProperty == License_Provider) then
+		Dbg("strProperty == 'License_Provider'") 
+		LICENSE_MGR:ON_PROPERTY_CHANGED_LicenseProvider(value)
+	end
+	if (sProperty == HL_Licence_code) then 
+		Dbg("strProperty == 'HL_Licence_code'")
+		LICENSE_MGR:ON_PROPERTY_CHANGED_HouselogixLicenseCode(value)
+	end
+end
+
+----------------------------------------- 
+--Actions Functions 
+-----------------------------------------
+
+function setupServer()
+	
+	if (udp:getsockname() ~= nil) then
+	--print("udp:getsockname() ~= nil")
+		i,p = udp:getsockname()
+		--print(i,p)
+		if(i ~= "0.0.0.0")then 
+			--print("i ~= 0.0.0.0")
+			assert(udp:setpeername("*"))
+			assert(udp:close())
+			udp = assert(socket.udp())
+		end
+		--print(udp:getsockname())
+	else
+		--print("udp = assert(socket.udp())")
+		udp = assert(socket.udp())
+	end
+	--print("fuori tutto")
+	--i,p = udp:getsockname()
+	--print(i)
+	--print (p)
+	assert(udp:setsockname("*",Port))
+	assert(udp:setpeername(IP,Port))
+	print(udp:getsockname())
+	print(udp:getpeername())
+end
+
+function LUA_ACTION.TestOPEN()
+    --spengo il timer
+    NoPoll = true
+    Dbg("Start Testing Open All KMT Relays")
+    --RelayLoop(1, 0)
+    AllRelaysCMD("OPENED")
+end
+
+function LUA_ACTION.TestCLOSE()
+    --spengo il timer
+    NoPoll = true
+    Dbg("Start Testing Close All KMT Relays")
+    --RelayLoop(1, 1)
+    AllRelaysCMD("CLOSED")
+end
+
+function LUA_ACTION.DisplayStatus()
+    --spengo il timer
+    NoPoll = true
+    -- controllo licenza
+	updateKmtStatus()
+    if LICENSE_MGR:isAbleToWork() then
+	    txt_Info ="\n".. "KMT RELAYS STATUS".."\n-------------------------"
+	    for index, rel in pairs(RelayStatus) do
+		  if rel == 0 then
+			 txt_Info = txt_Info.."\n KMT Relay "..index .." is OPEN (0)"
+		  else
+			 txt_Info = txt_Info.."\n KMT Relay "..index .." is CLOSE (1)"
+		  end
+	    end
+	    Dbg(txt_Info)
+	end
+    --ri-avvio il timer
+    TimerNoPoll()
+    
+end
+
+----------------------------------------- 
+--KMTronic Functions 
+-----------------------------------------
+minimum = 100
+maximum = 400
+function RelayCMD(RelNr,RelOnOff)
+	RelayStatus[RelNr] = RelOnOff
+	local msg = "FF".."0"..RelNr..'0'..RelOnOff
+	print ("message to send "..msg)
+	local t = C4:SetTimer(math.random (minimum, maximum), function(timer) assert(udp:send(msg))end)
+	--C4:SetTimer(math.random (100, 500), sendCMD(msg), false)
+end
+
+function sendCMD(data)
+	assert(udp:send(data))
+end
+function KmtCreateUrl()
+   
+    --KmtUrl = 'http://'..User..':'..Pwd..'@'..IP..':'..Port
+    --return KmtUrl
+end
+
+function RelayALL(OnOff)
+   
+	local msg = "FF"
+	if (OnOff == "00") then
+		msg = msg.."B1"..OnOff
+	elseif(OnOff == "FF")then
+		msg = msg.."B1"..OnOff
+	end
+	assert(udp:send(msg))
+	--local data = udp:receive()
+   -- print(data)			
+end
+
+function AllRelaysCMD(OpenClose)
+    dbg_text = "\n"
+    -- controllo licenza
+    if LICENSE_MGR:isAbleToWork() then
+	   if OpenClose == "CLOSED" then
+		  RelayALL("FF")
+		  Status = 1
+	   else
+		  RelayALL("00")
+		  Status = 0
+	   end
+	   for x = 1,8 do 
+		  RelayStatus[x] = Status
+		  C4:SendToProxy(x, OpenClose,  "", "NOTIFY")
+		  dbg_text = dbg_text .."KMT Relay "..x.." > "..OpenClose.."\n"
+	   end
+	   Dbg(dbg_text)
+    end
+    --ri-avvio il timer
+   TimerNoPoll()
+end
+
+function ReadKmtStatus()
+	--print("sono in kmt ReadKmtStatus")
+	assert(udp:send("FFA100"))
+	--print("lettura")
+	local data = udp:receive()
+	print ("data",data)
+	if (data == nil) then
+		print ("Communication Failure")
+	else
+		for i = 1,8 do
+		print(data:sub(5+(i*2),6+(i*2)))
+			RelayStatus[i] = tonumber (data:sub(5+(i*2),6+(i*2)))
+		end
+	end
+end
+
+-- parsing XML per stato relay
+function updateKmtStatus()
+	--print("sono in kmt updatestatus")
+	ReadKmtStatus()
+	if DelayPolling > 0 then
+	   DelayPolling = 0
+	   poll_timer = C4:KillTimer(poll_timer)
+	   poll_timer = StartPollTimer()
+	end
+
+	if DelayPolling < 300 then
+		 DelayPolling =  DelayPolling + 10
+	  else
+		DelayPolling = 310
+		Dbg("Connection error with: "..Properties[KMT_IP].. " - Delay poll at 5 mins - "..strError)
+		 poll_timer = C4:KillTimer(poll_timer)
+		 poll_timer = StartPollTimer()
+	  end
+end
+
+
+----------------------------------------- 
+--Timer Functions 
+-----------------------------------------
+
+function Common.KillTimer (timer)
+	if (timer and type (timer) == 'number') then
+		return (C4:KillTimer (timer))
+	else
+		return (0)
+	end
+end
+
+
+function Common.AddTimer(timer, count, units, recur)
+	Dbg("timer",count,units,recur,timer)
+	if timer ~= nil then  Dbg("timer not nill:",timer) end
+	local newTimer
+	if (recur == nil) then recur = false end
+	if (timer and timer ~= 0) then Common.KillTimer (timer) end
+	newTimer = C4:AddTimer (count, units, recur)
+	return newTimer
+end
+
+
+--Timer.license = Common.AddTimer (Timer.license, 72, "HOURS", false)
+--Timer.license = Common.AddTimer(Timer.license, licenseTime, licenseUnit, false) 
+
+
+function StartPollTimer()
+    tt = 0
+
+    if (Properties[Polling] == "On" ) then
+	   
+	   if DelayPolling > 0  then
+    		  id = C4:AddTimer(tonumber(DelayPolling), "SECONDS", true)
+		  Dbg("Start Polling Timer with "..DelayPolling.. " seconds of frequency")
+	   else
+		  id = C4:AddTimer(tonumber(Properties[Polling_sec]), "SECONDS", true)
+		  Dbg("Start Polling Timer with "..Properties[Polling_sec].. " seconds of frequency")
+
+	   end
+
+	   return id
+    else
+	   Dbg("Polling Timer is turned off in properties setting")
+	   return 0
+    end
+end
+
+function TimerKill(poll_timer)
+    C4:KillTimer(poll_timer)
+    poll_timer = 0
+end
+
+-- Timer Expire
+function OnTimerExpired(idTimer)
+    --tt = tt +1
+    --print(idTimer .." - Poll_timer= "..poll_timer.."NoPoll: " ..tostring(NoPoll))
+    --C4:KillTimer(idTimer)
+    if (idTimer == poll_timer) then
+	   if NoPoll == false then
+		  --print("Timer fired "..g_cnt)
+		 -- updateKmtStatus()
+	   end
+--	elseif (idTimer == Timer.license) then
+--		Dbg('Timer Expired > Turning off license')
+--		Licenziato = false
+--		HLicense_Activate()
+--		Timer.license = Common.AddTimer (Timer.license, licenseTime, licenseUnit, false)
+	
+	--elseif (idTimer ==	Timer.RelayCMD) then
+	--assert(udp:send(dataToSend[idTimer]))
+    else
+	   C4:KillTimer(idTimer)
+	   poll_timer = 0
+    end
+end
+
+function TimerNoPoll()
+    C4:SetTimer(3000, function(timer)
+				    NoPoll = false
+				end)
+end 
+
+-----------------------------------------
+-- Common URL function
+-----------------------------------------
+
+g_responseTickets = {}
+
+function ReceivedAsync(ticketId, strData, responseCode, tHeaders, strError)
+	local ticket = pullUrlTicket(ticketId)
+	if (not ticket) then dbg("ticketId is null") return end
+	if (strData) then Dbg("ReceivedAsync: " .. strData) end
+	if (strError) then
+		Dbg("[ReceivedAsync]: ERROR | " .. strError)
+		if (ticket.errorHandler and type(ticket.errorHandler) == 'function') then
+			ticket.errorHandler(strError)
+		end
+		return
+	end
+
+	ticket.handler(strData, tHeaders)
+end
+
+function urlGet(url, headers, callback, errorHandler)
+	local ticketId = C4:urlGet(url, headers)
+	g_responseTickets[ticketId] = { handler = callback, errorHandler = errorHandler }
+end
+
+
+function urlPost(url, data, headers, callback, errorHandler)
+	local ticketId = C4:urlPost(url, data, headers)
+	g_responseTickets[ticketId] = { handler = callback, errorHandler = errorHandler }
+end
+
+-- function urlPut(url, data, headers, callback, errorHandler)
+	-- local ticketId = C4:urlPut(url, data, headers)
+	-- g_responseTickets[ticketId] = { handler = callback, errorHandler = errorHandler }
+-- end
+
+function urlEncode(str)
+	return str:gsub(" ","+"):gsub("\n","\r\n"):gsub("([^%w])",function(ch)
+			return string.format("%%%02X",string.byte(ch))
+		end)
+end
+
+function pullUrlTicket(ticketId)
+	local ticket = g_responseTickets[ticketId]
+	g_responseTickets[ticketId] = nil
+	return ticket
+end
+
+function OnVariableChanged(strName)
+  --DbgSK('Variable '..strName..' changed')
+  -- cambia la variabile... fai qualcosa
+  print(Variable_name, strName)
+  sendMulti(Variables[strName])
+
+  C4:SetVariable(Variable_name,"") -- pulisco la var
+end
+
+function sendMulti(command)
+	print(command)
+	if (string.len(command) ==8) then
+		local number = 0
+		for i = 1,string.len(command) do 
+			if (command:byte(i) == 48 or command:byte(i) == 49) then 
+				number = number + (command:byte(i) - 48)*math.pow (2, string.len(command)-i)
+				RelayStatus[9-i] = tonumber(command:byte(i)-48)
+			end		
+		end
+		print (number)
+		strHex = ""
+		strHex = string.format("%X",number)
+		local msg = "FF".."B1"..strHex
+		assert(udp:send(msg))
+		--local data = udp:receive()
+		--ReadKmtStatus()
+			--  print(data)
+	end
+end
+
+function tprint (tbl, indent)
+  if not indent then indent = 0 end
+  for k, v in pairs(tbl) do
+    formatting = string.rep("   ", indent) .. k .. ": "
+    if type(v) == "table" then
+      print(formatting)
+      tprint(v, indent+1)
+    else
+      print(formatting .. tostring(v))
+    end
+  end
+end
+
+

@@ -1,0 +1,1982 @@
+package.preload['SKC4.licence.cloud_client_v1007'] = (function (...)
+-- Please put here the cloud client code as provided by DriverCentral.
+return {} end)
+package.preload['SKC4.Utility'] = (function (...)
+local Utility = {}
+
+function Utility.callAllFunctionsInTable(tbl)
+	ret_err = {}
+	ret_status = true
+	for k,v in pairs(tbl) do
+		if (tbl[k] ~= nil and type(tbl[k]) == "function") then
+			-- 
+			if (SKC4_LOGGER ~= nil and type(SKC4_LOGGER) == "table") then
+				SKC4_LOGGER:debug("Calling  " .. k .. "()")
+			end
+			local status, err = pcall(tbl[k])
+			if (not status) then
+				ret_err[k] = {status=status, err=err}
+			end
+		end
+	end
+	return ret_status, ret_err
+end
+
+--remove the first element of a list
+function Utility.remove(tbl, index)
+	if (index == nil ) then index = 1 end
+	local a = {}
+	--local b = {}
+	--local c
+	for n,v in pairs(tbl) do 
+		table.insert(a, n) 
+	end
+	table.sort(a)
+	local f = nil
+	local o = {}
+	for i, t in pairs(a) do
+		if (f == nil) then 
+			f = tbl[t]
+		else
+			table.insert(o, tbl[t])
+		end
+	end
+	 --Utility.tprint(b)
+	return o, f
+end
+
+function Utility.tprint (tbl, indent)  --print table
+	if type(tbl) == "table" then
+		if not indent then indent = 0 end
+		for k, v in pairs(tbl) do
+			formatting = string.rep("   ", indent) .. k .. ": "
+			if type(v) == "table" then
+				print(formatting)
+				Utility.tprint(v, indent+1)
+			else
+				print(formatting .. tostring(v, indent))
+			end
+		end
+	else
+		print (tbl)
+	end
+end
+
+function Utility.tstring (tbl, indent) -- transform table in string, nested
+	--ritorna una stringa contenente i valori della table
+    --if indent is -1 return a table in one line string
+	local  mytable = ""
+	if indent == nil then indent = 0 end
+	if (type(tbl) == "table") then
+		if (indent == -1) then 
+			for k,v in pairs(tbl) do
+				if type(v) == "table" then
+					mytable = mytable .. " "..Utility.tstring(v, -1)
+				else
+					mytable = mytable ..k.. " " .. tostring(v) 
+				end
+			end
+		elseif(type(indent) == "number") then
+			for k, v in pairs(tbl) do
+				formatting = string.rep("   ", indent) .. k .. " : "
+				if type(v) == "table" then
+					mytable = mytable .. "\n"..formatting
+					mytable = mytable .."\n"..Utility.tstring(v, indent+1)
+				else
+					mytable = mytable .. formatting .. tostring(v) .." \n"
+				end
+			end
+		elseif(type(indent) == "string") then
+			for k, v in pairs(tbl) do
+				--formatting = string.rep("   ", indent) .. k .. " : "
+				if type(v) == "table" then
+					formatting = indent .. k
+					mytable = mytable .. formatting
+					mytable = mytable .. Utility.tstring(v, indent)
+				else
+					mytable = mytable ..indent .. tostring(v)
+				end
+				
+			end
+			mytable = mytable .."\n"
+		end
+	else 
+		mytable = tbl
+	end
+	return mytable
+end
+
+
+
+--get the "very" first element of a Table... let's lua, not only if is key is a number like getn
+function Utility.getFirstId(T)
+	if (T == nil) then
+		return {}
+	else  
+		local n  = 1
+		local f
+		for k, v in pairs(T) do
+			if n == 1 then f = k end
+		end
+		return f
+	end
+end
+
+function Utility.tableLength(T)
+	local count = 0
+	for _ in pairs(T) do count = count + 1 end
+	return count
+  end
+
+--take "str" (string) and slpit it by "inSplitPattern" returning a table of the substring splitted in "outResults"(optional)
+function Utility.split(str, inSplitPattern, outResults ) 
+    if not outResults then
+		outResults = {}
+	end
+	local theStart = 1
+	local theSplitStart, theSplitEnd = string.find( str, inSplitPattern, theStart )
+	while theSplitStart do
+		table.insert( outResults, string.sub( str, theStart, theSplitStart-1 ) )
+		theStart = theSplitEnd + 1
+		theSplitStart, theSplitEnd = string.find( str, inSplitPattern, theStart )
+	end
+	table.insert( outResults, string.sub( str, theStart ) )
+	return outResults
+end
+
+
+function Utility.Avg_DevStd(value, stddev, avg, n)
+    local delta = value - avg
+    n = n+1
+    avg = avg + delta / n 
+    stddev = math.sqrt(((stddev*stddev * (n-1)) + delta*(value - avg))/n)
+    return stddev, avg, n 
+end
+
+-- Private members
+function pairsByKeys (t, f)
+	local a = {}
+	for n in pairs(t) do table.insert(a, n) end
+	table.sort(a, f)
+	local i = 0      -- iterator variable
+	local iter = function ()   -- iterator function
+	  i = i + 1
+	  if a[i] == nil then return nil
+	  else return a[i], t[a[i]]
+	  end
+	end
+	return iter
+end
+
+
+
+return Utility
+
+
+
+ end)
+package.preload['SKC4.Logger'] = (function (...)
+-- Modulo per gestire i file di log
+
+local Logger = {}
+
+Utility = require "SKC4.Utility"
+
+function Logger:new (o)
+    o = o or {}
+    setmetatable(o, self)
+    self.__index = self
+    self.logLevels = {
+        ["FATAL"] = "F",
+        ["ERROR"] = "EF",
+        ["INFO"] = "IEF",
+        ["WARN"] = "WIEF",
+        ["DEBUG"] = "DWIEF",
+        ["ONLY_INFO"] = "I",
+        ["ONLY_WARN"] = "W",
+        ["ONLY_ERROR"] = "E",
+        ["ONLY_FATAL"] = "F",
+        ["ONLY_DEBUG"] = "D",
+        ["NONE"] = "-",
+        ["ALL"]  = "IWEFD",
+      }
+      
+    self._DEFAULT_OUTPUT_FORMAT     = "%s %s:%s -- %s\n"
+    self._DEFAULT_FILE_NAME_FORMAT  = "%s_%s.log"    
+    self._DEFAULT_DATE_FORMAT       = "%Y%m%d%H%M%S"
+
+    self._DEFAULT_FILE_POINTER      = io.stdio
+    self._DEFAULT_FILE_NAME         = nil
+    self._DEFAULT_FILE_PATH         = nil 
+    self._DEFAULT_MAX_FILES         = 0
+    
+    self._currentMaxNumberOfFIles   = self._DEFAULT_MAX_FILES
+    self._currentFilePointer        = self._DEFAULT_FILE_POINTER
+    self._currentFilePath           = self._DEFAULT_FILE_PATH
+    self._currentFileName           = self._DEFAULT_FILE_NAME
+    self._currentLogLevel           = self.logLevels.INFO
+    self._currentOutputFormat       = self._DEFAULT_OUTPUT_FORMAT
+    self._currentFileNameFormat     = self._DEFAULT_FILE_NAME_FORMAT
+    self._currentLogMaxSize         = 2097152 -- 2MB
+
+    self._write_on_c4_logfile       = false
+    return o
+end
+
+function Logger:findLevelKey(level)
+  for k,v in pairs(self.logLevels) do
+    if (v == level) then
+      return k
+    end
+  end
+  return nil
+end
+
+function Logger:write(message)
+    
+    if (self._currentFilePointer ~= nil and self._currentFilePointer ~= self._DEFAULT_FILE_POINTER) then
+        self:rotate()
+        C4:FileWrite(self._currentFilePointer,message:len(), message)
+    end
+
+    if self:isC4FileLoggingEnabled() then
+        C4:DebugLog(message) -- print out on Director log files
+
+        if ( self:isLogLevelEnabled(self.logLevels.ONLY_ERROR) or self:isLogLevelEnabled(self.logLevels.ONLY_FATAL) ) then
+            C4:ErrorLog(message) 
+        end 
+    end
+    
+    print(message)    -- print out on Composer Lua Tab
+    
+    return message
+end
+
+function Logger:formattedWrite(level, ...)
+    local fullLevel = self:findLevelKey(level)
+    local info = debug.getinfo(3,'lS');
+
+    local message = ""
+    
+    -- convert all params into strings
+    for index = 1, arg.n do
+        local val = arg[index]
+    
+        if (message.length == 0) then
+            message = self:convertToString(val)
+        else
+            message = message .." "..self:convertToString(val)
+        end
+    end
+    local outString = string.format(self._currentOutputFormat,
+        fullLevel,
+        info.source,
+        info.currentline,
+        message)
+    return self:write(outString)
+end
+
+function Logger:convertToString(obj)
+    
+    if (type(obj) == "table") then
+        return Utility.tstring(obj, 0)
+    else
+        return tostring(obj)
+    end
+end
+
+function Logger:setLogLevel(level)
+  local flag = true
+  
+  for x in level:gfind(".") do
+    key = self:findLevelKey(x)
+    self._currentLogLevel = self.logLevels.NONE;
+    if (self.logLevels[key] == nil) then flag = false; break; end
+  end
+  if ( flag == true ) then
+      self._currentLogLevel = level
+  end
+
+end
+
+function Logger:getLogLevel(level)
+    return self._currentLogLevel;
+end
+
+function Logger:isLogLevelEnabled(level)
+  return (self._currentLogLevel:find(level) ~= nil) 
+end
+
+function Logger:isLoggingEnabled()
+    return not self:isLogLevelEnabled(self.logLevels.NONE)
+end
+
+function Logger:disableLogging()
+    self:setLogLevel(self.logLevels.NONE)
+end
+
+function Logger:enableInfoLevel()
+    self:setLogLevel(self.logLevels.INFO)
+end
+
+function Logger:enableWarningLevel()
+    self:setLogLevel(self.logLevels.WARN)
+end
+
+function Logger:enableErrorLevel()
+    self:setLogLevel(self.logLevels.ERROR)
+end
+
+function Logger:enableFatalLevel()
+    self:setLogLevel(self.logLevels.FATAL)
+end
+
+function Logger:enableDebugLevel()
+    self:setLogLevel(self.logLevels.DEBUG)
+end
+
+function Logger:enableC4FileLogging()
+    self._write_on_c4_logfile = true
+end
+
+function Logger:disableC4FileLogging()
+    self._write_on_c4_logfile = false
+end
+
+function Logger:isC4FileLoggingEnabled()
+    return self._write_on_c4_logfile
+end
+
+function Logger:open(filePath, fileName)
+  self._currentFilePath = filePath
+  self._currentFileName = fileName 
+  
+  C4:FileSetDir(self._currentFilePath)  --move in file path folder
+
+  logFileName = string.format(self._currentFileNameFormat, fileName, os.date(self._DEFAULT_DATE_FORMAT));
+  -- Open the file
+  self._currentFilePointer = C4:FileOpen(logFileName)
+  local pos = C4:FileGetSize(self._currentFilePointer)
+  C4:FileSetPos(self._currentFilePointer, pos)
+
+  C4:FileSetDir('/')
+  return self._currentFilePointer, logFileName
+end
+
+function Logger:close()
+    -- only if a file is open
+  if (self._currentFilePointer ~= self._DEFAULT_FILE_POINTER) then
+    
+    -- Close the file
+    if (self._currentFilePointer ~= nil) then
+        C4:FileClose(self._currentFilePointer)
+        --self._currentFilePointer:close()
+        self._currentFilePointer = self._DEFAULT_FILE_POINTER
+        self._currentFilePath = nil
+        self._currentFileName = nil
+    end
+  end
+end
+
+function Logger:info(source, ...)
+    if (self:isLogLevelEnabled(self.logLevels.ONLY_INFO)) then
+        return self:formattedWrite(self.logLevels.INFO, source, ...);
+    end 
+end
+
+function Logger:warn(source, ...)
+    if (self:isLogLevelEnabled(self.logLevels.ONLY_WARN)) then
+        return self:formattedWrite(self.logLevels.WARN, source, ...);
+    end 
+end
+
+function Logger:error(source, ...)
+    if (self:isLogLevelEnabled(self.logLevels.ONLY_ERROR)) then
+        return self:formattedWrite(self.logLevels.ERROR, source, ...);
+    end 
+end
+
+function Logger:fatal(source, ...)
+    if (self:isLogLevelEnabled(self.logLevels.ONLY_FATAL)) then
+        return self:formattedWrite(self.logLevels.FATAL, source, ...);
+    end 
+end
+
+function Logger:debug(source, ...)
+    if (self:isLogLevelEnabled(self.logLevels.ONLY_DEBUG)) then
+        return self:formattedWrite(self.logLevels.DEBUG, source, ...);
+    end 
+end
+
+function Logger:setMaxLogSize( size )
+  self._currentLogMaxSize = size
+end
+
+function Logger:setMaxLoggersNumber( number )
+    self._currentMaxNumberOfFIles = number
+  end
+
+function Logger:getMaxLogSize()
+  return self._currentLogMaxSize
+end
+
+function Logger:getFilePointer()
+    return self._currentFilePointer
+end
+
+function Logger:getFilePath()
+    return self._currentFilePath
+end
+
+function Logger:getFileName()
+    return self._currentFileName
+end
+
+function Logger:rotate(force)
+    if (self._currentFilePointer ~= self._DEFAULT_FILE_POINTER) then
+        local fileSize = C4:FileGetSize(self._currentFilePointer)
+        
+        if (self._currentMaxNumberOfFIles ~= self._DEFAULT_MAX_FILES) then 
+            local loggersNumber = self:getLoggersNumber()
+            print ("loggersNumber", loggersNumber)
+            while (loggersNumber >= self._currentMaxNumberOfFIles) do
+                print ("loggersNumber >= self._currentMaxNumberOfFIles",loggersNumber >= self._currentMaxNumberOfFIles)
+                self:removeFirst()
+                loggersNumber = self:getLoggersNumber()
+            end
+        end
+        if (force ~= nil or tonumber(fileSize) > self._currentLogMaxSize) then
+            local oldPath = self._currentFilePath -- store old value 'cause close() clear _currentFilePath
+            local oldName = self._currentFileName -- store old value 'cause close() clear _currentFileName
+            self:close() 
+            return self:open(oldPath,oldName)
+        else
+            return self._currentFilePointer, self._currentFilePath, self._currentFileName
+        end
+    end
+end
+
+--private
+function Logger:getLoggersNumber()    
+    C4:FileSetDir(self._currentFilePath)
+    local loggerList = C4:FileList()
+    local count = 0
+    for k,v in pairs(loggerList) do
+        ----print (k,v) 
+        if (string.match(v, self._currentFileName)) then 
+            ----print (string.match(v, self._currentFileName))
+            count = count + 1 
+        end
+    end
+    C4:FileSetDir("/")
+    return count 
+end
+
+function Logger:removeFirst()    
+    C4:FileSetDir(self._currentFilePath)
+    local loggerList = C4:FileList()
+    local count = 0
+    ----------------20171204114408
+    local minimum = 30000000000000
+    local fileToRemove = ""
+    for k,v in pairs(loggerList) do 
+        if (string.match(v, self._currentFileName)) then 
+            ----print (string.match(v, self._currentFileName))
+            local n = tonumber(string.match (v, "(%d+)"))
+            ----print ("n:  ", n)
+            ----print ("file:  ", v)
+            if ( n < minimum ) then 
+                minimum = n
+                fileToRemove = v 
+            end
+        end
+    end
+
+    ----print (fileToRemove, minimum)
+    if (fileToRemove ~= "") then  
+        print("deleting logger :",fileToRemove)
+        C4:FileDelete(fileToRemove) 
+    end
+    C4:FileSetDir("/")
+    return count 
+end
+
+LOGGER = LOGGER or Logger:new()
+
+return Logger;
+
+ end)
+package.preload['SKC4.DriverCore'] = (function (...)
+require("SKC4.Utility")
+local TimerManager = require "SKC4.TimerManager"
+SKC4_LOGGER = require("SKC4.Logger");
+-- SKC4_LOGGER:enableDebugLevel()
+
+
+----------------------------------------------------
+-- Global tables for functions
+----------------------------------------------------
+if (SKC4_ON_DRIVER_EARLY_INIT == nil) then
+  SKC4_ON_DRIVER_EARLY_INIT = {}
+end
+if (SKC4_ON_DRIVER_INIT == nil) then
+  SKC4_ON_DRIVER_INIT = {}
+end
+if (SKC4_ON_DRIVER_LATEINIT == nil) then
+  SKC4_ON_DRIVER_LATEINIT = {}
+end
+if (SKC4_ON_DRIVER_DESTROYED == nil) then
+  SKC4_ON_DRIVER_DESTROYED = {}
+end
+if (SKC4_ON_PROPERTY_CHANGED == nil) then
+  SKC4_ON_PROPERTY_CHANGED = {}
+end
+if (SKC4_COMMANDS == nil) then
+  SKC4_COMMANDS = {}
+end
+if (SKC4_PROXY_COMMANDS == nil) then
+  SKC4_PROXY_COMMANDS = {}
+end
+if (SKC4_NOTIFICATIONS == nil) then
+  SKC4_NOTIFICATIONS = {}
+end
+
+SKC4_PROPERTY_DISABLE_LOG_INTERVAL="Disable Log Interval"
+SKC4_PROPERTY_LOG_MODE="Log Mode"
+SKC4_PROPERTY_LOG_LEVEL="Log Level"
+
+----------------------------------------------------
+-- Inits
+----------------------------------------------------
+function OnDriverInit()
+	gInitializingDriver = true
+	SKC4_LOGGER:debug("INIT_CODE: OnDriverInit()")
+
+  -- Call all SKC4_ON_DRIVER_EARLY_INIT functions.
+  local status, err_tbl = Utility.callAllFunctionsInTable(SKC4_ON_DRIVER_EARLY_INIT)
+  if (not status) then    
+    if (SKC4_LOGGER ~= nil and type(SKC4_LOGGER) == "table") then
+      SKC4_LOGGER:debug("LUA_ERROR on SKC4_ON_DRIVER_EARLY_INIT: ", err_tbl)
+    end
+  end
+  
+  status, err_tbl = Utility.callAllFunctionsInTable(SKC4_ON_DRIVER_INIT)
+
+  if (not status) then    
+    if (SKC4_LOGGER ~= nil and type(SKC4_LOGGER) == "table") then
+      SKC4_LOGGER:debug("LUA_ERROR on SKC4_ON_DRIVER_INIT: ", err_tbl)
+    end
+  end
+	
+  -- status, err_tbl = Utility.callAllFunctionsInTable(SKC4_ON_DRIVER_INIT)
+  -- if (not status) then    
+  --   if (SKC4_LOGGER ~= nil and type(SKC4_LOGGER) == "table") then
+  --     SKC4_LOGGER:debug("LUA_ERROR on SKC4_ON_DRIVER_INIT: ", err_tbl)
+  --   end
+  -- end
+
+  -- Enable license manager if it's required
+  if (LICENSE_MGR) then
+    LICENSE_MGR:OnDriverInit()
+  end
+
+
+	-- Fire OnPropertyChanged to set the initial Headers and other Property
+	-- global sets, they'll change if Property is changed.
+	for k,v in pairs(Properties) do
+		SKC4_LOGGER:debug("INIT_CODE: Calling OnPropertyChanged - " .. k .. ": " .. v)
+		local status, err = pcall(OnPropertyChanged, k)
+    if (not status) then    
+      if (SKC4_LOGGER ~= nil and type(SKC4_LOGGER) == "table") then
+        SKC4_LOGGER:debug("LUA_ERROR: " .. err)
+      end
+    end
+	end
+
+	gInitializingDriver = false
+end
+
+function OnDriverLateInit()
+	SKC4_LOGGER:debug("INIT_CODE: OnDriverLateInit()")
+  
+  -- Enable license manager if it's required
+  if (LICENSE_MGR) then
+    LICENSE_MGR:OnDriverLateInit()
+  end
+
+  local status, err_tbl = Utility.callAllFunctionsInTable(SKC4_ON_DRIVER_LATEINIT)
+
+  if (not status) then    
+    if (SKC4_LOGGER ~= nil and type(SKC4_LOGGER) == "table") then
+      SKC4_LOGGER:debug("LUA_ERROR on SKC4_ON_DRIVER_LATEINIT: ", err_tbl)
+    end
+  end
+  
+end
+
+function OnDriverDestroyed()
+	C4:ErrorLog("INIT_CODE: OnDriverDestroyed()")
+  
+  local status, err_tbl = Utility.callAllFunctionsInTable(SKC4_ON_DRIVER_DESTROYED)
+  if (not status) then    
+    if (SKC4_LOGGER ~= nil and type(SKC4_LOGGER) == "table") then
+      SKC4_LOGGER:debug("LUA_ERROR on SKC4_ON_DRIVER_DESTROYED: ", err_tbl)
+    end
+  end
+end 
+
+----------------------------------------------------
+-- Properties
+----------------------------------------------------
+function OnPropertyChanged(sProperty)
+	local propertyValue = Properties[sProperty]
+
+	if (SKC4_LOGGER ~= nil and type(SKC4_LOGGER) == "table") then
+		SKC4_LOGGER:info("OnPropertyChanged(" .. sProperty .. ") changed to: " .. Properties[sProperty])
+  end
+  if (LICENSE_MGR) then
+    LICENSE_MGR:OnPropertyChanged(sProperty) --, propertyValue)
+  end
+
+	-- Remove any spaces (trim the property)
+	local trimmedProperty = string.gsub(sProperty, " ", "_")
+	local status = true
+	local err = ""
+
+	if (SKC4_ON_PROPERTY_CHANGED[sProperty] ~= nil and type(SKC4_ON_PROPERTY_CHANGED[sProperty]) == "function") then
+		status, err = pcall(SKC4_ON_PROPERTY_CHANGED[sProperty], propertyValue)
+	elseif (SKC4_ON_PROPERTY_CHANGED[trimmedProperty] ~= nil and type(SKC4_ON_PROPERTY_CHANGED[trimmedProperty]) == "function") then
+		status, err = pcall(SKC4_ON_PROPERTY_CHANGED[trimmedProperty], propertyValue)
+	end
+
+  if (not status) then
+    if (SKC4_LOGGER ~= nil and type(SKC4_LOGGER) == "table") then
+      SKC4_LOGGER:error("LUA_ERROR: " .. err)
+    end
+	end
+end
+
+
+function UpdateProperty(propertyName, propertyValue)
+	if (Properties[propertyName] ~= nil) then
+		C4:UpdateProperty(propertyName, propertyValue)
+	end
+end
+
+
+----------------------------------------------------
+-- Commands
+----------------------------------------------------
+function ExecuteCommand(strCommand, tParams)
+  
+  if (SKC4_LOGGER ~= nil and type(SKC4_LOGGER) == "table") then
+    SKC4_LOGGER:info("ExecuteCommand(" .. strCommand .. ") with params ",tParams)
+  end
+
+  -- Remove any spaces (trim the property)
+  local trimmedProperty = string.gsub(strCommand, " ", "_")
+  local status = true
+  local err = ""
+
+  if (SKC4_COMMANDS[strCommand] ~= nil and type(SKC4_COMMANDS[strCommand]) == "function") then
+    status, err = pcall(SKC4_COMMANDS[strCommand], tParams)
+  elseif (SKC4_COMMANDS[trimmedProperty] ~= nil and type(SKC4_COMMANDS[trimmedProperty]) == "function") then
+    status, err = pcall(SKC4_COMMANDS[trimmedProperty], tParams)
+  end
+
+  if (not status) then
+    if (SKC4_LOGGER ~= nil and type(SKC4_LOGGER) == "table") then
+      SKC4_LOGGER:error("LUA_ERROR: " .. err)
+    end
+	end
+end
+
+function ReceivedFromProxy(idBinding, strCommand, tParams)
+	if (strCommand ~= nil) then
+		-- initial table variable if nil
+		if (tParams == nil) then
+			tParams = {}
+    end
+    if (SKC4_LOGGER ~= nil and type(SKC4_LOGGER) == "table") then
+      SKC4_LOGGER:info("ReceivedFromProxy(" .. strCommand .. ") with params ",tParams)
+    end
+
+    if (LICENSE_MGR) then
+      LICENSE_MGR:ReceivedFromProxy(idBinding, strCommand, tParams)
+    end
+    
+    -- Remove any spaces (trim the property)
+    local trimmedProperty = string.gsub(strCommand, " ", "_")
+    local status = true
+    local err = ""
+  
+    if (SKC4_PROXY_COMMANDS[strCommand] ~= nil and type(SKC4_PROXY_COMMANDS[strCommand]) == "function") then
+      status, err = pcall(SKC4_PROXY_COMMANDS[strCommand], tParams)
+    elseif (SKC4_PROXY_COMMANDS[trimmedProperty] ~= nil and type(SKC4_PROXY_COMMANDS[trimmedProperty]) == "function") then
+      status, err = pcall(SKC4_PROXY_COMMANDS[trimmedProperty], tParams)
+    end
+  
+    if (not status) then
+      if (SKC4_LOGGER ~= nil and type(SKC4_LOGGER) == "table") then
+        SKC4_LOGGER:error("LUA_ERROR: " .. err)
+      end
+    end
+
+	end
+end
+
+
+----------------------------------------------------
+-- Notifications
+----------------------------------------------------
+
+
+
+
+----------------------------------------------------
+-- Logging
+----------------------------------------------------
+
+function SKC4_ON_PROPERTY_CHANGED.Log_Mode(sValue)
+  SKC4_LOGGER:debug("SKC4_ON_PROPERTY_CHANGED.Log_Mode: sValue = ",sValue)
+  if sValue == "Print" then -- Only print
+    SKC4_LOGGER:disableC4FileLogging()
+  else -- otherwise
+    SKC4_LOGGER:enableC4FileLogging()
+  end
+end
+
+function SKC4_ON_PROPERTY_CHANGED.Log_Level(sValue)
+  SKC4_LOGGER:debug("SKC4_ON_PROPERTY_CHANGED.Log_Level: sValue = ",sValue)
+  start_timer = true
+  if sValue == "0 - Alert" then 
+    SKC4_LOGGER:enableFatalLevel()
+  elseif sValue == "1 - Error" then 
+    SKC4_LOGGER:enableErrorLevel()
+  elseif sValue == "2 - Warning" then 
+    SKC4_LOGGER:enableWarningLevel()
+  elseif sValue == "3 - Info" then 
+    SKC4_LOGGER:enableInfoLevel()
+  elseif sValue == "4 - Trace" then 
+    SKC4_LOGGER:enableDebugLevel()
+  elseif sValue == "5 - Debug" then 
+    SKC4_LOGGER:enableDebugLevel()
+  else
+    SKC4_LOGGER:disableLogging()
+    start_timer = false
+  end
+
+  if start_timer then
+    minutes = getDisableLogIntervalValueInMinutes()
+    updateTimerDisableLogInterval(minutes)
+  end
+end
+
+function SKC4_ON_PROPERTY_CHANGED.Disable_Log_Interval(sValue)
+  SKC4_LOGGER:debug("SKC4_ON_PROPERTY_CHANGED.Disable_Log_Interval: sValue = ",sValue)
+
+  minutes = getDisableLogIntervalValueInMinutes(sValue)
+  updateTimerDisableLogInterval(minutes)
+end
+
+function onTimerDisableLogIntervalTimerExpire()
+  SKC4_LOGGER:debug("onTimerDisableLogIntervalTimerExpire(): disable log now")
+  UpdateProperty(SKC4_PROPERTY_LOG_LEVEL,"Off")
+end
+
+function updateTimerDisableLogInterval(minutes)
+  if minutes then
+    if TIMER_DISABLE_LOG_INTERVAL then
+      TIMER_DISABLE_LOG_INTERVAL:stop()
+    end
+    TIMER_DISABLE_LOG_INTERVAL = TimerManager:new(minutes, "MINUTES", onTimerDisableLogIntervalTimerExpire, false)
+    TIMER_DISABLE_LOG_INTERVAL:start()
+  else
+    if TIMER_DISABLE_LOG_INTERVAL then
+      TIMER_DISABLE_LOG_INTERVAL:stop()
+    end
+  end
+end
+
+function getDisableLogIntervalValueInMinutes(label)
+  sValue = label or Properties[SKC4_PROPERTY_DISABLE_LOG_INTERVAL]
+  minutes = 0
+  if ( sValue ~= nil) then
+    if sValue == "15 minutes" then
+      minutes = 15
+    elseif sValue == "30 minutes" then
+      minutes = 30
+    elseif sValue == "1 hour" then
+      minutes = 60
+    elseif sValue == "6 hours" then
+      minutes = 360
+    elseif sValue == "24 hours" then
+      minutes = 1440
+    end
+  end
+  return minutes
+end
+
+ end)
+package.preload['SKC4.TimerManager'] = (function (...)
+--C4 = require 'SKC4.C4' -- if we are not in C4 env, I'll emulate it
+local TimerManager = {}
+
+
+function TimerManager:new (interval_delay, time_unit, on_expire_callback, will_repeat, o)
+    o = o or {}
+    setmetatable(o, self)
+    self.__index = self
+
+    self.interval_delay = interval_delay
+    self.callback = on_expire_callback
+    self.will_repeat = will_repeat
+    self.timerObj = nil
+    -- , SECONDS, MINUTES and HOURS
+    if (time_unit == "SECONDS") then
+        self.time_unit = 1000
+    elseif (time_unit == "MINUTES") then
+        self.time_unit = 60*1000
+    elseif (time_unit == "HOURS") then
+        self.time_unit = 60*60*1000
+    else
+        self.time_unit = 1
+    end 
+    return o
+end
+
+function TimerManager:start()
+    if (self.timerObj) then
+        self:stop()
+    end
+    self.timerObj = C4:SetTimer(self.interval_delay * self.time_unit, self.callback, self.will_repeat)
+end
+
+function TimerManager:stop()
+    if (self.timerObj) then
+        --self.timerObj = C4:KillTimer(self.timerObj)
+        self.timerObj:Cancel()
+        self.timerObj = nil
+    end
+end
+
+--
+-- Setter and Getter
+--
+
+
+--
+-- Private functions
+--
+
+
+return TimerManager
+ end)
+package.preload['SKC4.LicenseManager'] = (function (...)
+local TimerManager = require "SKC4.TimerManager"
+local Logger = require "SKC4.Logger"
+local Utility = require("SKC4.Utility")
+
+local LicenseManager = {}
+
+-- global var required by DriverCentral
+DC_PID = 0 -- Product ID
+DC_FD = false -- DriverCentral (Driver is not a free driver)
+DC_FILENAME = "" -- "my_driver.c4z"
+
+LicenseManager.TRIAL_NOT_STARTED = -1
+LicenseManager.TRIAL_STARTED = 1
+LicenseManager.TRIAL_EXPIRED = 0
+
+function LicenseManager:new(o)
+    o = o or {}
+    setmetatable(o, self)
+    self.__index = self
+    self.currentVendorId = "DRIVERCENTRAL"
+    self.statusMessage = ""
+    self.vendorData = {
+        DRIVERCENTRAL 	= { 
+            ProductId 	= 000, -- Product ID
+            FreeDriver 	= false, -- (Driver is not a free driver)
+            FileName    = ""
+        },
+        HOUSELOGIX		= { 
+            LicenseCode = "",
+            ProductId 	= 000,
+            ValidityCheckInterval = 60,
+            TrialExpiredLapse = 10,
+            Licensed = false,
+            Trial = LicenseManager.TRIAL_NOT_STARTED,  -- -1 not started, 1 started , 0 expired  -- only one possibility to stard it
+            Version = ""
+        },
+        SOFTKIWI 	= { 
+            LicenseCode = "",
+            Licensed = false
+        },
+    }
+
+    self.houselogixTimerCheck = {}
+    self.houselogixTimerTrial = {}    
+
+    self.OnPropertyChangedTable = {}
+    self.OnPropertyChangedTable["License Provider"]        = LicenseManager.SKC4_ON_PROPERTY_CHANGED_LicenseProvider
+    self.OnPropertyChangedTable["Houselogix License Code"] = LicenseManager.SKC4_ON_PROPERTY_CHANGED_HouselogixLicenseCode
+    self.OnPropertyChangedTable["SoftKiwi License Code"]   = LicenseManager.SKC4_ON_PROPERTY_CHANGED_SoftKiwiLicenseCode
+
+    
+    return o
+end
+
+--
+-- Setter and Getter
+--
+
+
+function LicenseManager:setStatusMessage( message )
+    self.statusMessage = message
+    if self:getCurrentVendorId() == "DRIVERCENTRAL" then
+        C4:UpdateProperty ('Houselogix License Status', "")
+        C4:UpdateProperty ('SoftKiwi License Status', "")
+    elseif self:getCurrentVendorId() == "HOUSELOGIX" then
+        C4:UpdateProperty ('Houselogix License Status', message)
+        C4:UpdateProperty ('SoftKiwi License Status', "")
+    elseif self:getCurrentVendorId() == "SOFTKIWI" then
+        C4:UpdateProperty ('Houselogix License Status', "")
+        C4:UpdateProperty ('SoftKiwi License Status', message)
+    else
+        C4:UpdateProperty ('Houselogix License Status', "")
+        C4:UpdateProperty ('SoftKiwi License Status', "")
+    end
+end
+
+function LicenseManager:getStatusMessage()
+    return self.statusMessage
+end
+
+function LicenseManager:setCurrentVendorId(vendor_id)
+    self.currentVendorId = vendor_id
+    
+    if vendor_id == "DRIVERCENTRAL" then
+        LOGGER:info("DRIVERCENTRAL vendor setted")
+        C4:SetPropertyAttribs("Cloud Status", 0)
+        C4:SetPropertyAttribs("Automatic Updates", 0)
+        C4:SetPropertyAttribs("Houselogix License Code", 1)
+        C4:SetPropertyAttribs("Houselogix License Status", 1)
+        C4:SetPropertyAttribs("SoftKiwi License Code", 1)
+        C4:SetPropertyAttribs("SoftKiwi License Status", 1)
+        C4:SetPropertyAttribs("SoftKiwi Driver Type", 1)
+        
+    elseif vendor_id == "HOUSELOGIX" then
+        LOGGER:info("HOUSELOGIX vendor setted")
+        C4:SetPropertyAttribs("Cloud Status", 1)
+        C4:SetPropertyAttribs("Automatic Updates", 1)
+        C4:SetPropertyAttribs("Houselogix License Code", 0)
+        C4:SetPropertyAttribs("Houselogix License Status", 0)
+        C4:SetPropertyAttribs("SoftKiwi License Code", 1)
+        C4:SetPropertyAttribs("SoftKiwi License Status", 1)
+        C4:SetPropertyAttribs("SoftKiwi Driver Type", 1)
+        
+    elseif vendor_id == "SOFTKIWI" then
+        LOGGER:info("SOFTKIWI vendor setted")
+        C4:SetPropertyAttribs("Cloud Status", 1)
+        C4:SetPropertyAttribs("Automatic Updates", 1)
+        C4:SetPropertyAttribs("Houselogix License Code", 1)
+        C4:SetPropertyAttribs("Houselogix License Status", 1)
+        C4:SetPropertyAttribs("SoftKiwi License Code", 0)
+        C4:SetPropertyAttribs("SoftKiwi License Status", 0)
+        C4:SetPropertyAttribs("SoftKiwi Driver Type", 0)
+        
+    else
+        LOGGER:info("UNKNOW vendor setted")
+        C4:SetPropertyAttribs("Cloud Status", 1)
+        C4:SetPropertyAttribs("Automatic Updates", 1)
+        C4:SetPropertyAttribs("Houselogix License Code", 1)
+        C4:SetPropertyAttribs("Houselogix License Status", 1)
+        C4:SetPropertyAttribs("SoftKiwi License Code", 1)
+        C4:SetPropertyAttribs("SoftKiwi License Status", 1)
+        C4:SetPropertyAttribs("SoftKiwi Driver Type", 1)
+        
+    end
+
+    self.updatePersistData()
+
+end
+function LicenseManager:getCurrentVendorId()
+    return self.currentVendorId
+end
+
+function LicenseManager:getCurrentVendorName()
+    local id = self:getCurrentVendorId()
+
+    if (id == "DRIVERCENTRAL") then
+        return "Driver Central"
+    elseif (id == "HOUSELOGIX") then
+        return "Houselogix"
+    elseif (id == "SOFTKIWI") then
+        return "SoftKiwi"
+    else
+        return "Unknown"
+    end
+end
+function LicenseManager:setCurrentVendorIdByName(value)
+    if (value == "Driver Central") then
+        self:setCurrentVendorId("DRIVERCENTRAL")
+    elseif (value == "Houselogix") then
+        self:setCurrentVendorId("HOUSELOGIX")
+        self:trialTimerHandlerHouselogix()
+    elseif (value == "SoftKiwi") then
+        self:setCurrentVendorId("SOFTKIWI")
+    end
+end
+
+function LicenseManager:setParamValue(param_key, param_value, vendor_id)
+
+    if (vendor_id) then
+        LOGGER:debug("LicenseManager:setParamValue", "with vendor_id:", vendor_id)
+        self.vendorData[vendor_id][param_key] = param_value
+    else
+        LOGGER:debug("LicenseManager:setParamValue", "with automagic:", vendor_id)
+        local autoVendorId = self:getCurrentVendorId()
+        self.vendorData[autoVendorId][param_key] = param_value
+    end
+    self.updatePersistData()
+    
+
+end
+function LicenseManager:getParamValue(param_key, vendor_id)
+    if (vendor_id) then
+        return self.vendorData[vendor_id][param_key]
+    else
+        return self.vendorData[self:getCurrentVendorId()][param_key]
+    end
+end
+
+--
+-- Functions to test licence validity
+--
+function LicenseManager:isLicenseActive()
+    if self:getCurrentVendorId() == "DRIVERCENTRAL" then
+        return (DC.X == 1)
+    elseif self:getCurrentVendorId() == "HOUSELOGIX" then
+        return self:getParamValue("Licensed", "HOUSELOGIX")
+    elseif self:getCurrentVendorId() == "SOFTKIWI" then
+        return self:getParamValue("Licensed", "SOFTKIWI")
+    else
+        return false
+    end
+end
+function LicenseManager:isLicenseTrial()
+    if self:getCurrentVendorId() == "DRIVERCENTRAL" then
+        return (DC.X < 0)
+    elseif self:getCurrentVendorId() == "HOUSELOGIX" then
+        return self:getParamValue("Trial", "HOUSELOGIX")
+    else
+        return false
+    end
+end
+
+function LicenseManager:isLicenseActiveOrTrial()
+    return self:isLicenseActive() or self:isLicenseTrial()
+end
+
+function LicenseManager:isAbleToWork()
+	if self:getCurrentVendorId() == "DRIVERCENTRAL" then
+		local lic = self:isLicenseActive()
+		local trial = self:isLicenseTrial()
+		return lic or trial
+	elseif self:getCurrentVendorId() == "HOUSELOGIX" then
+		local lic = self:isLicenseActive()
+		local trial = self:isLicenseTrial() == 1
+        return lic or trial
+    elseif self:getCurrentVendorId() == "SOFTKIWI" then
+		local lic = self:isLicenseActive()
+		return lic --or trial
+	end
+end
+
+
+function LicenseManager:restoreFromPersistData()
+    LICENSE_MGR.vendorData = C4:PersistGetValue("vendorData") or LICENSE_MGR.vendorData
+    LICENSE_MGR.currentVendorId = C4:PersistGetValue("currentVendorId") or LICENSE_MGR.currentVendorId
+    LOGGER:debug("LicenseManager:restoreFromPersistData", "currentVendorId:", self.currentVendorId)
+end
+
+function LicenseManager:updatePersistData()
+    LOGGER:debug("LicenseManager:updatePersistData")
+    C4:PersistSetValue("vendorData", LICENSE_MGR.vendorData)
+    C4:PersistSetValue("currentVendorId", LICENSE_MGR.currentVendorId)
+end
+
+
+--
+-- C4 Enviroment hooks
+--
+
+function LicenseManager:OnDriverInit()
+    LOGGER:debug("LicenseManager:OnDriverInit")
+    
+    self:OnDriverInit_DriverCentral()    
+    self:OnDriverInit_HouseLogix()
+    self:OnDriverInit_SoftKiwi()
+
+    C4:SetPropertyAttribs("Cloud Status", 1)
+    C4:SetPropertyAttribs("Automatic Updates", 1)
+    C4:SetPropertyAttribs("Houselogix License Code", 1)
+    C4:SetPropertyAttribs("Houselogix License Status", 1)
+    C4:SetPropertyAttribs("SoftKiwi License Code", 1)
+    C4:SetPropertyAttribs("SoftKiwi License Status", 1)
+    C4:SetPropertyAttribs("SoftKiwi Driver Type", 1)
+
+    --for k,v in pairs(Properties) do
+	--	C4:ErrorLog("INIT_CODE: Calling OnPropertyChanged - " .. k .. ": " .. v)
+	--	local status, err = pcall(OnPropertyChanged, k)
+	--	if (not status) then
+	--		C4:ErrorLog("LUA_ERROR: " .. err)
+	--	end
+	--end
+    
+end
+
+function LicenseManager:OnDriverLateInit()
+    LOGGER:debug("LicenseManager:OnDriverLateInit")
+    
+    self:restoreFromPersistData()
+    
+    
+    self:OnDriverLateInit_HouseLogix()    
+    self:OnDriverLateInit_DriverCentral()
+    self:OnDriverLateInit_SoftKiwi()
+    
+    -- TOFIX: see end of file for definition
+    FIX_FOR_DRIVERCENTRAL = TimerManager:new(1, "SECONDS", self.onFIX_FOR_DRIVERCENTRALTimerExpire, false)
+    FIX_FOR_DRIVERCENTRAL:start()
+
+end
+
+-- TOFIX: DriverCentral re-enable AutoUpdate asyc...
+function LicenseManager:onFIX_FOR_DRIVERCENTRALTimerExpire()
+    if LICENSE_MGR:getCurrentVendorId() ~= "DRIVERCENTRAL" then
+        C4:SetPropertyAttribs("Automatic Updates", 1)
+    end
+end
+
+
+function LicenseManager:ReceivedFromProxy(idBinding, sCommand, tParams)
+    --if self:getCurrentVendorId() == "DRIVERCENTRAL" then	
+	--elseif self:getCurrentVendorId() == "HOUSELOGIX" then
+    --elseif
+    if self:getCurrentVendorId() == "SOFTKIWI" then
+	    self:ReceivedFromProxy_SoftKiwi(idBinding, sCommand, tParams)
+	end
+end
+
+function LicenseManager:OnPropertyChanged(strName)
+    local propertyValue = Properties[strName]
+
+    LOGGER:debug("LicenseManager:OnPropertyChanged.",strName, propertyValue, type(propertyValue))
+	
+    local funcToCall = LicenseManager.OnPropertyChangedTable[strName]
+    
+    if (funcToCall) then
+        LOGGER:debug("LicenseManager:OnPropertyChanged -> funcToCall",funcToCall, type(funcToCall))
+        funcToCall(self,propertyValue)
+    else
+        LOGGER:debug("LicenseManager:OnPropertyChanged: this property is not related to License")
+    end
+end
+
+function LicenseManager:SKC4_ON_PROPERTY_CHANGED_LicenseProvider(value)
+	LOGGER:debug("SKC4_ON_PROPERTY_CHANGED.LicenseProvider.",value, type(value))
+
+    LICENSE_MGR:setCurrentVendorIdByName(value)
+    
+    if self:getCurrentVendorId() == "DRIVERCENTRAL" then
+        return
+    elseif self:getCurrentVendorId() == "HOUSELOGIX" then
+        LICENSE_MGR:Houselogix_Activate()	
+    elseif self:getCurrentVendorId() == "SOFTKIWI" then
+        LICENSE_MGR:SoftKiwi_Activate()
+    end
+
+end
+
+--
+-- Vendor specific functions
+--
+function LicenseManager:OnDriverInit_DriverCentral()
+    require "json"
+	JSON=(loadstring(json.JSON_LIBRARY_CHUNK))()
+    -- set global vars required by DriverCentral.io
+    DC_PID = self:getParamValue("ProductId", "DRIVERCENTRAL") 
+	DC_FD = self:getParamValue("FreeDriver", "DRIVERCENTRAL") 
+    DC_FILENAME = self:getParamValue("FileName", "DRIVERCENTRAL") 
+    
+    require "SKC4.licence.cloud_client_v1007"
+end
+function LicenseManager:OnDriverLateInit_DriverCentral()
+    -- do something...
+end
+
+---------------
+-- HouseLogix
+---------------
+function LicenseManager:OnDriverInit_HouseLogix()
+    -- do something...
+end
+function LicenseManager:OnDriverLateInit_HouseLogix()   
+    if self:getParamValue("Trial", "HOUSELOGIX") == LicenseManager.TRIAL_STARTED then
+        local trialExpiredLapse = self:getParamValue("TrialExpiredLapse", "HOUSELOGIX") 
+        self.houselogixTimerTrial = TimerManager:new(trialExpiredLapse, "HOURS", self.onHouselogixTimerTrialExpire, false)
+        self.houselogixTimerTrial:start()
+    end
+end
+
+function LicenseManager:onHouselogixTimerExpire(ticketId, sData, responseCode, tHeaders)
+    
+    if (LICENSE_MGR:getCurrentVendorId() == "HOUSELOGIX") then
+        LICENSE_MGR:Houselogix_Activate()	
+    end
+end
+
+function LicenseManager:onHouselogixTimerTrialExpire(ticketId, sData, responseCode, tHeaders)
+    LOGGER:debug("Houselogix Trial timer Expired!")
+    LICENSE_MGR:setParamValue("Trial", LicenseManager.TRIAL_EXPIRED, "HOUSELOGIX") 
+    if (LICENSE_MGR:getCurrentVendorId() == "HOUSELOGIX") then
+        LICENSE_MGR:setParamValue("Licensed", false, "HOUSELOGIX")
+        LICENSE_MGR:Houselogix_Activate()	
+    end
+end
+
+function LicenseManager:SKC4_ON_PROPERTY_CHANGED_HouselogixLicenseCode(value)
+	LOGGER:debug("SKC4_ON_PROPERTY_CHANGED.HouselogixLicenseCode","value:",value)
+	HouselogixLicenseCode = value
+    LICENSE_MGR:setParamValue("LicenseCode", HouselogixLicenseCode, "HOUSELOGIX")
+    LICENSE_MGR:setParamValue("Licensed", false, "HOUSELOGIX")
+    LICENSE_MGR:Houselogix_Activate()	
+end
+
+---------------
+-- SoftKiwi
+---------------
+function LicenseManager:OnDriverInit_SoftKiwi()
+    local model = C4:GetDeviceData(C4:GetDeviceID(),"model")
+    C4:UpdateProperty ('SoftKiwi Driver Type', model)
+end
+function LicenseManager:OnDriverLateInit_SoftKiwi()   
+    self:SoftKiwi_setDynamicBinding()
+end
+
+function LicenseManager:ReceivedFromProxy_SoftKiwi(idBinding, sCommand, tParams)
+    LOGGER:debug("LicenseManager:ReceivedFromProxy_SoftKiwi",idBinding, sCommand, tParams)
+    local model = C4:GetDeviceData(C4:GetDeviceID(),"model")
+    if idBinding == 998 and sCommand == "skLicenceRes" and tParams.MODEL == model then
+		if tParams.IS_LICENSED == "True" then
+            LICENSE_MGR:setParamValue("Licensed", true, "SOFTKIWI")
+            LICENSE_MGR:setStatusMessage('Activated (last checked on: '..os.date("%m/%d/%Y %X")..')')
+		else
+            LICENSE_MGR:setParamValue("Licensed", false, "SOFTKIWI")
+            LICENSE_MGR:setStatusMessage('Invalid license key')
+        end
+        
+    end 
+end
+
+function LicenseManager:SoftKiwi_Activate()
+    LOGGER:debug("LicenseManager:SoftKiwi_Activate")
+    self:SoftKiwi_setDynamicBinding()
+    self:setStatusMessage('Activating driver...')
+    LICENSE_MGR:setParamValue("Licensed", false, "SOFTKIWI")
+    local model = C4:GetDeviceData(C4:GetDeviceID(),"model")
+    local hash = LICENSE_MGR:getParamValue("LicenseCode","SOFTKIWI")
+    LOGGER:debug("LicenseManager:SoftKiwi_Activate", "send values for skLicenceCheck:", hash, model)
+	C4:SendToProxy(998,"skLicenceCheck", {LIC = hash, MODEL = model})
+end
+  
+function LicenseManager:SKC4_ON_PROPERTY_CHANGED_SoftKiwiLicenseCode(value)
+	LOGGER:debug("SKC4_ON_PROPERTY_CHANGED.SoftKiwiLicenseCode.","Value:", value)
+	SoftKiwiLicenseCode = value
+    LICENSE_MGR:setParamValue("LicenseCode", SoftKiwiLicenseCode, "SOFTKIWI")
+    LICENSE_MGR:setParamValue("Licensed", false, "SOFTKIWI")
+    LICENSE_MGR:SoftKiwi_Activate()	
+end
+
+function LicenseManager:SoftKiwi_setDynamicBinding()
+    --LOGGER:debug("LicenseManager:setDynamicBinding", "remove binding")
+    --C4:RemoveDynamicBinding(998)
+    LOGGER:debug("LicenseManager:setDynamicBinding", "add binding")
+    C4:AddDynamicBinding(998, "CONTROL", false, "softKiwi License", "SOFTKIWI_LICENSE", true, true)
+end
+
+--- -----------------------------------------------------------------
+--- HOUSELOGIX LICENSE_MGR MANAGER
+--- -----------------------------------------------------------------
+
+function LicenseManager:trialTimerHandlerHouselogix()
+    local trialExpiredLapse = self:getParamValue("TrialExpiredLapse", "HOUSELOGIX") 
+    if self:getParamValue("Trial", "HOUSELOGIX") == LicenseManager.TRIAL_NOT_STARTED then
+        self:setParamValue("Trial", LicenseManager.TRIAL_STARTED, "HOUSELOGIX") 
+        self.houselogixTimerTrial = TimerManager:new(trialExpiredLapse, "HOURS", self.onHouselogixTimerTrialExpire, false)
+        self:setStatusMessage('Trial mode')
+        self.houselogixTimerTrial:start()
+    elseif self:getParamValue("Trial", "HOUSELOGIX") == LicenseManager.TRIAL_STARTED then
+    elseif self:getParamValue("Trial", "HOUSELOGIX") == LicenseManager.TRIAL_EXPIRED then 
+        self:Houselogix_Activate()
+    else
+        print ("Houeselogix Trial unknow state: "..(tostring(self:getParamValue("Trial", "HOUSELOGIX")) or "nil"))
+    end
+end
+
+
+function LicenseManager:Houselogix_Activate()
+  self:setStatusMessage('Activating driver license...')
+  mac = C4:GetUniqueMAC ()
+
+  local license_code = self:getParamValue("LicenseCode", "HOUSELOGIX")
+  local Houselogix_product_number = self:getParamValue("ProductId", "HOUSELOGIX")
+  local sw_version = self:getParamValue("Version", "HOUSELOGIX")
+  local postData = string.format('lic=%s&mac=%s&p=%s&ver=%s', license_code, mac, Houselogix_product_number, sw_version)
+  LOGGER:debug("LicenseManager:Houselogix_Activate()", "postData:", postData)
+  ticketId = C4:urlPost('https://www.houselogix.com/license-manager/activatelicense.asp', postData, {}, false, self.Houselogix_Response)
+  --methodType[ticketId] = "HLicense_Activate" -- QUESTA SERVE ANCORA? TOFIX
+end
+
+function LicenseManager.Houselogix_Response(ticketId, data, responseCode, tHeaders, strError )
+    LOGGER:debug('OnLicenseActivationResponseReceived',"ticketId", ticketId, "data", data)
+  local i = string.find(data, 'Valid')
+  if (i) then
+    LICENSE_MGR:setParamValue("Licensed", true, "HOUSELOGIX")
+    LICENSE_MGR:setStatusMessage('Activated (last checked on: '..os.date("%m/%d/%Y %X")..')')
+  elseif (string.find(data, 'Unauthorized')) then
+    LICENSE_MGR:setParamValue("Licensed", false, "HOUSELOGIX")
+    LICENSE_MGR:setStatusMessage('Invalid license key')
+  elseif (string.find(data, 'Failed')) then
+    if LICENSE_MGR:getParamValue("Licensed", "HOUSELOGIX") then 
+        LICENSE_MGR:setParamValue("Licensed", true, "HOUSELOGIX")
+    else
+        LICENSE_MGR:setParamValue("Licensed", false, "HOUSELOGIX")
+    end
+    LICENSE_MGR:setStatusMessage('Failed to verify')
+  else
+    LICENSE_MGR:setStatusMessage(strError)
+  end
+  local checkInterval =  LICENSE_MGR:getParamValue("ValidityCheckInterval", "HOUSELOGIX") 
+  LICENSE_MGR.houselogixTimerCheck = TimerManager:new(checkInterval, "MINUTES", LICENSE_MGR.onHouselogixTimerExpire, false)
+  LICENSE_MGR.houselogixTimerCheck:start()
+end
+
+
+LICENSE_MGR = LICENSE_MGR or LicenseManager:new()
+
+
+return LicenseManager
+
+ end)
+package.preload['SKC4.SKC4lib'] = (function (...)
+local SoftKiwiC4 = {}
+
+SoftKiwiC4.version = "0.1.2"
+SoftKiwiC4.Logger = require("SKC4.Logger");
+SoftKiwiC4.Utility = require("SKC4.Utility"); -- Alias per un logger che scrive su stdout
+SoftKiwiC4.TimerManager = require("SKC4.TimerManager")
+SoftKiwiC4.LicenceManager = require("SKC4.LicenseManager")
+
+-- SKC4.Connections = require("SKC4.Connections");
+-- SKC4.Debug = require("SKC4.Debug"); -- Alias per un logger che scrive su stdout
+
+return SoftKiwiC4;
+ end)
+do -- functions
+	Helper = {}
+	Timer = {}
+	--EX_CMDS = {}
+	PROXY_CMDS = {}
+	ACTIONS = {}
+	ON_INIT = {}
+	ON_LATE_INIT = {}
+	ON_PROPERTY_CHANGED = {}
+	UI_REQUEST = {}
+	DEVICE = {}
+	RELAY_PROXY = 511
+	CONTACT_PROXY = 114 --RELAY
+end
+
+do -- globals
+	if (C4.GetDriverConfigInfo) then
+		VERSION = C4:GetDriverConfigInfo ("version")
+	else
+		VERSION = 'Incompatible with this OS'
+	end
+	States_fix = { "off", "white", "red", "orange", "yellow", "chartreuse", "green", "spring", "cyan", "azure", "blue", "violet", "magenta", "rose"}
+	LED_fix = {"000000", "FFFFFF", "FF0000", "FF8000", "FFFF00", "80FF00", "00FF00", "00FF80", "00FFFF", "0080FF", "0000FF", "8000FF", "FF00FF", "FF0080" }
+	gStateIndex = 1
+	gCurrentState = "off"
+	gPressIsOff = gPressIsOff or false
+	gClickable = gClickable or true
+	gAllowPressIsOff = gAllowPressIsOff or true
+	tInterlock = tInterlock or {}
+	C4:AddVariable("STATE", "", "STRING")
+	C4:AddDynamicBinding(RELAY_PROXY, "CONTROL", false, "Relay", "RELAY",false, false)        --RELAY
+	C4:AddDynamicBinding(CONTACT_PROXY, "CONTROL", false, "Sensor", "CONTACT_SENSOR",false, false)   --RELAY
+	STATE = "OFF"
+	INVERTED_RELAY = INVERTED_RELAY or false
+
+	StateOff = "off"
+	StateOn = "off"
+	LedOn = "000000"
+	LedOff = "000000"
+	
+end
+
+PROP = {}
+PROP.Action = "Action"
+PROP.DriverVersion = "Driver Version"
+PROP.PulseLenght = "Pulse Lenght"
+PROP.Feedback = "Feedback"
+PROP.CurrentState = "Current State"
+PROP.DriverInformation = "Driver Information"
+PROP.DebugMode = "Debug Mode"
+PROP.InvertedRelay = "Inverted Relay"
+ACTION = Properties[PROP.Action]
+PULSELENGHT = Properties[PROP.PulseLenght]
+FEEDBACK = Properties[PROP.Feedback]
+INVERTED_RELAY = Properties[PROP.InvertedRelay]
+
+
+--- Build License Manager object
+require 'SKC4.LicenseManager'
+
+--- Config License Manager
+LICENSE_MGR:setParamValue("ProductId", XXX, "DRIVERCENTRAL") -- Product ID
+LICENSE_MGR:setParamValue("FreeDriver", false, "DRIVERCENTRAL") -- (Driver is not a free driver)
+LICENSE_MGR:setParamValue("FileName", "Kiwi-button.c4z", "DRIVERCENTRAL")
+LICENSE_MGR:setParamValue("ProductId", XXX, "HOUSELOGIX")
+LICENSE_MGR:setParamValue("LicenseCode", "Put here your licence", "HOUSELOGIX")
+LICENSE_MGR:setParamValue("LicenseCode", "Put here your licence", "SOFTKIWI")
+LICENSE_MGR:setParamValue("Version", C4:GetDriverConfigInfo ("version"), "HOUSELOGIX")
+LICENSE_MGR:setParamValue("Trial", LICENSE_MGR.TRIAL_NOT_STARTED, "HOUSELOGIX")
+--- end license
+--------------------------------------------
+-- REMOVE THIS TO ENABLE LICENCE MANAGEMENT 
+LICENSE_MGR:isLicenseActive = function ()
+    return true
+end
+LICENSE_MGR:isLicenseTrial = function ()
+    return 1
+end
+--------------------------------------------
+
+
+
+LOGGER:enableDebugLevel()
+
+function dbg (strDebugText, ...)
+	--print (os.date ('%x %X : ') .. (strDebugText or ''), ...) 
+	if (DEBUGPRINT) then print (os.date ('%x %X : ') .. (strDebugText or ''), ...) end
+end
+
+
+function dbgdump (strDebugText, ...)
+	if (DEBUGPRINT) then hexdump (strDebugText or '') print (...) end
+end
+function OnDriverInit () 
+	dbg("OnDriverInit")
+	LICENSE_MGR:OnDriverInit()
+
+	Helper.RunFunctions(ON_INIT) 
+	-- LICENCE HOOK
+end
+function ON_INIT.JSON ()
+	dbg("ON_INIT.JSON")
+	
+	
+	JSON=(loadstring(json.JSON_LIBRARY_CHUNK))()
+end
+function ON_INIT.Persistence ()
+	dbg("ON_INIT.Persistence")
+	if (PersistData == nil) then
+		PersistData = {}
+	end
+
+	tInterlock = PersistData.Interlock or {}
+	PersistData.Interlock = tInterlock
+
+	INVERTED_RELAY = PersistData.INVERTED_RELAY or false
+	PersistData.INVERTED_RELAY = INVERTED_RELAY
+
+	ACTION = PersistData.ACTION or ""
+	PersistData.ACTION = ACTION
+
+	PULSELENGHT = PersistData.PULSELENGHT or 500
+	PersistData.PULSELENGHT = PULSELENGHT
+
+	FEEDBACK = PersistData.FEEDBACK or true
+	PersistData.FEEDBACK = FEEDBACK
+
+	StateOff = PersistData.StateOff or "off"
+	PersistData.StateOff = StateOff
+
+	StateOn = PersistData.StateOn or "off"
+	PersistData.StateOn = StateOn
+
+	StateOn = PersistData.StateOn or "off"
+	PersistData.StateOn = StateOn
+
+	LedOn = PersistData.LedOn or "000000"
+	PersistData.LedOn = LedOn
+
+	LedOff = PersistData.LedOff or "000000"
+	PersistData.LedOff = LedOff
+	
+end
+
+-- LICENCE HOOK
+
+function OnDriverLateInit () 
+	Helper.RunFunctions(ON_LATE_INIT) 
+	
+	-- LICENCE HOOK
+	LICENSE_MGR:OnDriverLateInit() 
+end
+
+function ON_LATE_INIT.SetProperties ()
+	for k, v in pairs (Properties) do
+		if k ~= 'Select Color Now' and k ~= 'Buttons to interlock' then OnPropertyChanged (k) end
+	end
+	C4:AddDynamicBinding(RELAY_PROXY, "CONTROL", false, "Relay", "RELAY",false, false)        --RELAY
+	C4:AddDynamicBinding(CONTACT_PROXY, "CONTROL", true, "Sensor", "CONTACT_SENSOR",false, false)   --RELAY
+	STATE = "OFF"
+end
+
+
+
+function OnVariableChanged(sVariable)
+  if (sVariable == "STATE") then
+    ON_PROPERTY_CHANGED.SelectColorNow (Variables["STATE"])
+  end
+end
+
+
+function OnPropertyChanged(sProperty)
+print ("OnPropertyChanged: ",sProperty)
+    sProperty = sProperty or ""
+	local propertyValue = Properties[sProperty] or ""
+	
+
+print ("OnPropertyChanged: ",sProperty,propertyValue)
+
+	
+	-- Remove any spaces (trim the property)
+	local trimmedProperty = string.gsub(sProperty, " ", "")
+	-- if trimmed function exists then execute
+  local prop_func = ON_PROPERTY_CHANGED[trimmedProperty] or ""
+	--dbg ("OnPropertyChanged(" .. sProperty .. ") changed to: " .. propertyValue)
+	--dbg ("trimmedProperty(" .. sProperty .. ") is: " .. trimmedProperty)	
+	--dbg ("type(" .. sProperty .. ") is: " .. type(prop_func))
+	
+	if (type(prop_func) == "function") then
+		--print ("trimmed", prop_func)
+		prop_func(propertyValue)
+	end
+
+	LICENSE_MGR:OnPropertyChanged(sProperty)
+end
+
+function ON_PROPERTY_CHANGED.Clickable (value)
+	if (value == 'No') then
+		gClickable = false
+		Helper.DriverInfo ('Button set as non clickable')
+		----DEVICE.ShowColorProperties (1)
+	elseif (value == 'Yes') then
+		gClickable = true
+		Helper.DriverInfo ('Button set as clickable')
+		----DEVICE.ShowColorProperties (0)
+	end
+end
+
+function ON_PROPERTY_CHANGED.DriverVersion (value)
+	if not Helper.VersionCheck ('2.9.0.0') then
+		C4:UpdateProperty ('Driver Version', 'ERROR: This driver requires OS2.9 or higher')
+	else
+		C4:UpdateProperty ('Driver Version', VERSION)
+	end
+end
+
+function ON_PROPERTY_CHANGED.DebugMode (value)
+	if (value == 'Off') then
+		DEBUGPRINT = false
+		Timer.Debug = Helper.KillTimer (Timer.Debug)
+	elseif (value == 'On') then
+		DEBUGPRINT = true
+		Timer.Debug = Helper.AddTimer (Timer.Debug, 45, 'MINUTES')
+	end
+end
+function ON_PROPERTY_CHANGED.Action (value)
+	--dbg("ON_PROPERTY_CHANGED.Action."..value)
+	if (value == 'TOGGLE') then
+		C4:SetPropertyAttribs(PROP.PulseLenght, 1)
+		ACTION = "TOGGLE"
+	elseif (value == 'ON-OFF') then
+		C4:SetPropertyAttribs(PROP.PulseLenght, 1)
+		ACTION = "ON-OFF"
+	elseif (value == 'PULSE') then
+		ACTION = "PULSE"
+		C4:SetPropertyAttribs(PROP.PulseLenght, 0)
+	end
+end
+function ON_PROPERTY_CHANGED.PulseLenght (value)
+	--dbg("ON_PROPERTY_CHANGED.PulseLenght."..value)
+	PULSELENGHT = value
+end
+
+function ON_PROPERTY_CHANGED.Feedback (value)
+	--dbg("ON_PROPERTY_CHANGED.Feedback."..value)
+	if value == "ON" then
+		FEEDBACK = true
+	else
+		FEEDBACK = false
+	end
+end
+
+function ON_PROPERTY_CHANGED.InvertedRelay (value)
+	--dbg("ON_PROPERTY_CHANGED.InvertedRelay."..value)
+	if value == "ON" then
+		INVERTED_RELAY = true
+	else
+		INVERTED_RELAY = false
+	end
+	dbg("INVERTED_RELAY"..tostring(INVERTED_RELAY))
+end
+function ON_PROPERTY_CHANGED.SelectColorOff (value)
+	--print ("ON_PROPERTY_CHANGED.SelectColorOff",value)
+
+	for i,v in pairs(States_fix) do
+		if (value == v) then
+			StateOff = value
+			local color = LED_fix[i]
+			LedOff = color
+		end
+	end
+end
+
+function ON_PROPERTY_CHANGED.SelectColorOn (value)
+	--print ("ON_PROPERTY_CHANGED.SelectColorOn",value)
+	for i,v in pairs(States_fix) do
+		if (value == v) then 
+			StateOn = value
+			local color = LED_fix[i]
+			LedOn = color
+		end
+	end
+end
+
+function OnTimerExpired (idTimer)
+	if (idTimer == Timer.Debug) then
+		dbg ('Turning Debug Mode Off (timer expired)')
+		C4:UpdateProperty ('Debug Mode', 'Off')
+		OnPropertyChanged ('Debug Mode')
+	elseif (idTimer == Timer.Debounce) then
+		CloseRelay()
+		SET_OFF(false)
+		dbg ('idTimer == Timer.Debounce')
+		--gLedState, gIcontState =  LedOff, StateOff
+		--DEVICE.SendIcon()
+	end
+end
+
+function OpenRelay()
+	--dbg ('INVERTED_RELAY == '..tostring(INVERTED_RELAY))
+	if (LICENSE_MGR:isAbleToWork()) then
+		if (INVERTED_RELAY) then
+			dbg ('OPEN -> Sending CLOSE to '..tostring(RELAY_PROXY))
+			C4:SendToProxy (RELAY_PROXY, "CLOSE", '')
+		else
+			dbg ('OPEN -> Sending OPEN')
+			C4:SendToProxy (RELAY_PROXY, "OPEN", '')
+		end
+	end 
+end
+
+function CloseRelay()
+	--dbg ('INVERTED_RELAY == '..tostring(INVERTED_RELAY))
+	if (LICENSE_MGR:isAbleToWork()) then
+		if (INVERTED_RELAY) then
+			dbg ('CLOSE -> Sending OPEN')
+			C4:SendToProxy (RELAY_PROXY, "OPEN", '')
+		else
+			dbg ('CLOSE -> Sending CLOSE')
+			C4:SendToProxy (RELAY_PROXY, "CLOSE", '')
+		end
+	end
+end
+function ToggleRelay()
+	if (LICENSE_MGR:isAbleToWork()) then
+		C4:SendToProxy (RELAY_PROXY, "TOGGLE", '')
+	end
+end
+
+
+function ReceivedFromProxy(idBinding, strCommand, tParams)
+	print ("qqq",idBinding, strCommand, tParams)
+	LICENSE_MGR:ReceivedFromProxy(idBinding, strCommand, tParams)
+	if (LICENSE_MGR:isLicenseActiveOrTrial() == false) then 
+		return
+	end
+
+    print ("RecievedFromProxy()", idBinding, strCommand, tParams)
+    if type(PROXY_CMDS[strCommand]) == "function" then
+        local success, retVal = pcall(PROXY_CMDS[strCommand], tParams)
+        if success then
+            return retVal
+        end
+    end
+	if idBinding == CONTACT_PROXY then 
+		if FEEDBACK == true then
+			if strCommand == "CLOSED" then
+				SET_ON(FEEDBACK)
+			elseif strCommand == "OPENED" then
+				SET_OFF(FEEDBACK)
+			end
+		end
+	end
+	if idBinding == RELAY_PROXY then 
+		if FEEDBACK == false then
+			if strCommand == "CLOSED" then
+				SET_ON(FEEDBACK)
+			elseif strCommand == "OPENED" then
+				SET_OFF(FEEDBACK)
+			end
+		end
+	end
+    return nil
+end
+
+
+function PROXY_CMDS.DO_CLICK (tParams)
+	dbg ('Do click'..tstring(tParams,2))
+	-- Keypad button click acts like UI button pressed
+	PROXY_CMDS.SELECT (tParams)
+end
+
+
+function PROXY_CMDS.OFF (tParams)
+	dbg ('OFF')
+	--Timer.PressIsOff = Helper.KillTimer (Timer.PressIsOff)
+	--EX_CMDS.SetColor ({color = 'off'})
+end
+
+
+function PROXY_CMDS.SELECT (tParams)             --se premo il pulsante chiamo questa funzione
+	dbg("PROXY_CMDS.SELECT"..tstring(tParams,2))
+	if (gClickable) then                         --se è clickable allora mando un toggle
+		if ACTION == "TOGGLE" then
+			dbg ("mando un toggle al relay")
+			ToggleRelay()
+			--C4:SendToProxy (RELAY_PROXY, "TOGGLE", '')
+			if STATE == "ON" then 
+				SET_OFF(false)
+			else
+				SET_ON(false)
+			end
+		elseif ACTION == "ON-OFF" then
+			dbg ("mando un ON-OFF")
+			if STATE == "ON" then
+				CloseRelay()
+				SET_OFF(false)
+			else
+				OpenRelay()
+				SET_ON(false)
+			end
+		elseif ACTION == "PULSE" then
+			dbg ("mando un PULSE")
+			OpenRelay()
+
+			SET_ON(false)
+			Timer.Debounce = Helper.AddTimer (Timer.Debounce, PULSELENGHT, 'MILLISECONDS', false)
+			--gLedState, gIcontState = LedOn, StateOn
+		    ----print ("I COLORI SONO ",gStateIndex, gCurrentState)
+			--DEVICE.SendIcon()
+			--Timer.Debounce = Helper.AddTimer (Timer.Debounce, PULSELENGHT, 'MILLISECONDS', false)
+		else
+		dgb("Action not handled: "..ACTION)	
+		end
+	else
+		dbg ('Set as non clickable')
+	end
+end
+function SET_ON(feed)
+	if (LICENSE_MGR:isAbleToWork()) then
+		dbg ('SET_ON')
+			STATE = "ON"
+		if FEEDBACK == feed then
+			gLedState, gIcontState = LedOn, StateOn
+			DEVICE.SendIcon()
+		end
+	end
+end 
+function SET_OFF(feed)
+	if (LICENSE_MGR:isAbleToWork()) then
+		dbg ('SET_OFF')
+		STATE = "OFF"
+		if FEEDBACK == feed then
+			gLedState, gIcontState = LedOff, StateOff
+			DEVICE.SendIcon()
+		end
+	end
+end
+
+
+
+-- HELPER FUNCTIONS
+function Helper.AddTimer (timer, count, units, recur)
+	local newTimer
+	if (recur == nil) then recur = false end
+	if (timer and timer ~= 0) then Helper.KillTimer (timer) end
+
+	newTimer = C4:AddTimer (count, units, recur)
+	return newTimer
+end
+
+
+function Helper.DriverInfo (info)
+	C4:UpdateProperty ('Driver Information', info)
+	print (os.date ('%x %X : ') .. info)
+end
+
+
+function Helper.TableInvert(t)
+	local u = {}
+	for k, v in pairs(t) do u[v] = k end
+	return u
+end
+
+
+function Helper.KillAllTimers ()
+
+	for k,v in pairs (Timer or {}) do
+		if (type (v) == 'number') then
+			Timer [k] = Helper.KillTimer (Timer [k])
+		end
+	end
+
+	for _, thisQ in pairs (Qs or {}) do
+		if (thisQ.ConnectingTimer and thisQ.ConnectingTimer ~= 0) then thisQ.ConnectingTimer = Helper.KillTimer (thisQ.ConnectingTimer) end
+		if (thisQ.ConnectedTimer and thisQ.ConnectedTimer ~= 0) then thisQ.ConnectedTimer = Helper.KillTimer (thisQ.ConnectedTimer) end
+	end
+end
+
+
+function Helper.KillTimer (timer)
+	if (timer and type (timer) == 'number') then
+		return (C4:KillTimer (timer))
+	else
+		return (0)
+	end
+end
+
+
+function Helper.Print (data)
+	if (type (data) == 'table') then
+		for k, v in pairs (data) do print (k, v) end
+	elseif (type (data) ~= 'nil') then
+		print (type (data), data)
+	else
+		print ('nil value')
+	end
+end
+
+
+function Helper.Round(num, idp)
+  local mult = 10^(idp or 0)
+  return math.floor(num * mult + 0.5) / mult
+end
+
+
+function Helper.VersionCheck (requires_version)
+	local curver = {}
+	curver [1], curver [2], curver [3], curver [4] = string.match (C4:GetVersionInfo ().version, '(%d+)\.(%d+)\.(%d+)\.(%d+)')
+	local reqver = {}
+	reqver [1], reqver [2], reqver [3], reqver [4] = string.match (requires_version, '(%d+)\.(%d+)\.(%d+)\.(%d+)')
+
+	for i = 1, 4 do
+		local cur = tonumber (curver [i])
+		local req = tonumber (reqver [i])
+		if (cur > req) then
+			return true
+		end
+		if (cur < req) then
+			return false
+		end
+	end
+	return true
+end
+
+
+function Helper.RunFunctions(funcMap)
+    for k,v in pairs(funcMap) do
+        if type(v) == "function" then
+            pcall(v)
+        end
+    end
+end
+
+function DEVICE.FireEvent (eventName)
+	dbg ("Firing event", eventName)
+	C4:SetVariable("STATE", eventName)
+	C4:UpdateProperty ('Current State', eventName)
+	C4:FireEvent( eventName )
+end
+
+
+function DEVICE.SendIcon ()
+	print ("DEVICE.SendIcon", gLedState, gIcontState  )
+    C4:SendToProxy (5001, "ICON_CHANGED", {icon=gIcontState})
+	C4:SendToProxy (500, "BUTTON_COLORS", {ON_COLOR = {COLOR_STR = gLedState}, OFF_COLOR = {COLOR_STR = '000000'}}, "NOTIFY")
+	if (gStateIndex == 1) then
+		C4:SendToProxy (500, 'MATCH_LED_STATE', {STATE = '0'})
+	else
+		C4:SendToProxy (500, 'MATCH_LED_STATE', {STATE = '1'})
+	end
+
+	if (gCurrentState ~= 'off') then
+		-- Turn interlocked buttons off
+		for k, v in pairs (tInterlock) do
+			if (k ~= tostring (C4:GetDeviceID() + 1)) then -- not ourselves
+				C4:SendToDevice (k, 'OFF', {})
+			end
+		end
+	end
+end
+
+
+function tprint (tbl, indent)  --print table
+	print (tstring(tbl, (indent or 2)))
+end
+
+function tstring (tbl, indent) -- transform table in string, nested
+	--ritorna una stringa contenente i valori della table
+    --if indent is -1 return a table in one line string
+	local  mytable = ""
+	if not indent then indent = 0 end
+	if (type(tbl) == "table") then
+		if (indent == -1) then 
+			for k,v in pairs(tbl) do
+				mytable = mytable.." "..v
+			end
+		else
+			for k, v in pairs(tbl) do
+				formatting = string.rep("   ", indent) .. k .. ": "
+				if type(v) == "table" then
+					formatting = formatting..type(k)
+					mytable = mytable .. formatting
+					mytable = mytable .."\n"..tstring(v, indent+1)
+				else
+					mytable = mytable .. formatting .. tostring(v) .." \n"
+				end
+			end
+		end
+	else
+
+		mytable = tbl
+	end
+	return mytable
+end
