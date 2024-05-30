@@ -65,6 +65,16 @@ LICENSE_MGR:setParamValue("FreeDriver", false, "DRIVERCENTRAL") -- (Driver is no
 LICENSE_MGR:setParamValue("FileName", DRIVER_NAME..".c4z", "DRIVERCENTRAL")  
 LICENSE_MGR:setParamValue("LicenseCode", "Put here your licence", "SOFTKIWI")  
 --- end license 
+--------------------------------------------
+-- REMOVE THIS TO ENABLE LICENCE MANAGEMENT 
+LICENSE_MGR:isLicenseActive = function ()
+  return true
+end
+LICENSE_MGR:isLicenseTrial = function ()
+  return 1
+end
+--------------------------------------------
+
 
 -----------------------------------------------------
 -- INITIALIZATION

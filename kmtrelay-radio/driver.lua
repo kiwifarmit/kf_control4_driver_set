@@ -14,6 +14,15 @@ LICENSE_MGR:setParamValue("ProductId", XXX , "HOUSELOGIX") -- Filename
 LICENSE_MGR:setParamValue("LicenseCode", "Put here your licence", "HOUSELOGIX") -- Filename -- DD394AB4A8CA48BB
 LICENSE_MGR:setParamValue("Version", C4:GetDriverConfigInfo ("version"), "HOUSELOGIX") -- Filename -- DD394AB4A8CA48BB
 LICENSE_MGR:setParamValue("Trial", LICENSE_MGR.TRIAL_NOT_STARTED, "HOUSELOGIX") -- Filename -- DD394AB4A8CA48BB
+--------------------------------------------
+-- REMOVE THIS TO ENABLE LICENCE MANAGEMENT 
+LICENSE_MGR:isLicenseActive = function ()
+    return true
+end
+LICENSE_MGR:isLicenseTrial = function ()
+    return 1
+end
+--------------------------------------------
 
 
 -- tables and variables

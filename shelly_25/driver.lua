@@ -45,6 +45,16 @@ LICENSE_MGR:setParamValue("LicenseCode", "Put here your licence", "SOFTKIWI")
 LICENSE_MGR:setParamValue("Version", C4:GetDriverConfigInfo ("version"), "HOUSELOGIX")
 LICENSE_MGR:setParamValue("Trial", LICENSE_MGR.TRIAL_NOT_STARTED, "HOUSELOGIX")
 --- end license
+--------------------------------------------
+-- REMOVE THIS TO ENABLE LICENCE MANAGEMENT 
+LICENSE_MGR:isLicenseActive = function ()
+  return true
+end
+LICENSE_MGR:isLicenseTrial = function ()
+  return 1
+end
+--------------------------------------------
+
 
 -- variabile per controllo relays
 C4:AddVariable("O1_RelaysIsOn","","BOOL",false)

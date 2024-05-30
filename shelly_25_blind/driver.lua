@@ -11,6 +11,15 @@ LICENSE_MGR:setParamValue("ProductId", XXX, "DRIVERCENTRAL") -- Product ID
 LICENSE_MGR:setParamValue("FreeDriver", false, "DRIVERCENTRAL") -- (Driver is not a free driver)
 LICENSE_MGR:setParamValue("FileName", "shelly_25_blind.c4z", "DRIVERCENTRAL")
 LICENSE_MGR:setParamValue("LicenseCode", "Put here your licence", "SOFTKIWI")
+--------------------------------------------
+-- REMOVE THIS TO ENABLE LICENCE MANAGEMENT 
+LICENSE_MGR:isLicenseActive = function ()
+  return true
+end
+LICENSE_MGR:isLicenseTrial = function ()
+  return 1
+end
+--------------------------------------------
 
 
 
