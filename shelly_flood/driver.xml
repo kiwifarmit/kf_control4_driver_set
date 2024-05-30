@@ -4,7 +4,7 @@
   <model>shelly_flood</model>
   <creator>kiwifarm</creator>
   <created>3/13/2020 11:00 AM</created>
-  <modified>4/20/2020 03:26 PM</modified>
+  <modified>5/30/2024 02:42 PM</modified>
   <name>Shelly Flood</name>
   <small image_source="c4z">icons/device_sm.png</small>
   <large image_source="c4z">icons/device_lg.png</large>
@@ -156,7 +156,7 @@
       
     </actions>
     <commands />
-    <script encryption="2" file="driver.lua" />
+    <script encryption="2" file="driver.lua" jit="1" />
     <documentation file="www/documentation/documentation.rtf" />
   </config>
   <connections>
@@ -164,5 +164,5 @@
     </connection>
 	</connections>
   <capabilities />
-  <version>001000</version>
+  <version>010000</version>
 </devicedata>

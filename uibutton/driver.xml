@@ -5,8 +5,8 @@
   <name>KiwiButton</name>
   <model>KiwiButton</model>
   <created>11/01/2017 10:30</created>
-  <modified>1/14/2020 06:49 PM</modified>
-  <version>000045</version>
+  <modified>5/30/2024 02:43 PM</modified>
+  <version>010000</version>
   <small image_source="c4z">icons/device_sm.png</small>
   <large image_source="c4z">icons/device_lg.png</large>
   <control>lua_gen</control>
@@ -19,7 +19,7 @@
     <documentation>
 			"refer to User Manual"
 		</documentation>
-    <script encryption="0" file="driver.lua" />
+    <script encryption="2" file="driver.lua" jit="1" />
     <actions />
     <properties>
       <property>

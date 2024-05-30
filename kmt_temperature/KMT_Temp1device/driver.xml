@@ -5,8 +5,8 @@
   <name>KMTronic 1 Temperature Sensor v 1.0</name>
   <model>KMT Tronic</model>
   <created>04/02/2016 6:12 PM</created>
-  <modified>11/17/2022 11:55 AM</modified>
-  <version>003000</version>
+  <modified>5/30/2024 01:12 PM</modified>
+  <version>010000</version>
   <small>devices_sm\contactsingle_heatdetector_close.gif</small>
   <large>devices_lg\contactsingle_heatdetector_close.gif</large>
   <control>lua_gen</control>
@@ -30,7 +30,7 @@
     <power_command_delay>0</power_command_delay>
     <power_delay>0</power_delay>
     <power_command_needed>False</power_command_needed>
-    <script encryption="2" file="driver.lua" jit="0" />
+    <script encryption="2" file="driver.lua" jit="1" />
     <commands />
     <properties>
       <property>

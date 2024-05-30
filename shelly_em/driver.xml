@@ -5,8 +5,8 @@
 	<model>shelly_em</model>
 	<creator>Kiwifarm</creator>
 	<created>10/26/2019 05:57 PM</created>
-	<modified>8/4/2020 03:53 PM</modified>
-	<version>001016</version>
+	<modified>5/30/2024 02:42 PM</modified>
+	<version>010000</version>
 	<small image_source="c4z">icons/device_sm.png</small>
   <large image_source="c4z">icons/device_lg.png</large>
 	<control>lua_gen</control>

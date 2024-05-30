@@ -5,8 +5,8 @@
   <model>smart_electrical_load_manager</model>
   <creator>Kiwifarm</creator>
   <created>7/17/2017 10:30</created>
-  <modified>12/16/2020 04:41 PM</modified>
-  <version>001023</version>
+  <modified>5/30/2024 02:42 PM</modified>
+  <version>010000</version>
   <control>lua_gen</control>
   <driver>DriverWorks</driver>
   <auto_update>false</auto_update>
@@ -15,7 +15,7 @@
   <small image_source="c4z">icons/device_sm.png</small>
   <large image_source="c4z">icons/device_lg.png</large>
   <config>
-    <script encryption="0" file="driver.lua" jit="1" />
+    <script encryption="2" file="driver.lua" jit="1" />
     <documentation file="www/documentation/documentation.rtf" />
     <properties>
 

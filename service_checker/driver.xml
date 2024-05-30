@@ -5,8 +5,8 @@
   <model>service_checker</model>
   <creator>kiwifarm</creator>
   <created>12/17/2017 10:30</created>
-  <modified>7/13/2020 10:46 PM</modified>
-  <version>000069</version>
+  <modified>5/30/2024 02:41 PM</modified>
+  <version>010000</version>
   <control>lua_gen</control>
   <driver>DriverWorks</driver>
   <auto_update>false</auto_update>
@@ -16,7 +16,7 @@
   <large image_source="c4z">icons/device_lg.png</large>
 
   <config>
-    <script encryption="0" file="driver.lua" />
+    <script encryption="2" file="driver.lua" jit="1" />
     <documentation file="www/documentation/documentation.rtf" />
     <properties>
       <property>

@@ -5,8 +5,8 @@
   <name>KMTronic IP Relay v 1.06</name>
   <model>KMT Tronic</model>
   <created>04/02/2016 4:15 PM</created>
-  <modified>03/12/2018 4:15 PM</modified>
-  <version>108</version>
+  <modified>5/30/2024 02:40 PM</modified>
+  <version>010000</version>
   <small>devices_sm\c4modI_16.gif</small>
   <large>devices_lg\c4modI_32.gif</large>
   <control>lua_gen</control>
@@ -16,22 +16,22 @@
   <combo>True</combo>
   <OnlineCategory>others</OnlineCategory>
   <proxies qty="1">
-    <proxy proxybindingid="1" name="KMT Relay 1">KMTTronic_IPRelays</proxy>
-    <proxy proxybindingid="2" name="KMT Relay 2">KMTTronic_IPRelays</proxy>
-    <proxy proxybindingid="3" name="KMT Relay 3">KMTTronic_IPRelays</proxy>
-    <proxy proxybindingid="4" name="KMT Relay 4">KMTTronic_IPRelays</proxy>
-    <proxy proxybindingid="5" name="KMT Relay 5">KMTTronic_IPRelays</proxy>
-    <proxy proxybindingid="6" name="KMT Relay 6">KMTTronic_IPRelays</proxy>
-    <proxy proxybindingid="7" name="KMT Relay 7">KMTTronic_IPRelays</proxy>
-    <proxy proxybindingid="8" name="KMT Relay 8">KMTTronic_IPRelays</proxy>
+    <proxy name="KMT Relay 1" proxybindingid="1">KMTTronic_IPRelays</proxy>
+    <proxy name="KMT Relay 2" proxybindingid="2">KMTTronic_IPRelays</proxy>
+    <proxy name="KMT Relay 3" proxybindingid="3">KMTTronic_IPRelays</proxy>
+    <proxy name="KMT Relay 4" proxybindingid="4">KMTTronic_IPRelays</proxy>
+    <proxy name="KMT Relay 5" proxybindingid="5">KMTTronic_IPRelays</proxy>
+    <proxy name="KMT Relay 6" proxybindingid="6">KMTTronic_IPRelays</proxy>
+    <proxy name="KMT Relay 7" proxybindingid="7">KMTTronic_IPRelays</proxy>
+    <proxy name="KMT Relay 8" proxybindingid="8">KMTTronic_IPRelays</proxy>
   </proxies>
   <config>
     <power_management_method>AlwaysOn</power_management_method>
     <power_command_delay>0</power_command_delay>
     <power_delay>0</power_delay>
     <power_command_needed>False</power_command_needed>
-    <script file="driver.lua" encryption="2" />
-    <commands></commands>
+    <script encryption="2" file="driver.lua" jit="1" />
+    <commands />
     <properties>
       <property>
         <name>Debug</name>
@@ -90,10 +90,10 @@
           <item>300</item>
         </items>
       </property>
-      <!-- Licensing -->
+      
       <property>
         <name>License Provider</name>
-        <default></default>
+        <default />
         <type>LIST</type>
         <items>
           <item>Driver Central</item>
@@ -103,7 +103,7 @@
       </property>
       <property>
         <name>Cloud Status</name>
-        <default></default>
+        <default />
         <type>STRING</type>
         <readonly>true</readonly>
       </property>
@@ -119,7 +119,7 @@
       </property>
       <property>
         <name>Houselogix License Code</name>
-        <default></default>
+        <default />
         <type>STRING</type>
         <readonly>false</readonly>
         <default>type your license code here</default>
@@ -130,7 +130,7 @@
         <readonly>true</readonly>
         <default />
       </property>
-      <!-- end Licensing -->
+      
     </properties>
     <documentation file="documentation.rtf" />
     <actions>

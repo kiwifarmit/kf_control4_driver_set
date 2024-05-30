@@ -5,8 +5,8 @@
   <name>KMTronic UnLim Temperature Sensor v 1.0</name>
   <model>KMT Tronic</model>
   <created>04/03/2016 11:18 AM</created>
-  <modified>11/17/2022 11:53 AM</modified>
-  <version>003000</version>
+  <modified>5/30/2024 01:12 PM</modified>
+  <version>010000</version>
   <small>devices_sm\contactsingle_heatdetector_close.gif</small>
   <large>devices_lg\contactsingle_heatdetector_close.gif</large>
   <control>lua_gen</control>

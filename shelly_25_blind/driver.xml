@@ -5,8 +5,8 @@
   <model>shelly_25_blind</model>
   <creator>kiwifarm</creator>
   <created>12/17/2017 10:30</created>
-  <modified>5/22/2021 06:26 PM</modified>
-  <version>003000</version>
+  <modified>5/30/2024 02:41 PM</modified>
+  <version>010000</version>
   <control>lua_gen</control>
   <driver>DriverWorks</driver>
   <auto_update>true</auto_update>

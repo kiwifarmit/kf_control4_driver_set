@@ -5,8 +5,8 @@
   <model>shelly_dimmer2</model>
   <creator>kiwifarm</creator>
   <created>11/17/2021 10:30</created>
-  <modified>11/24/2021 02:55 PM</modified>
-  <version>000021</version>
+  <modified>5/30/2024 02:41 PM</modified>
+  <version>010000</version>
   <control>lua_gen</control>
   <driver>DriverWorks</driver>
   <auto_update>true</auto_update>
@@ -16,7 +16,7 @@
     <proxy name="Shelly Dimmer2" proxybindingid="5001">light_v2</proxy>
   </proxies>
   <config>
-    <script encryption="0" file="driver.lua" jit="1" />
+    <script encryption="2" file="driver.lua" jit="1" />
     <documentation file="www/documentation/documentation.rtf" />
     <properties>
      
