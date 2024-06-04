@@ -8,7 +8,7 @@ In the `c4dev-cli` folder, you will find a tool we created for developers to man
 
 The `skc4` folder contains our Lua library that we used to develop other drivers and includes utility modules and functions to generate or speed up development.
 
-All other folders contain the Lua source code of our drivers. Inside each folder, you will find a subfolder named `encrypted` with a compiled version ready for use.
+All other folders contain the Lua source code of our drivers. Inside each folder, you will find a subfolder named `encrypted` with a compiled version ready for use. We have removed all licensing systems so that the drivers can be used freely.
 
 **Note: we do not provide any support, but we are happy that [our work can be useful to other developers or enthusiasts](LICENSE).**
 
