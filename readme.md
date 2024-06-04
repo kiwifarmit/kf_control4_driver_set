@@ -2,7 +2,7 @@ _This repository houses a collection of Control4 drivers, products of developmen
 
 _Please be advised that Kiwifarm has chosen to discontinue its business operations associated with Control4 driver development. Consequently, there will be no ongoing support or maintenance for this software. It is provided as-is, with users expected to utilize the software entirely at their own risk._
 
-# Repository Structure
+# What does this repository contain?
 
 In the `c4dev-cli` folder, you will find a tool we created for developers to manage driver development projects.
 
