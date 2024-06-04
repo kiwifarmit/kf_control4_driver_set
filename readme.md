@@ -10,7 +10,7 @@ The `skc4` folder contains our Lua library that we used to develop other drivers
 
 All other folders contain the Lua source code of our drivers. Inside each folder, you will find a subfolder named `encrypted` with a compiled version ready for use.
 
-**Note: we do not provide any support, but we are happy that our work can be useful to other developers or enthusiasts.**
+**Note: we do not provide any support, but we are happy that [our work can be useful to other developers or enthusiasts](LICENSE).**
 
 
 
